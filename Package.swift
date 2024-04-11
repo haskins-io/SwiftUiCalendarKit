@@ -4,20 +4,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftUI-Cals",
+    name: "HCals",
+    platforms: [
+        .macOS(.v14), .iOS(.v15)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "SwiftUI-Cals",
-            targets: ["SwiftUI-Cals"]),
+            name: "HCals",
+            targets: ["HCals"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "SwiftUI-Cals"),
+            name: "HCals"),
         .testTarget(
-            name: "SwiftUI-CalsTests",
-            dependencies: ["SwiftUI-Cals"]),
+            name: "HCalsTests",
+            dependencies: ["HCals"]),
     ]
 )
