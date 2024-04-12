@@ -23,60 +23,52 @@ public struct CKTimelineDay: View {
         dayView()
     }
 
-    private func sidebar() -> some View {
-
-        DatePicker(
-            "",
-            selection: $date,
-            displayedComponents: [.date]
-        )
-        .datePickerStyle(.graphical)
-    }
-
     private func dayView() -> some View {
 
-        VStack(alignment: .leading) {
+        GeometryReader { proxy in
+            VStack(alignment: .leading) {
 
-            // Date headline
-            HStack {
-                Text(date.formatted(.dateTime.day().month(.wide)))
-                    .bold()
-                Text(date.formatted(.dateTime.year()))
-            }
-            .padding(.leading, 10)
-            .padding(.top, 5)
-            .font(.title)
-            Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                // Date headline
+                HStack {
+                    Text(date.formatted(.dateTime.day().month(.wide)))
+                        .bold()
+                    Text(date.formatted(.dateTime.year()))
+                }
+                .padding(.leading, 10)
+                .padding(.top, 5)
+                .font(.title)
+                Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
 
-            Divider().padding([.leading, .trailing], 10)
+                Divider().padding([.leading, .trailing], 10)
 
-            ScrollView {
-                ZStack(alignment: .topLeading) {
+                ScrollView {
+                    ZStack(alignment: .topLeading) {
 
-                    VStack(alignment: .leading, spacing: 0) {
-                        ForEach(0..<24) { hour in
-                            HStack {
-                                Text(String(format: "%02d:00", hour))
-                                    .font(.caption)
-                                    .frame(width: 40, alignment: .trailing)
-                                Color.gray
-                                    .padding(.trailing, 10)
-                                    .frame(height: 1)
+                        VStack(alignment: .leading, spacing: 0) {
+                            ForEach(0..<24) { hour in
+                                HStack {
+                                    Text(String(format: "%02d:00", hour))
+                                        .font(.caption)
+                                        .frame(width: 40, alignment: .trailing)
+                                    Color.gray
+                                        .padding(.trailing, 10)
+                                        .frame(height: 1)
+                                }
+                                .frame(height: hourHeight)
                             }
-                            .frame(height: hourHeight)
                         }
-                    }
-                    
-                    ForEach(events, id: \.anyHashableID) { event in
-                        eventCell(event)
+
+                        ForEach(events, id: \.anyHashableID) { event in
+                            eventCell(event, width: proxy.size.width)
+                        }
                     }
                 }
             }
+            .background(Color.white)
         }
-        .background(Color.white)
     }
 
-    private func eventCell(_ event: any CKEventSchema) -> some View {
+    private func eventCell(_ event: any CKEventSchema, width: CGFloat) -> some View {
 
         let duration = event.endDate.timeIntervalSince(event.startDate)
         let height = duration / 60 / 60 * hourHeight
@@ -91,7 +83,7 @@ public struct CKTimelineDay: View {
             Text(event.text).bold()
         }
         .font(.caption)
-        .frame(maxWidth: .infinity - 14, alignment: .leading)
+        .frame(maxWidth: width - 70, alignment: .leading)
         .padding(4)
         .frame(height: height, alignment: .top)
         .background(

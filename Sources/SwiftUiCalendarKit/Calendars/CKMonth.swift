@@ -44,7 +44,13 @@ public struct CKMonth: View {
 
         return LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 0) {
             ForEach(days, id: \.self) { date in
-                MonthDayCell(date: date, month: month, width: cellWidth, height: cellHeight)
+                MonthDayCell(
+                    date: date,
+                    events: eventsForDay(day: date),
+                    month: month,
+                    width: cellWidth,
+                    height: cellHeight
+                )
             }
         }
         .padding(0)
@@ -60,6 +66,19 @@ public struct CKMonth: View {
 
         let dateInterval = DateInterval(start: monthFirstWeek.start, end: monthLastWeek.end)
         return calendar.generateDays(for: dateInterval)
+    }
+
+    private func eventsForDay(day: Date) -> [any CKEventSchema] {
+        
+        var dayEvents: [any CKEventSchema] = []
+
+        for event in events {
+            if Calendar.current.isDate(event.startDate, inSameDayAs: day) {
+                dayEvents.append(event)
+            }
+        }
+
+        return dayEvents
     }
 }
 

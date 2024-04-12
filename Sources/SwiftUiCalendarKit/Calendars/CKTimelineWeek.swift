@@ -90,10 +90,11 @@ public struct CKTimelineWeek: View {
         let xOffset = CGFloat((day - startDay)) * (width)
 
         return VStack(alignment: .leading) {
+            Text(event.startDate.formatted(.dateTime.hour().minute()))
             Text(event.text).bold()
         }
         .font(.caption)
-        .frame(maxWidth: width - 14, alignment: .leading)
+        .frame(maxWidth: width - 9, alignment: .leading)
         .padding(4)
         .frame(height: height, alignment: .top)
         .background(
@@ -101,7 +102,7 @@ public struct CKTimelineWeek: View {
                 .fill(.blue).opacity(0.8)
         )
         .padding(.trailing, 30)
-        .offset(x: CGFloat(xOffset + 45), y: yOffset + 30)
+        .offset(x: CGFloat(xOffset + 46), y: yOffset + 30)
     }
 }
 
