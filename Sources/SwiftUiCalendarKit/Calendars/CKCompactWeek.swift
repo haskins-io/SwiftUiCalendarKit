@@ -114,7 +114,9 @@ public struct CKCompactWeek: View {
     /// - Week Row
     @ViewBuilder
     func weekRow() -> some View {
+
         HStack(spacing: 0) {
+        
             ForEach(calendar.currentWeek(today: currentDay)) { weekDay in
 
                 let status = Calendar.current.isDate(weekDay.date, inSameDayAs: currentDay)
