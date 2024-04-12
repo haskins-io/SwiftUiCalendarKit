@@ -17,7 +17,6 @@ extension Calendar {
         var isToday = false
     }
 
-
     /// - Returns 24 Hours in a day
     var hours: [Date] {
         let startOfDay = self.startOfDay(for: Date())
@@ -51,6 +50,16 @@ extension Calendar {
         }
 
         return week
+    }
+
+    func firstDateOfWeek(week: Date) -> Int {
+
+        guard let firstWeekDay = self.dateInterval(of: .weekOfMonth, for: week)?.start else {
+            return 0
+        }
+        
+        let components = dateComponents([.day], from: firstWeekDay)
+        return components.day ?? 0
     }
 
     func generateDates(

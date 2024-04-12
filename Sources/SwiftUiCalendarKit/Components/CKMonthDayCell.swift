@@ -18,7 +18,7 @@ struct CKMonthDayCellModifier: ViewModifier {
     }
 }
 
-struct MonthDayCell: View {
+struct CKMonthDayCell: View {
 
     let calendar = Calendar(identifier: .gregorian)
 
@@ -62,7 +62,7 @@ struct MonthDayCell: View {
     @ViewBuilder
     private func addEvents() -> some View {
 
-        return ZStack {
+        ZStack {
             if events.count == 1 {
                 event(event: events[0], yOffset: 30)
             }
@@ -111,5 +111,5 @@ struct MonthDayCell: View {
 }
 
 #Preview {
-    MonthDayCell(date: Date(),events: [], month: Date(), width: 150, height: 150)
+    CKMonthDayCell(date: Date(),events: [], month: Date(), width: 150, height: 150)
 }

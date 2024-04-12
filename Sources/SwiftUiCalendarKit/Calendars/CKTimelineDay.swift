@@ -13,7 +13,7 @@ public struct CKTimelineDay: View {
 
     private var events: [any CKEventSchema]
 
-    private let hourHeight = 60.0
+    private let calendar = Calendar(identifier: .gregorian)
 
     public init(events: [any CKEventSchema]) {
         self.events = events
@@ -26,6 +26,7 @@ public struct CKTimelineDay: View {
     private func dayView() -> some View {
 
         GeometryReader { proxy in
+
             VStack(alignment: .leading) {
 
                 // Date headline
@@ -37,6 +38,7 @@ public struct CKTimelineDay: View {
                 .padding(.leading, 10)
                 .padding(.top, 5)
                 .font(.title)
+
                 Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
 
                 Divider().padding([.leading, .trailing], 10)
@@ -44,54 +46,18 @@ public struct CKTimelineDay: View {
                 ScrollView {
                     ZStack(alignment: .topLeading) {
 
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(0..<24) { hour in
-                                HStack {
-                                    Text(String(format: "%02d:00", hour))
-                                        .font(.caption)
-                                        .frame(width: 40, alignment: .trailing)
-                                    Color.gray
-                                        .padding(.trailing, 10)
-                                        .frame(height: 1)
-                                }
-                                .frame(height: hourHeight)
-                            }
-                        }
+                        CKTimeline()
 
                         ForEach(events, id: \.anyHashableID) { event in
-                            eventCell(event, width: proxy.size.width)
+                            if calendar.isDate(event.startDate, inSameDayAs: date) {
+                                CKEventCell(event, width: (proxy.size.width - 70), applyXOffset: false)
+                            }
                         }
                     }
                 }
             }
             .background(Color.white)
         }
-    }
-
-    private func eventCell(_ event: any CKEventSchema, width: CGFloat) -> some View {
-
-        let duration = event.endDate.timeIntervalSince(event.startDate)
-        let height = duration / 60 / 60 * hourHeight
-
-        let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startDate)
-        let minute = calendar.component(.minute, from: event.startDate)
-        let offset = (Double(hour) * (hourHeight)) + Double(minute)
-
-        return VStack(alignment: .leading) {
-            Text(event.startDate.formatted(.dateTime.hour().minute()))
-            Text(event.text).bold()
-        }
-        .font(.caption)
-        .frame(maxWidth: width - 70, alignment: .leading)
-        .padding(4)
-        .frame(height: height, alignment: .top)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(.teal).opacity(0.5)
-        )
-        .padding(.trailing, 30)
-        .offset(x: 50, y: offset + 30)
     }
 }
 

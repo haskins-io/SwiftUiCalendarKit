@@ -44,7 +44,7 @@ public struct CKMonth: View {
 
         return LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 0) {
             ForEach(days, id: \.self) { date in
-                MonthDayCell(
+                CKMonthDayCell(
                     date: date,
                     events: eventsForDay(day: date),
                     month: month,

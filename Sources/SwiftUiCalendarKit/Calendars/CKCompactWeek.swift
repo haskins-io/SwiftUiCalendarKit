@@ -22,10 +22,7 @@ public struct CKCompactWeek: View {
 
     public var body: some View {
 
-        ScrollView(.vertical, showsIndicators: false) {
-            timelineView()
-                .padding(15)
-        }
+        timelineView()
         .safeAreaInset(edge: .top, spacing: 0) {
             headerView()
         }
@@ -35,90 +32,71 @@ public struct CKCompactWeek: View {
     @ViewBuilder
     func timelineView() -> some View {
 
-        ScrollViewReader { proxy in
-            let hours = Calendar.current.hours
-            let midHour = hours[hours.count / 2]
+        GeometryReader { proxy in
 
-            VStack {
-                ForEach(hours, id: \.self) { hour in
-                    timelineViewRow(hour).id(hour)
-                }
-            }
-            .onAppear {
-                proxy.scrollTo(midHour)
-            }
-        }
-    }
+            VStack(alignment: .leading) {
 
-    /// - Timeline ViewRow
-    @ViewBuilder
-    func timelineViewRow(_ date: Date) -> some View {
+                ScrollView {
+                    
+                    ZStack(alignment: .topLeading) {
 
-        HStack(alignment: .top) {
-            Text(date.toString("h a"))
-                .frame(width: 45, alignment: .leading)
+                        CKTimeline()
 
-            /// - Filtering Tasks
-            let calendar = Calendar.current
-            let filteredTasks = events.filter {
-                if let hour = calendar.dateComponents([.hour], from: date).hour,
-                   let taskHour = calendar.dateComponents([.hour], from: $0.startDate).hour,
-                   hour == taskHour && calendar.isDate($0.startDate, inSameDayAs: currentDay) {
-                    return true
-                }
-                return false
-            }
-
-            if filteredTasks.isEmpty {
-                Rectangle()
-                    .stroke(.gray.opacity(0.5), style: StrokeStyle(lineWidth: 0.5, lineCap: .butt, lineJoin: .bevel, dash: [5], dashPhase: 5))
-                    .frame(height: 0.5)
-                    .offset(y: 10)
-            } else {
-                VStack(spacing: 10) {
-                    ForEach(filteredTasks, id: \.anyHashableID) { task in
-                        taskRow(task)
+                        ForEach(events, id: \.anyHashableID) { event in
+                            if calendar.isDate(event.startDate, inSameDayAs: currentDay) {
+                                CKEventCell(event, width: (proxy.size.width - 70), applyXOffset: false)
+                            }
+                        }
                     }
                 }
             }
         }
-        .hAlign(.leading)
-        .padding(.vertical, 15)
     }
 
-    @ViewBuilder
-    func taskRow(_ task: any CKEventSchema) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(task.text.uppercased())
-//                .foregroundColor(task.category.color)
-        }
-        .hAlign(.leading)
-        .padding(12)
-        .background {
-            ZStack(alignment: .leading) {
-                Rectangle()
-//                    .fill(task.category.color)
-                    .frame(width: 4)
+    private func eventCell(_ event: any CKEventSchema, width: CGFloat) -> some View {
 
-                Rectangle()
-//                    .fill(task.category.color.opacity(0.25))
-            }
+        let duration = event.endDate.timeIntervalSince(event.startDate)
+        let height = duration / 60 / 60 * CKTimeline.hourHeight
+
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: event.startDate)
+        let minute = calendar.component(.minute, from: event.startDate)
+        let offset = (Double(hour) * (CKTimeline.hourHeight)) + Double(minute)
+
+        return VStack(alignment: .leading) {
+            Text(event.startDate.formatted(.dateTime.hour().minute()))
+            Text(event.text).bold()
         }
+        .font(.caption)
+        .frame(maxWidth: width - 70, alignment: .leading)
+        .padding(4)
+        .frame(height: height, alignment: .top)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(.teal).opacity(0.5)
+        )
+        .padding(.trailing, 30)
+        .offset(x: 50, y: offset + 30)
     }
 
     /// - Header View
     @ViewBuilder
     func headerView() -> some View {
-        VStack {
-            /// - Today Date in String
-            Text(Date().toString("MMM YYY"))
-                .hAlign(.leading)
-                .padding(.top, 15)
+
+        VStack(alignment: .leading) {
+            // Date headline
+            HStack {
+                Text(currentDay.formatted(.dateTime.month(.wide)))
+                    .bold()
+                Text(currentDay.formatted(.dateTime.year()))
+            }
+            .padding(.leading, 10)
+            .padding(.top, 5)
+            .font(.title)
 
             /// - Current Week row
-            weekRow()
+            weekRow().padding([.leading, .trailing], 10)
         }
-        .padding(15)
         .background {
             VStack(spacing: 0) {
                 Color.white
