@@ -7,11 +7,17 @@
 
 import SwiftUI
 
-struct CKCompactMonth: View {
+public struct CKCompactMonth: View {
 
     @State private var date = Date()
 
-    var body: some View {
+    private var events: [any CKEventSchema]
+
+    public init(events: [any CKEventSchema]) {
+        self.events = events
+    }
+
+    public var body: some View {
         VStack {
             CKMonthComponent(calendar: Calendar(identifier: .gregorian), date: $date)
             Divider()
@@ -23,5 +29,5 @@ struct CKCompactMonth: View {
 }
 
 #Preview {
-    CKCompactMonth()
+    CKCompactMonth(events: [])
 }

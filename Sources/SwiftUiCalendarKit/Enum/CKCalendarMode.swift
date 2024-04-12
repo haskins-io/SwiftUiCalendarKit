@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-enum CKCalendarMode: String, CaseIterable, Identifiable {
-    var id: Self { self }
+public enum CKCalendarMode: String, CaseIterable, Identifiable {
+    public var id: Self { self }
     case day
     case week
     case month

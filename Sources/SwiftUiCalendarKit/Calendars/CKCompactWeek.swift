@@ -8,15 +8,19 @@
 import SwiftData
 import SwiftUI
 
-struct CKCompactWeek: View {
+public struct CKCompactWeek: View {
 
     @State private var currentDay: Date = .init()
     
-    var events: [any CKEventSchema]
+    private var events: [any CKEventSchema]
 
-    let calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar(identifier: .gregorian)
 
-    var body: some View {
+    public init(events: [any CKEventSchema]) {
+        self.events = events
+    }
+
+    public var body: some View {
 
         ScrollView(.vertical, showsIndicators: false) {
             timelineView()

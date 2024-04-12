@@ -8,16 +8,20 @@
 import SwiftData
 import SwiftUI
 
-struct CKTimelineWeek: View {
+public struct CKTimelineWeek: View {
 
     @State var currentDay = Date()
 
-    var events: [any CKEventSchema]
+    private var events: [any CKEventSchema]
 
-    let calendar = Calendar(identifier: .gregorian)
-    let hourHeight = 60.0
+    private let calendar = Calendar(identifier: .gregorian)
+    private let hourHeight = 60.0
 
-    var body: some View {
+    public init(events: [any CKEventSchema]) {
+        self.events = events
+    }
+
+    public var body: some View {
 
         GeometryReader { proxy in
             VStack(alignment: .leading) {

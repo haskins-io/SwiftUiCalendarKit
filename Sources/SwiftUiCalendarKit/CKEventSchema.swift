@@ -16,8 +16,8 @@ public protocol CKEventSchema: Identifiable {
 
     var text: String  {get set}
 
-    var font : Font {get}
+    var font: String  {get set}
 
-    var textColor: Color {get}
-    var backgroundColor: Color {get}
+    var textColor: String  {get set}
+    var backgroundColor: String  {get set}
 }

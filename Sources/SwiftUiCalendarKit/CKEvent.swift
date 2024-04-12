@@ -19,9 +19,8 @@ struct CKEvent: CKEventSchema {
 
     var text = ""
 
-    var font = Font.body
-
-    var textColor = Color.black
-    var backgroundColor = Color.white
+    var font = ""
+    var textColor = "#000000"
+    var backgroundColor = "#ffffff"
 
 }

@@ -7,12 +7,18 @@
 
 import SwiftUI
 
-struct CKMonth: View {
+public struct CKMonth: View {
 
     @State var currentDay = Date()
     private let calendar = Calendar(identifier: .gregorian)
 
-    var body: some View {
+    private var events: [any CKEventSchema]
+
+    public init(events: [any CKEventSchema]) {
+        self.events = events
+    }
+
+    public var body: some View {
 
         GeometryReader { proxy in
             VStack(alignment: .leading) {
@@ -58,5 +64,5 @@ struct CKMonth: View {
 }
 
 #Preview {
-    CKMonth()
+    CKMonth(events: [])
 }
