@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-enum CalendarMode: String, CaseIterable, Identifiable {
+enum CKCalendarMode: String, CaseIterable, Identifiable {
     var id: Self { self }
     case day
     case week
     case month
 }
 
-extension CalendarMode {
+extension CKCalendarMode {
 
     var label: String {
         switch self {

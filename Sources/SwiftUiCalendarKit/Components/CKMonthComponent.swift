@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-struct CalendarViewComponent: View {
+struct CKMonthComponent: View {
 
     private let calendar: Calendar
     private let monthFormatter: DateFormatter
@@ -18,7 +18,7 @@ struct CalendarViewComponent: View {
 
     @Binding private var selectedDate: Date
 
-    var events: [Event] = []
+    var events: [any CKEventSchema] = []
 
     init(calendar: Calendar, date: Binding<Date>) {
 

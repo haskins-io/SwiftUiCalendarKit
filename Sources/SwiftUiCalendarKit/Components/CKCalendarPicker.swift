@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct CalendarPicker: View {
+struct CKCalendarPicker: View {
 
-    @Binding var mode: CalendarMode
+    @Binding var mode: CKCalendarMode
 
     var body: some View {
         Picker("Display Mode", selection: $mode) {
-            ForEach(CalendarMode.allCases) { calendarMode in
+            ForEach(CKCalendarMode.allCases) { calendarMode in
                 Text(calendarMode.label)
             }
         }
@@ -22,5 +22,5 @@ struct CalendarPicker: View {
 }
 
 #Preview {
-    CalendarPicker(mode: .constant(CalendarMode.day))
+    CKCalendarPicker(mode: .constant(CKCalendarMode.day))
 }

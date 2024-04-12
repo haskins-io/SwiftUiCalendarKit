@@ -8,11 +8,11 @@
 import SwiftData
 import SwiftUI
 
-struct CalendarCompactWeek: View {
+struct CKCompactWeek: View {
 
     @State private var currentDay: Date = .init()
     
-    var events: [Event]
+    var events: [any CKEventSchema]
 
     let calendar = Calendar(identifier: .gregorian)
 
@@ -72,7 +72,7 @@ struct CalendarCompactWeek: View {
                     .offset(y: 10)
             } else {
                 VStack(spacing: 10) {
-                    ForEach(filteredTasks) { task in
+                    ForEach(filteredTasks, id: \.anyHashableID) { task in
                         taskRow(task)
                     }
                 }
@@ -83,15 +83,10 @@ struct CalendarCompactWeek: View {
     }
 
     @ViewBuilder
-    func taskRow(_ task: Event) -> some View {
+    func taskRow(_ task: any CKEventSchema) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(task.title.uppercased())
+            Text(task.text.uppercased())
 //                .foregroundColor(task.category.color)
-
-            if task.detail != "" {
-                Text(task.detail.uppercased())
-//                    .foregroundColor(task.category.color.opacity(0.8))
-            }
         }
         .hAlign(.leading)
         .padding(12)
@@ -162,5 +157,5 @@ struct CalendarCompactWeek: View {
 }
 
 #Preview {
-    CalendarCompactWeek(events: [])
+    CKCompactWeek(events: [])
 }

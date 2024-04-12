@@ -4,23 +4,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "HCals",
+    name: "SwiftUiCalendarKit",
     platforms: [
         .macOS(.v14), .iOS(.v15)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "HCals",
-            targets: ["HCals"]),
+            name: "SwiftUiCalendarKit",
+            targets: ["SwiftUiCalendarKit"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "HCals"),
+            name: "SwiftUiCalendarKit"),
         .testTarget(
-            name: "HCalsTests",
-            dependencies: ["HCals"]),
+            name: "SwiftUiCalendarKitTests",
+            dependencies: ["SwiftUiCalendarKit"]),
     ]
 )

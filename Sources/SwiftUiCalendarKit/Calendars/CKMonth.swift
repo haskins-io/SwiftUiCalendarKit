@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CalendarMonth: View {
+struct CKMonth: View {
 
     @State var currentDay = Date()
     private let calendar = Calendar(identifier: .gregorian)
@@ -16,8 +16,8 @@ struct CalendarMonth: View {
 
         GeometryReader { proxy in
             VStack(alignment: .leading) {
-                CalendarHeader(currentDate: $currentDay, addWeek: false)
-                DayHeader(currentDate: $currentDay, width: proxy.size.width, showTime: false, showDate: false)
+                CKCalendarHeader(currentDate: $currentDay, addWeek: false)
+                CKDayHeader(currentDate: $currentDay, width: proxy.size.width, showTime: false, showDate: false)
 
                 Divider()
 
@@ -58,5 +58,5 @@ struct CalendarMonth: View {
 }
 
 #Preview {
-    CalendarMonth()
+    CKMonth()
 }

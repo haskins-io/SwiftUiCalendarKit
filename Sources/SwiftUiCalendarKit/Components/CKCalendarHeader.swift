@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CalendarHeader: View {
+struct CKCalendarHeader: View {
 
     @Binding var currentDate: Date
     var addWeek: Bool
@@ -68,5 +68,5 @@ struct CalendarHeader: View {
 }
 
 #Preview {
-    CalendarHeader(currentDate: .constant(Date()), addWeek: false)
+    CKCalendarHeader(currentDate: .constant(Date()), addWeek: false)
 }

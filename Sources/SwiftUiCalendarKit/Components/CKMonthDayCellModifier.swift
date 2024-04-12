@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MonthDayCellModifier: ViewModifier {
+struct CKMonthDayCellModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
@@ -46,7 +46,7 @@ struct MonthDayCell: View {
                 .offset(x: (cellWidth / 2) - 20, y: ((cellHeight / 2) - 20) * -1)
         }
         .frame(width: cellWidth, height: cellHeight)
-        .modifier(MonthDayCellModifier())
+        .modifier(CKMonthDayCellModifier())
     }
 
     private func formatDate() -> String {

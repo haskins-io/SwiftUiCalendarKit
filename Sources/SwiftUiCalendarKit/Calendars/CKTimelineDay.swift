@@ -7,15 +7,19 @@
 
 import SwiftUI
 
-struct CalendarDay: View {
+public struct CKTimelineDay: View {
 
     @State private var date = Date()
 
-    var events: [Event]
+    private var events: [any CKEventSchema]
 
-    let hourHeight = 60.0
+    private let hourHeight = 60.0
 
-    var body: some View {
+    public init(events: [any CKEventSchema]) {
+        self.events = events
+    }
+
+    public var body: some View {
         dayView()
     }
 
@@ -62,8 +66,8 @@ struct CalendarDay: View {
                             .frame(height: hourHeight)
                         }
                     }
-
-                    ForEach(events) { event in
+                    
+                    ForEach(events, id: \.anyHashableID) { event in
                         eventCell(event)
                     }
                 }
@@ -72,7 +76,7 @@ struct CalendarDay: View {
         .background(Color.white)
     }
 
-    private func eventCell(_ event: Event) -> some View {
+    private func eventCell(_ event: any CKEventSchema) -> some View {
 
         let duration = event.endDate.timeIntervalSince(event.startDate)
         let height = duration / 60 / 60 * hourHeight
@@ -84,7 +88,7 @@ struct CalendarDay: View {
 
         return VStack(alignment: .leading) {
             Text(event.startDate.formatted(.dateTime.hour().minute()))
-            Text(event.title).bold()
+            Text(event.text).bold()
         }
         .font(.caption)
         .frame(maxWidth: .infinity - 14, alignment: .leading)
@@ -100,5 +104,5 @@ struct CalendarDay: View {
 }
 
 #Preview {
-    CalendarDay(events: [])
+    CKTimelineDay(events: [])
 }

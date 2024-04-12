@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DayHeader: View {
+struct CKDayHeader: View {
 
     @Binding var currentDate: Date
 
@@ -49,5 +49,5 @@ struct DayHeader: View {
 }
 
  #Preview {
-     DayHeader(currentDate: .constant(Date()), width: 1500, showTime: true, showDate: false)
+     CKDayHeader(currentDate: .constant(Date()), width: 1500, showTime: true, showDate: false)
  }

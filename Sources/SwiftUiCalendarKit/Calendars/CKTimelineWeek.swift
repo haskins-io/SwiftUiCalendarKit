@@ -8,11 +8,11 @@
 import SwiftData
 import SwiftUI
 
-struct CalendarWeek: View {
+struct CKTimelineWeek: View {
 
     @State var currentDay = Date()
 
-    var events: [Event]
+    var events: [any CKEventSchema]
 
     let calendar = Calendar(identifier: .gregorian)
     let hourHeight = 60.0
@@ -22,9 +22,9 @@ struct CalendarWeek: View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
 
-                CalendarHeader(currentDate: $currentDay, addWeek: true)
+                CKCalendarHeader(currentDate: $currentDay, addWeek: true)
 
-                DayHeader(currentDate: $currentDay, width: proxy.size.width, showTime: true, showDate: true)
+                CKDayHeader(currentDate: $currentDay, width: proxy.size.width, showTime: true, showDate: true)
 
                 Divider()
 
@@ -52,7 +52,7 @@ struct CalendarWeek: View {
                     }
                 }
 
-                ForEach(events) { event in
+                ForEach(events, id: \.anyHashableID) { event in
                     eventCell(event, startDay: 8, width: (proxy.size.width - CGFloat(40)) / 7)
                 }
 
@@ -72,7 +72,7 @@ struct CalendarWeek: View {
         }
     }
 
-    func eventCell(_ event: Event, startDay: Int, width: CGFloat) -> some View {
+    func eventCell(_ event: any CKEventSchema, startDay: Int, width: CGFloat) -> some View {
 
         let duration = event.endDate.timeIntervalSince(event.startDate)
         let height = duration / 60 / 60 * hourHeight
@@ -86,7 +86,7 @@ struct CalendarWeek: View {
         let xOffset = CGFloat((day - startDay)) * (width)
 
         return VStack(alignment: .leading) {
-            Text(event.title).bold()
+            Text(event.text).bold()
         }
         .font(.caption)
         .frame(maxWidth: width - 14, alignment: .leading)
@@ -102,5 +102,5 @@ struct CalendarWeek: View {
 }
 
 #Preview {
-    CalendarWeek(events: [])
+    CKTimelineWeek(events: [])
 }
