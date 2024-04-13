@@ -17,7 +17,7 @@ struct CKEvent: CKEventSchema {
     var startDate = Date()
     var endDate = Date()
 
-    var text = ""
+    var text = "Demo"
 
     var font = ""
     var textColor = "#000000"

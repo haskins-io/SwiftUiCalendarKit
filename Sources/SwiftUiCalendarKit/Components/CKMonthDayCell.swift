@@ -20,6 +20,8 @@ struct CKMonthDayCellModifier: ViewModifier {
 
 struct CKMonthDayCell: View {
 
+    @ObservedObject var observer: CKCalendarObserver
+
     let calendar = Calendar(identifier: .gregorian)
 
     private var date: Date
@@ -30,7 +32,16 @@ struct CKMonthDayCell: View {
     private var cellWidth: CGFloat
     private var cellHeight: CGFloat
 
-    init(date: Date, events: [any CKEventSchema], month: Date, width: CGFloat, height: CGFloat) {
+    init(
+        date: Date,
+        observer: CKCalendarObserver,
+        events: [any CKEventSchema],
+        month: Date,
+        width: CGFloat,
+        height: CGFloat
+    ) {
+
+        self._observer = .init(wrappedValue: observer)
 
         self.date = date
         self.month = month
@@ -98,6 +109,10 @@ struct CKMonthDayCell: View {
         )
         .padding(.trailing, 2)
         .offset(x: 0, y: yOffset)
+        .onTapGesture {
+            observer.eventSelected = true
+            observer.event = event
+        }
     }
 
     private func formatDate() -> String {
@@ -111,5 +126,12 @@ struct CKMonthDayCell: View {
 }
 
 #Preview {
-    CKMonthDayCell(date: Date(),events: [], month: Date(), width: 150, height: 150)
+    CKMonthDayCell(
+        date: Date(),
+        observer: CKCalendarObserver(),
+        events: [],
+        month: Date(),
+        width: 150,
+        height: 150
+    )
 }

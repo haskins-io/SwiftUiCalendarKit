@@ -9,12 +9,16 @@ import SwiftUI
 
 public struct CKCompactMonth: View {
 
-    @State private var date = Date()
+    @ObservedObject var observer: CKCalendarObserver
+
+    @Binding private var date: Date
 
     private var events: [any CKEventSchema]
 
-    public init(events: [any CKEventSchema]) {
+    public init(observer: CKCalendarObserver, events: [any CKEventSchema], date: Binding<Date>) {
+        self._observer = .init(wrappedValue: observer)
         self.events = events
+        self._date = date
     }
 
     public var body: some View {
@@ -29,5 +33,13 @@ public struct CKCompactMonth: View {
 }
 
 #Preview {
-    CKCompactMonth(events: [])
+    CKCompactMonth(
+        observer: CKCalendarObserver(),
+        events: [
+            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Date 1"),
+            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 30), endDate: Date().dateFrom(14, 4, 2024, 13, 30), text: "Date 2"),
+            CKEvent(startDate: Date().dateFrom(15, 4, 2024, 15, 00), endDate: Date().dateFrom(15, 4, 2024, 16, 00), text: "Date 3"),
+        ],
+        date: .constant(Date().dateFrom(13, 4, 2024))
+    )
 }

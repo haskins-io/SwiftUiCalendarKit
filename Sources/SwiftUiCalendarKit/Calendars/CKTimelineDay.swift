@@ -9,27 +9,26 @@ import SwiftUI
 
 public struct CKTimelineDay: View {
 
-    @State private var date = Date()
+    @ObservedObject var observer: CKCalendarObserver
+
+    @Binding private var date: Date
 
     private var events: [any CKEventSchema]
 
     private let calendar = Calendar(identifier: .gregorian)
 
-    public init(events: [any CKEventSchema]) {
+    public init(observer: CKCalendarObserver, events: [any CKEventSchema], date: Binding<Date>) {
+        self._observer = .init(wrappedValue: observer)
         self.events = events
+        self._date = date
     }
 
     public var body: some View {
-        dayView()
-    }
-
-    private func dayView() -> some View {
 
         GeometryReader { proxy in
 
             VStack(alignment: .leading) {
 
-                // Date headline
                 HStack {
                     Text(date.formatted(.dateTime.day().month(.wide)))
                         .bold()
@@ -44,13 +43,24 @@ public struct CKTimelineDay: View {
                 Divider().padding([.leading, .trailing], 10)
 
                 ScrollView {
+
                     ZStack(alignment: .topLeading) {
 
                         CKTimeline()
 
                         ForEach(events, id: \.anyHashableID) { event in
+
                             if calendar.isDate(event.startDate, inSameDayAs: date) {
-                                CKEventCell(event, width: (proxy.size.width - 70), applyXOffset: false)
+
+                                let overlapping = CKUtils.overLappingEventsCount(event, events)
+
+                                CKEventCell(
+                                    event,
+                                    overLapping: overlapping,
+                                    observer: observer,
+                                    width: (proxy.size.width - 70),
+                                    applyXOffset: false
+                                )
                             }
                         }
                     }
@@ -62,5 +72,13 @@ public struct CKTimelineDay: View {
 }
 
 #Preview {
-    CKTimelineDay(events: [])
+    CKTimelineDay(
+        observer: CKCalendarObserver(),
+        events: [
+            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Date 1"),
+            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 30), endDate: Date().dateFrom(13, 4, 2024, 13, 30), text: "Date 2"),
+            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 15, 00), endDate: Date().dateFrom(13, 4, 2024, 16, 00), text: "Date 3"),
+        ],
+        date: .constant(Date().dateFrom(13, 4, 2024))
+    )
 }

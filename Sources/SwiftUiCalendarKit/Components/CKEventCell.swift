@@ -22,7 +22,19 @@ struct CKEventCell: View {
     private let event: any CKEventSchema
     private let width: CGFloat
 
-    init(_ event: any CKEventSchema, width: CGFloat, applyXOffset: Bool, startDay: Int? = 0) {
+    private let eventWidth: CGFloat
+
+    @ObservedObject var observer: CKCalendarObserver
+
+    init(_ event: any CKEventSchema, 
+         overLapping: CGFloat,
+         observer: CKCalendarObserver,
+         width: CGFloat,
+         applyXOffset: Bool,
+         startDay: Int? = 0) 
+    {
+
+        self._observer = .init(wrappedValue: observer)
 
         self.event = event
 
@@ -44,6 +56,8 @@ struct CKEventCell: View {
         }
 
         yOffset = (Double(hour) * (CKTimeline.hourHeight)) + Double(minute)
+
+        eventWidth = (width / overLapping) - 10
     }
 
     var body: some View {
@@ -53,7 +67,7 @@ struct CKEventCell: View {
             Text(event.text).bold()
         }
         .font(.caption)
-        .frame(maxWidth: width, alignment: .leading)
+        .frame(maxWidth: eventWidth, alignment: .leading)
         .padding(4)
         .frame(height: height, alignment: .top)
         .background(
@@ -62,6 +76,10 @@ struct CKEventCell: View {
         )
         .padding(.trailing, 30)
         .offset(x: xOffset, y: yOffset + 30)
+        .onTapGesture {
+            observer.eventSelected = true
+            observer.event = event
+        }
     }
 }
 

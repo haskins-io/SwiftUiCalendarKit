@@ -43,3 +43,7 @@ This shows all the events for a selected month. This shows a picker style calend
 ## Events
 There is a Protocal called CKEventSchema that defines what a Calendar entry should look like. There is an example implementation called 'CKEvent'. Though you can use your own classes/structs if you want and simply add a reference to the protocol.
 
+## FAQ
+### Why are you using two dates to define an event, when you could be using a DateInterval.?
+The simple answer is that I'm using this with SwiftData, and it doesn't support DateInterval as a data type. There might be a way around this, but I'm good with what I have at the moment.
+

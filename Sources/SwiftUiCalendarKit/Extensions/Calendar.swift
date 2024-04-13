@@ -68,6 +68,9 @@ extension Calendar {
     ) -> [Date] {
         var dates = [dateInterval.start]
 
+
+        var count = 0
+
         enumerateDates(
             startingAfter: dateInterval.start,
             matching: components,
@@ -77,12 +80,14 @@ extension Calendar {
                 return
             }
 
-            guard date < dateInterval.end else {
+            guard count < 41 else {
                 stop = true
                 return
             }
 
             dates.append(date)
+
+            count += 1
         }
 
         return dates

@@ -10,16 +10,19 @@ import SwiftUI
 
 public struct CKCompactWeek: View {
 
-    @State private var currentDay: Date = .init()
-    
+    @ObservedObject var observer: CKCalendarObserver
+
+    @Binding private var date: Date
+
     private var events: [any CKEventSchema]
 
     private let calendar = Calendar(identifier: .gregorian)
 
-    public init(events: [any CKEventSchema]) {
+    public init(observer: CKCalendarObserver, events: [any CKEventSchema], date: Binding<Date>) {
+        self._observer = .init(wrappedValue: observer)
         self.events = events
+        self._date = date
     }
-
     public var body: some View {
 
         timelineView()
@@ -43,8 +46,17 @@ public struct CKCompactWeek: View {
                         CKTimeline()
 
                         ForEach(events, id: \.anyHashableID) { event in
-                            if calendar.isDate(event.startDate, inSameDayAs: currentDay) {
-                                CKEventCell(event, width: (proxy.size.width - 70), applyXOffset: false)
+                            if calendar.isDate(event.startDate, inSameDayAs: date) {
+
+                                let overlapping = CKUtils.overLappingEventsCount(event, events)
+
+                                CKEventCell(
+                                    event,
+                                    overLapping: overlapping,
+                                    observer: observer,
+                                    width: (proxy.size.width - 70),
+                                    applyXOffset: false
+                                )
                             }
                         }
                     }
@@ -86,9 +98,9 @@ public struct CKCompactWeek: View {
         VStack(alignment: .leading) {
             // Date headline
             HStack {
-                Text(currentDay.formatted(.dateTime.month(.wide)))
+                Text(date.formatted(.dateTime.month(.wide)))
                     .bold()
-                Text(currentDay.formatted(.dateTime.year()))
+                Text(date.formatted(.dateTime.year()))
             }
             .padding(.leading, 10)
             .padding(.top, 5)
@@ -117,9 +129,9 @@ public struct CKCompactWeek: View {
 
         HStack(spacing: 0) {
         
-            ForEach(calendar.currentWeek(today: currentDay)) { weekDay in
+            ForEach(calendar.currentWeek(today: date)) { weekDay in
 
-                let status = Calendar.current.isDate(weekDay.date, inSameDayAs: currentDay)
+                let status = Calendar.current.isDate(weekDay.date, inSameDayAs: date)
 
                 VStack(spacing: 6) {
                     Text(weekDay.string.prefix(3))
@@ -130,7 +142,7 @@ public struct CKCompactWeek: View {
                 .contentShape(Rectangle())
                 .onTapGesture {
                     withAnimation(.easeInOut(duration: 0.3)) {
-                        currentDay = weekDay.date
+                        date = weekDay.date
                     }
                 }
             }
@@ -141,5 +153,13 @@ public struct CKCompactWeek: View {
 }
 
 #Preview {
-    CKCompactWeek(events: [])
+    CKCompactWeek(
+        observer: CKCalendarObserver(),
+        events: [
+            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Date 1"),
+            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 30), endDate: Date().dateFrom(14, 4, 2024, 13, 30), text: "Date 2"),
+            CKEvent(startDate: Date().dateFrom(15, 4, 2024, 15, 00), endDate: Date().dateFrom(15, 4, 2024, 16, 00), text: "Date 3"),
+        ],
+        date: .constant(Date().dateFrom(13, 4, 2024))
+    )
 }
