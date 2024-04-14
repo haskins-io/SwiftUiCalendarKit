@@ -45,50 +45,23 @@ public struct CKCompactWeek: View {
 
                         CKTimeline()
 
-                        ForEach(events, id: \.anyHashableID) { event in
-                            if calendar.isDate(event.startDate, inSameDayAs: date) {
+                        let eventData = CKUtils.generateEventViewData(
+                            date: date,
+                            events: events,
+                            width: proxy.size.width - 65
+                        )
 
-                                let overlapping = CKUtils.overLappingEventsCount(event, events)
-
-                                CKEventCell(
-                                    event,
-                                    overLapping: overlapping,
-                                    observer: observer,
-                                    width: (proxy.size.width - 70),
-                                    applyXOffset: false
-                                )
-                            }
+                        ForEach(eventData, id: \.self) { event in
+                            CKEventView(
+                                event,
+                                observer: observer,
+                                applyXOffset: false
+                            )
                         }
                     }
                 }
             }
         }
-    }
-
-    private func eventCell(_ event: any CKEventSchema, width: CGFloat) -> some View {
-
-        let duration = event.endDate.timeIntervalSince(event.startDate)
-        let height = duration / 60 / 60 * CKTimeline.hourHeight
-
-        let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startDate)
-        let minute = calendar.component(.minute, from: event.startDate)
-        let offset = (Double(hour) * (CKTimeline.hourHeight)) + Double(minute)
-
-        return VStack(alignment: .leading) {
-            Text(event.startDate.formatted(.dateTime.hour().minute()))
-            Text(event.text).bold()
-        }
-        .font(.caption)
-        .frame(maxWidth: width - 70, alignment: .leading)
-        .padding(4)
-        .frame(height: height, alignment: .top)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(.teal).opacity(0.5)
-        )
-        .padding(.trailing, 30)
-        .offset(x: 50, y: offset + 30)
     }
 
     /// - Header View
@@ -156,10 +129,10 @@ public struct CKCompactWeek: View {
     CKCompactWeek(
         observer: CKCalendarObserver(),
         events: [
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Date 1"),
+            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 00), endDate: Date().dateFrom(14, 4, 2024, 13, 00), text: "Date 1"),
             CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 30), endDate: Date().dateFrom(14, 4, 2024, 13, 30), text: "Date 2"),
-            CKEvent(startDate: Date().dateFrom(15, 4, 2024, 15, 00), endDate: Date().dateFrom(15, 4, 2024, 16, 00), text: "Date 3"),
+            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 15, 00), endDate: Date().dateFrom(14, 4, 2024, 16, 00), text: "Date 3"),
         ],
-        date: .constant(Date().dateFrom(13, 4, 2024))
+        date: .constant(Date().dateFrom(14, 4, 2024))
     )
 }

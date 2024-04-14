@@ -23,11 +23,10 @@ public struct CKCompactMonth: View {
 
     public var body: some View {
         VStack {
-            CKMonthComponent(calendar: Calendar(identifier: .gregorian), date: $date)
+            CKMonthComponent(calendar: Calendar(identifier: .gregorian), date: $date, events: events)
             Divider()
-            List {
-                Text("Event")
-            }.listStyle(.plain)
+            CKCompantMonthEvents(events: events)
+                .listStyle(.plain)
         }
     }
 }
@@ -36,9 +35,9 @@ public struct CKCompactMonth: View {
     CKCompactMonth(
         observer: CKCalendarObserver(),
         events: [
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Date 1"),
+            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 00), endDate: Date().dateFrom(14, 4, 2024, 13, 00), text: "Date 1"),
             CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 30), endDate: Date().dateFrom(14, 4, 2024, 13, 30), text: "Date 2"),
-            CKEvent(startDate: Date().dateFrom(15, 4, 2024, 15, 00), endDate: Date().dateFrom(15, 4, 2024, 16, 00), text: "Date 3"),
+            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 15, 00), endDate: Date().dateFrom(14, 4, 2024, 16, 00), text: "Date 3"),
         ],
         date: .constant(Date().dateFrom(13, 4, 2024))
     )

@@ -86,7 +86,7 @@ struct CKMonthDayCell: View {
             if events.count == 3 {
                 event(event: events[0], yOffset: 30)
                 event(event: events[1], yOffset: 53)
-                event(event: events[3], yOffset: 76)
+                event(event: events[2], yOffset: 76)
             }
         }.padding(0)
     }
@@ -94,7 +94,7 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func event(event: any CKEventSchema, yOffset: CGFloat) -> some View {
         HStack{
-            Text(event.text).foregroundStyle(.white)
+            Text(event.text).foregroundStyle(.white).padding(.leading, 4)
             Spacer()
             Text(event.startDate.formatted(.dateTime.hour().minute())).bold().foregroundStyle(.white)
 

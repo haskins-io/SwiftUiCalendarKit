@@ -50,15 +50,16 @@ public struct CKTimelineWeek: View {
                 
                 CKTimeline()
 
-                ForEach(events, id: \.anyHashableID) { event in
+                let eventData = CKUtils.generateEventViewData(
+                    date: date,
+                    events: events,
+                    width: ((proxy.size.width - CGFloat(90)) / 7)
+                )
 
-                    let overlapping = CKUtils.overLappingEventsCount(event, events)
-
-                    CKEventCell(
+                ForEach(eventData, id: \.self) { event in
+                    CKEventView(
                         event,
-                        overLapping: overlapping,
                         observer: observer,
-                        width: ((proxy.size.width - CGFloat(40)) / 7),
                         applyXOffset: true,
                         startDay: calendar.firstDateOfWeek(week: date)
                     )

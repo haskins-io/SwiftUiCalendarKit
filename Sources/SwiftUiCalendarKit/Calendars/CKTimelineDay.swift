@@ -48,20 +48,18 @@ public struct CKTimelineDay: View {
 
                         CKTimeline()
 
-                        ForEach(events, id: \.anyHashableID) { event in
+                        let eventData = CKUtils.generateEventViewData(
+                            date: date,
+                            events: events,
+                            width: proxy.size.width - 65
+                        )
 
-                            if calendar.isDate(event.startDate, inSameDayAs: date) {
-
-                                let overlapping = CKUtils.overLappingEventsCount(event, events)
-
-                                CKEventCell(
-                                    event,
-                                    overLapping: overlapping,
-                                    observer: observer,
-                                    width: (proxy.size.width - 70),
-                                    applyXOffset: false
-                                )
-                            }
+                        ForEach(eventData, id: \.self) { event in
+                            CKEventView(
+                                event,
+                                observer: observer,
+                                applyXOffset: false
+                            )
                         }
                     }
                 }
@@ -76,8 +74,8 @@ public struct CKTimelineDay: View {
         observer: CKCalendarObserver(),
         events: [
             CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Date 1"),
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 30), endDate: Date().dateFrom(13, 4, 2024, 13, 30), text: "Date 2"),
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 15, 00), endDate: Date().dateFrom(13, 4, 2024, 16, 00), text: "Date 3"),
+            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 15), endDate: Date().dateFrom(13, 4, 2024, 13, 15), text: "Date 2"),
+            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 30), endDate: Date().dateFrom(13, 4, 2024, 15, 01), text: "Date 3"),
         ],
         date: .constant(Date().dateFrom(13, 4, 2024))
     )

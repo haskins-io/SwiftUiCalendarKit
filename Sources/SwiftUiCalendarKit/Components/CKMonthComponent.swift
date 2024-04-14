@@ -20,9 +20,10 @@ struct CKMonthComponent: View {
 
     var events: [any CKEventSchema] = []
 
-    init(calendar: Calendar, date: Binding<Date>) {
+    init(calendar: Calendar, date: Binding<Date>, events: [any CKEventSchema]) {
 
         self._selectedDate = date
+        self.events = events
 
         self.calendar = calendar
         self.monthFormatter = DateFormatter(dateFormat: "MMMM YYYY", calendar: calendar)
@@ -42,17 +43,45 @@ struct CKMonthComponent: View {
                     ZStack {
                         Button(action: { selectedDate = date }) {
                             Text(dayFormatter.string(from: date))
+                                .padding(6)
                                 .frame(width: 33, height: 33)
-                                .foregroundColor(Color.primary)
-                                .background(Color.white)
+                                .foregroundColor(calendar.isDateInToday(date) ? Color.white : .primary)
+                                .background(
+                                    calendar.isDateInToday(date) ? Color.red
+                                    : calendar.isDate(date, inSameDayAs: selectedDate) ? .blue
+                                    : .clear
+                                )
                                 .cornerRadius(7)
-                                .padding(3)
+                        }
+
+                        if (numberOfEventsInDate(date: date) >= 2) {
+                            Circle()
+                                .size(CGSize(width: 5, height: 5))
+                                .foregroundColor(Color.green)
+                                .offset(x: CGFloat(17),
+                                        y: CGFloat(33))
+                        }
+
+                        if (numberOfEventsInDate(date: date) >= 1) {
+                            Circle()
+                                .size(CGSize(width: 5, height: 5))
+                                .foregroundColor(Color.green)
+                                .offset(x: CGFloat(24),
+                                        y: CGFloat(33))
+                        }
+
+                        if (numberOfEventsInDate(date: date) >= 3) {
+                            Circle()
+                                .size(CGSize(width: 5, height: 5))
+                                .foregroundColor(Color.green)
+                                .offset(x: CGFloat(31),
+                                        y: CGFloat(33))
                         }
                     }
                 },
                 trailing: { date in
                     Text(dayFormatter.string(from: date))
-                        .foregroundColor(.clear)
+                        .foregroundColor(.secondary)
                 },
                 header: { date in
                     Text(weekDayFormatter.string(from: date)).fontWeight(.bold)
@@ -75,8 +104,7 @@ struct CKMonthComponent: View {
                                 title: { Text("Previous") },
                                 icon: {
                                     Image(systemName: "chevron.left")
-                                        .foregroundColor(Color.blue)
-                                        .font(.title)
+                                        .font(.title2)
                                 }
                             )
                             .labelStyle(IconOnlyLabelStyle())
@@ -89,9 +117,9 @@ struct CKMonthComponent: View {
                             selectedDate = Date.now
                         } label: {
                             Text(monthFormatter.string(from: date))
+                                .foregroundColor(.blue)
                                 .font(.title2)
                                 .padding(2)
-                                .foregroundColor(.primary)
                         }
 
                         Spacer()
@@ -111,122 +139,39 @@ struct CKMonthComponent: View {
                                 title: { Text("Next") },
                                 icon: {
                                     Image(systemName: "chevron.right")
-                                        .foregroundColor(Color.blue)
-                                        .font(.title)
+                                        .font(.title2)
                                 }
                             )
                             .labelStyle(IconOnlyLabelStyle())
                             .padding(.horizontal)
                         }
                     }
-                    .padding(.bottom, 5)
-                    .padding(.top, 10)
                 }
             )
             .equatable()
         }
     }
 
-    //    private func dateBackground(date: Date) -> Color {
-    //
-    //        if dateHasEvents(date: date) {
-    //            return colourForFixture(date: date)
-    //        } else {
-    //            if calendar.isDateInToday(date) {
-    //                return Color.gray
-    //            } else {
-    //
-    //                if calendar.isDate(date, inSameDayAs: selectedDate) {
-    //                    return Color.blue.opacity(0.10)
-    //                } else {
-    //                    return Color.clear
-    //                }
-    //            }
-    //        }
-    //    }
+    func dateHasEvents(date: Date) -> Bool {
 
-    //    private func dateHasEvents(date: Date) -> Bool {
-    //
-    //        for entry in fixtures where calendar.isDate(date, inSameDayAs: entry.date ?? Date()) {
-    //            return true
-    //        }
-    //
-    //        return false
-    //    }
-    //
-    //    private func playingOnDate(date: Date) -> Bool {
-    //
-    //        var playing = false
-    //
-    //        for entry in fixtures {
-    //
-    //            if calendar.isDate(
-    //                date,
-    //                inSameDayAs: entry.date ?? Date()),
-    //               (entry.playing) {
-    //                playing = true
-    //                break
-    //            }
-    //        }
-    //
-    //        return playing
-    //    }
-    //
-    //    private func playingIndicator(date: Date) -> Color {
-    //
-    //        for entry in fixtures {
-    //
-    //            if calendar.isDate(date, inSameDayAs: entry.date ?? Date()), entry.playing {
-    //                return Color.eGreen
-    //            }
-    //        }
-    //
-    //        return Color.clear
-    //    }
-    //
-    //    private func colourForFixture(date: Date) -> Color {
-    //
-    //        for entry in fixtures where calendar.isDate(date, inSameDayAs: entry.date ?? Date()) {
-    //
-    //            switch Int(entry.fixtureType) {
-    //            case FixtureType.friendly.rawValue:
-    //                return .eGreen
-    //
-    //            case FixtureType.league.rawValue:
-    //                return .eBlue
-    //
-    //            case FixtureType.competition.rawValue:
-    //                return .eRed
-    //
-    //            default:
-    //                return .eYellow
-    //            }
-    //        }
-    //
-    //        return Color.clear
-    //    }
-    //
-    //    private func clubGameColour(date: Date) -> Color {
-    //
-    //        for entry in fixtures where calendar.isDate(date, inSameDayAs: entry.date ?? Date()) {
-    //
-    //            switch Int(entry.fixtureType) {
-    //            case FixtureType.friendly.rawValue:
-    //                return .eGreenDark
-    //
-    //            case FixtureType.league.rawValue:
-    //                return .eBlueDark
-    //
-    //            case FixtureType.competition.rawValue:
-    //                return .eRedDark
-    //
-    //            default:
-    //                return .eYellowDark
-    //            }
-    //        }
-    //
-    //        return Color.clear
-    //    }
+        for event in events {
+            if calendar.isDate(date, inSameDayAs: event.startDate) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    func numberOfEventsInDate(date: Date) -> Int {
+        var count: Int = 0
+        for event in events {
+            if calendar.isDate(date, inSameDayAs: event.startDate) {
+                count += 1
+            }
+        }
+        return count
+    }
 
 }
 

@@ -10,7 +10,7 @@ import Foundation
 extension Date {
 
     // This is only used to create Test dates, and Preview dates
-    func dateFrom(_ day: Int, _ month: Int, _ year: Int, _ hour: Int = 0, _ minute: Int = 0) -> Date {
+    public func dateFrom(_ day: Int, _ month: Int, _ year: Int, _ hour: Int = 0, _ minute: Int = 0) -> Date {
         let calendar = Calendar.current
         let dateComponents = DateComponents(year: year, month: month, day: day, hour: hour, minute: minute)
         return calendar.date(from: dateComponents) ?? .now
