@@ -58,10 +58,20 @@ struct CKMonthDayCell: View {
 
         ZStack(alignment: .topLeading) {
             VStack {
-                Text(formatDate())
-                    .padding(.trailing, 15)
-                    .foregroundColor(thisMonth ? Color.primary : Color.gray)
-                    .offset(x: (cellWidth / 2) - 10, y: ((cellHeight / 2) - 20) * -1)
+                ZStack {
+                    if calendar.isDateInToday(date) {
+                        Capsule()
+                            .fill(Color.red)
+                            .frame(width: 27, height: 27)
+                            .offset(x: (cellWidth / 2) - 17, y: ((cellHeight / 2) - 20) * -1)
+                    }
+
+                    Text(formatDate())
+                        .padding(.trailing, 15)
+                        .foregroundColor(calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray)
+                        .offset(x: (cellWidth / 2) - 10, y: ((cellHeight / 2) - 20) * -1)
+                }
+
             }
             .frame(width: cellWidth, height: cellHeight)
             .modifier(CKMonthDayCellModifier())
@@ -75,18 +85,18 @@ struct CKMonthDayCell: View {
 
         ZStack {
             if events.count == 1 {
-                event(event: events[0], yOffset: 30)
+                event(event: events[0], yOffset: 36)
             }
 
             if events.count == 2 {
-                event(event: events[0], yOffset: 30)
-                event(event: events[1], yOffset: 53)
+                event(event: events[0], yOffset: 36)
+                event(event: events[1], yOffset: 59)
             }
 
             if events.count == 3 {
-                event(event: events[0], yOffset: 30)
-                event(event: events[1], yOffset: 53)
-                event(event: events[2], yOffset: 76)
+                event(event: events[0], yOffset: 36)
+                event(event: events[1], yOffset: 59)
+                event(event: events[2], yOffset: 82)
             }
         }.padding(0)
     }

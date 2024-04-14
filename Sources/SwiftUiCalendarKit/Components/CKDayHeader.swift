@@ -22,7 +22,7 @@ struct CKDayHeader: View {
 
         var widthOfset: CGFloat = 0
         if showTime {
-            widthOfset = 45
+            widthOfset = 40
         }
 
         let width = (width - widthOfset) / CGFloat(7)
@@ -31,13 +31,21 @@ struct CKDayHeader: View {
 
             ForEach(Array(calendar.currentWeek(today: currentDate).enumerated()), id: \.offset) { index, weekDay in
 
-                let xOffset = (width * CGFloat(index)) + widthOfset
                 let status = Calendar.current.isDate(weekDay.date, inSameDayAs: Date())
+                let xOffset = (width * CGFloat(index)) + widthOfset
 
-                HStack(alignment: .center) {
+                VStack(alignment: .center) {
                     Text(weekDay.string.prefix(3))
                     if showDate {
-                        Text(weekDay.date.toString("dd")).foregroundColor(status ? Color.red : .black)
+                        ZStack {
+                            Capsule()
+                                .fill(status ? Color.red : .clear)
+                                .frame(width: 27, height: 27)
+
+                            Text(weekDay.date.toString("dd"))
+                                .foregroundColor(status ? Color.white : .primary)
+
+                        }
                     }
                 }
                 .frame(maxWidth: width, alignment: .center)
@@ -49,5 +57,5 @@ struct CKDayHeader: View {
 }
 
  #Preview {
-     CKDayHeader(currentDate: .constant(Date()), width: 1500, showTime: true, showDate: false)
+     CKDayHeader(currentDate: .constant(Date()), width: 1500, showTime: true, showDate: true)
  }

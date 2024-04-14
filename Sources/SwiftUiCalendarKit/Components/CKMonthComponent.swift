@@ -42,40 +42,45 @@ struct CKMonthComponent: View {
                 content: { date in
                     ZStack {
                         Button(action: { selectedDate = date }) {
-                            Text(dayFormatter.string(from: date))
-                                .padding(6)
-                                .frame(width: 33, height: 33)
-                                .foregroundColor(calendar.isDateInToday(date) ? Color.white : .primary)
-                                .background(
-                                    calendar.isDateInToday(date) ? Color.red
-                                    : calendar.isDate(date, inSameDayAs: selectedDate) ? .blue
-                                    : .clear
-                                )
-                                .cornerRadius(7)
+                            ZStack {
+
+                                if calendar.isDateInToday(date) {
+                                    Capsule()
+                                        .fill(Color.red)
+                                        .frame(width: 27, height: 27)
+                                        .offset(x: 1, y: 0)
+                                }
+
+                                Text(dayFormatter.string(from: date))
+                                    .padding(6)
+                                    .frame(width: 33, height: 33)
+                                    .foregroundColor(calendar.isDateInToday(date) ? Color.white : .primary)
+                                    .cornerRadius(7)
+                            }
                         }
 
                         if (numberOfEventsInDate(date: date) >= 2) {
                             Circle()
                                 .size(CGSize(width: 5, height: 5))
                                 .foregroundColor(Color.green)
-                                .offset(x: CGFloat(17),
-                                        y: CGFloat(33))
+                                .offset(x: CGFloat(16),
+                                        y: CGFloat(35))
                         }
 
                         if (numberOfEventsInDate(date: date) >= 1) {
                             Circle()
                                 .size(CGSize(width: 5, height: 5))
                                 .foregroundColor(Color.green)
-                                .offset(x: CGFloat(24),
-                                        y: CGFloat(33))
+                                .offset(x: CGFloat(23),
+                                        y: CGFloat(35))
                         }
 
                         if (numberOfEventsInDate(date: date) >= 3) {
                             Circle()
                                 .size(CGSize(width: 5, height: 5))
                                 .foregroundColor(Color.green)
-                                .offset(x: CGFloat(31),
-                                        y: CGFloat(33))
+                                .offset(x: CGFloat(30),
+                                        y: CGFloat(35))
                         }
                     }
                 },
@@ -172,7 +177,6 @@ struct CKMonthComponent: View {
         }
         return count
     }
-
 }
 
 private struct CalendarComponent<Day: View, Header: View, Title: View, Trailing: View>: View {

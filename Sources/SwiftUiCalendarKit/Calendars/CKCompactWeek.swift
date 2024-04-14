@@ -39,6 +39,8 @@ public struct CKCompactWeek: View {
 
             VStack(alignment: .leading) {
 
+                Divider()
+
                 ScrollView {
                     
                     ZStack(alignment: .topLeading) {
@@ -69,6 +71,7 @@ public struct CKCompactWeek: View {
     func headerView() -> some View {
 
         VStack(alignment: .leading) {
+
             // Date headline
             HStack {
                 Text(date.formatted(.dateTime.month(.wide)))
@@ -104,13 +107,20 @@ public struct CKCompactWeek: View {
         
             ForEach(calendar.currentWeek(today: date)) { weekDay in
 
-                let status = Calendar.current.isDate(weekDay.date, inSameDayAs: date)
+                let status = Calendar.current.isDate(weekDay.date, inSameDayAs: Date())
 
                 VStack(spacing: 6) {
                     Text(weekDay.string.prefix(3))
-                    Text(weekDay.date.toString("dd"))
+                    ZStack {
+                        Capsule()
+                            .fill(Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ? Color.red : .clear)
+                            .frame(width: 27, height: 27)
+
+                        Text(weekDay.date.toString("dd"))
+                            .foregroundColor(status ? Color.white : .primary)
+
+                    }
                 }
-                .foregroundColor(status ? Color.blue : .gray)
                 .hAlign(.center)
                 .contentShape(Rectangle())
                 .onTapGesture {

@@ -51,11 +51,11 @@ public struct CKMonth: View {
 
         return LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 0) {
 
-            ForEach(days, id: \.self) { date in
+            ForEach(days, id: \.self) { day in
                 CKMonthDayCell(
-                    date: date,
+                    date: day,
                     observer: observer,
-                    events: eventsForDay(day: date),
+                    events: eventsForDay(day: day),
                     month: month,
                     width: cellWidth,
                     height: cellHeight
@@ -95,9 +95,9 @@ public struct CKMonth: View {
     CKMonth(
         observer: CKCalendarObserver(),
         events: [
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Date 1"),
+            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 00), endDate: Date().dateFrom(14, 4, 2024, 13, 00), text: "Date 1"),
             CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 30), endDate: Date().dateFrom(14, 4, 2024, 13, 30), text: "Date 2"),
-            CKEvent(startDate: Date().dateFrom(15, 4, 2024, 15, 00), endDate: Date().dateFrom(15, 4, 2024, 16, 00), text: "Date 3"),
+            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 15, 00), endDate: Date().dateFrom(14, 4, 2024, 16, 00), text: "Date 3"),
         ],
         date: .constant(Date().dateFrom(13, 4, 2024))
     )
