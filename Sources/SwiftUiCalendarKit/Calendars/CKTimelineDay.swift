@@ -51,20 +51,21 @@ public struct CKTimelineDay: View {
                         let eventData = CKUtils.generateEventViewData(
                             date: date,
                             events: events,
-                            width: proxy.size.width - 65
+                            width: proxy.size.width - 55
                         )
 
-                        ForEach(eventData, id: \.self) { event in
-                            CKEventView(
-                                event,
-                                observer: observer,
-                                applyXOffset: false
-                            )
+                        ForEach(eventData, id: \.anyHashableID) { event in
+                            if calendar.isDate(event.event.startDate, inSameDayAs: date) {
+                                CKEventView(
+                                    event,
+                                    observer: observer,
+                                    weekView: false
+                                )
+                            }
                         }
                     }
                 }
             }
-            .background(Color.white)
         }
     }
 }

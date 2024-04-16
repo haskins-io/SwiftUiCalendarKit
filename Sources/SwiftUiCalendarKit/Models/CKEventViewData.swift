@@ -7,18 +7,21 @@
 
 import SwiftUI
 
-class EventViewData: Hashable {
+class EventViewData: Identifiable {
 
-    static func == (lhs: EventViewData, rhs: EventViewData) -> Bool {
-        return lhs.id == rhs.id && lhs.id == rhs.id
-    }
+//    static func == (lhs: EventViewData, rhs: EventViewData) -> Bool {
+//        return lhs.id == rhs.id && lhs.id == rhs.id
+//    }
+//
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(id)
+//        hasher.combine(id)
+//    }
 
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-        hasher.combine(id)
-    }
-
+    public typealias Id = UUID
     let id = UUID()
+
+    public var anyHashableID: AnyHashable { AnyHashable(id) }
 
     let calendar = Calendar(identifier: .gregorian)
 
@@ -52,11 +55,7 @@ class EventViewData: Hashable {
         hour = calendar.component(.hour, from: event.startDate)
         minute = calendar.component(.minute, from: event.startDate)
 
-        if position > 1 {
-            eventWidth = ((width - 20) / overlapsWith)
-        } else {
-            eventWidth = (width / overlapsWith)
-        }
+        eventWidth = (width / overlapsWith) - 5
 
         yOffset = (Double(hour) * (CKTimeline.hourHeight)) + Double(minute)
     }

@@ -22,6 +22,14 @@ extension Date {
         ) ?? self
     }
 
+    static func dayOfWeek(_ date: Date) -> Int {
+
+        let calendar = Calendar.current
+        let dateComponents = calendar.dateComponents([.weekday], from: date)
+        return dateComponents.weekday ?? 0
+
+    }
+
     func toString(_ format: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = format

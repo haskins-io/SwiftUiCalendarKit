@@ -58,17 +58,15 @@ public struct CKCompactDay<Detail: View>: View {
                             width: proxy.size.width - 65
                         )
 
-                        ForEach(eventData, id: \.self) { event in
+                        ForEach(eventData, id: \.anyHashableID) { event in
                             CKCompactEventView(
                                 event,
-                                detail: detail,
-                                applyXOffset: false
+                                detail: detail
                             )
                         }
                     }
                 }
             }
-            .background(Color.white)
         }
     }
 }

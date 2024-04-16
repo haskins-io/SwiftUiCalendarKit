@@ -17,9 +17,7 @@ struct CKCompactEventView<Detail: View>: View {
 
 
     init(_ eventData: EventViewData,
-         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
-         applyXOffset: Bool,
-         startDay: Int? = 0)
+         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail)
     {
         self.detail = detail
 
@@ -27,29 +25,20 @@ struct CKCompactEventView<Detail: View>: View {
 
         self.event = eventData.event
 
-        if applyXOffset, let start = startDay {
-
-            if eventData.position > 1 {
-                xOffset = (eventData.eventWidth + 10) * (eventData.position - 1) + 55
-            } else {
-                xOffset = (CGFloat(eventData.day - start) * eventData.cellWidth) + 46
-            }
+        if eventData.position > 1 {
+            xOffset = ((eventData.eventWidth + 10) * (eventData.position - 1)) + 46
         } else {
-            if eventData.position > 1 {
-                xOffset = (eventData.eventWidth + 10) * (eventData.position - 1) + 56
-            } else {
-                xOffset = 47
-            }
+            xOffset = 47
         }
     }
 
     var body: some View {
 
-        VStack(alignment: .leading) {
+        VStack {
             NavigationLink {
                 detail(event)
             } label: {
-                VStack {
+                VStack(alignment: .leading) {
                     Text(event.startDate.formatted(.dateTime.hour().minute()))
                     Text(event.text).bold()
                 }

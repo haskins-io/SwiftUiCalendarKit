@@ -5,8 +5,6 @@ I'm developing this as part of an application that requires multiple calendar vi
 
 All the calendars are written purely in SwiftUI.
 
-What is on the master branch should work.
-
 ## Available Calendars
 ### CKTimelineDay
 

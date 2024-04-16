@@ -20,11 +20,7 @@ class CKUtils {
         var pos5: [EventViewData] = []
 
         for event in events {
-
-            if !calendar.isDate(event.startDate, inSameDayAs: date) {
-                continue
-            }
-
+            
             if !overLappings(event, pos1) {
                 pos1.append(EventViewData(event: event, overlapsWith: overLappingCount(event, events), position: 1, width: width))
             } else if !overLappings(event, pos2) {

@@ -36,7 +36,6 @@ public struct CKMonth: View {
 
                 monthGrid(proxy: proxy)
             }
-            .background(Color.white)
             .padding(0)
         }
     }
@@ -95,22 +94,22 @@ public struct CKMonth: View {
 
 
     let event1 = CKEvent(
-        startDate: Date().dateFrom(13, 4, 2024, 12, 00),
-        endDate: Date().dateFrom(13, 4, 2024, 13, 00),
+        startDate: Date().dateFrom(14, 4, 2024, 1, 00),
+        endDate: Date().dateFrom(14, 4, 2024, 2, 00),
         text: "Event 1",
         backCol: "#D74D64"
     )
 
     let event2 = CKEvent(
-        startDate: Date().dateFrom(13, 4, 2024, 12, 15),
-        endDate: Date().dateFrom(13, 4, 2024, 13, 15),
+        startDate: Date().dateFrom(15, 4, 2024, 2, 00),
+        endDate: Date().dateFrom(15, 4, 2024, 3, 00),
         text: "Event 2",
         backCol: "#3E56C2"
     )
 
     let event3 = CKEvent(
-        startDate: Date().dateFrom(13, 4, 2024, 12, 30),
-        endDate: Date().dateFrom(13, 4, 2024, 15, 01),
+        startDate: Date().dateFrom(16, 4, 2024, 3, 30),
+        endDate: Date().dateFrom(16, 4, 2024, 4, 30),
         text: "Event 3",
         backCol: "#F6D264"
     )

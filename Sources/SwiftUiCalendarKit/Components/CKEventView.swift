@@ -19,8 +19,7 @@ struct CKEventView: View {
 
     init(_ eventData: EventViewData,
          observer: CKCalendarObserver,
-         applyXOffset: Bool,
-         startDay: Int? = 0) 
+         weekView: Bool)
     {
 
         self.eventData = eventData
@@ -28,16 +27,26 @@ struct CKEventView: View {
 
         self.event = eventData.event
 
-        if applyXOffset, let start = startDay {
-            
+        let dayOfWeek = Date.dayOfWeek(event.startDate)
+
+        if weekView {
+
+            // WeekTimeline
             if eventData.position > 1 {
-                xOffset = (eventData.eventWidth + 10) * (eventData.position - 1) + 55
+                let edgeOfDayCell = 47 + (eventData.cellWidth * CGFloat(dayOfWeek - 1))
+                xOffset = (edgeOfDayCell + ((eventData.position - 1) * (eventData.eventWidth + 5)))
             } else {
-                xOffset = (CGFloat(eventData.day - start) * eventData.cellWidth) + 46
+                if dayOfWeek == 1 {
+                    xOffset = 47
+                } else {
+                    xOffset = 47 + (eventData.cellWidth * CGFloat(dayOfWeek - 1))
+                }
             }
         } else {
+
+            // Day Timeline
             if eventData.position > 1 {
-                xOffset = (eventData.eventWidth + 10) * (eventData.position - 1) + 56
+                xOffset = 47 + (eventData.eventWidth + 5) * (eventData.position - 1)
             } else {
                 xOffset = 47
             }
@@ -52,7 +61,7 @@ struct CKEventView: View {
         }
         .font(.caption)
         .foregroundColor(event.textAsColor())
-        .frame(maxWidth: eventData.eventWidth, alignment: .leading)
+        .frame(maxWidth: eventData.eventWidth - 5, alignment: .leading)
         .padding(4)
         .frame(height: eventData.height, alignment: .top)
         .background(
