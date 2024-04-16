@@ -51,12 +51,13 @@ struct CKEventView: View {
             Text(event.text).bold()
         }
         .font(.caption)
+        .foregroundColor(event.textAsColor())
         .frame(maxWidth: eventData.eventWidth, alignment: .leading)
         .padding(4)
         .frame(height: eventData.height, alignment: .top)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .fill(.teal).opacity(0.8)
+                .fill(event.backgroundAsColor()).opacity(0.8)
         )
         .padding(.trailing, 30)
         .offset(x: xOffset, y: eventData.yOffset + 30)

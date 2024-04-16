@@ -20,4 +20,7 @@ public protocol CKEventSchema: Identifiable {
 
     var textColor: String  {get set}
     var backgroundColor: String  {get set}
+
+    func textAsColor() -> Color
+    func backgroundAsColor() -> Color
 }

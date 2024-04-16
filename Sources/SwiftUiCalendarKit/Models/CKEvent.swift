@@ -23,10 +23,22 @@ public struct CKEvent: CKEventSchema {
     public var textColor = "#000000"
     public var backgroundColor = "#ffffff"
 
-    public init(startDate: Date, endDate: Date, text: String) {
+    public init(startDate: Date, endDate: Date, text: String, font: String = "", textCol: String = "#000000", backCol: String = "#ffffff") {
         self.startDate = startDate
         self.endDate = endDate
         self.text = text
+
+        self.font = font
+        self.textColor = textCol
+        self.backgroundColor = backCol
+    }
+
+    public func textAsColor() -> Color {
+        return Color(hex: textColor) ?? Color.black
+    }
+
+    public func backgroundAsColor() -> Color {
+        return Color(hex: backgroundColor) ?? Color.white
     }
 
 }

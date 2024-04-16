@@ -7,16 +7,20 @@
 
 import SwiftUI
 
-public struct CKCompactMonth: View {
-
-    @ObservedObject var observer: CKCalendarObserver
+public struct CKCompactMonth<Detail: View>: View {
 
     @Binding private var date: Date
 
+    private let detail: (any CKEventSchema) -> Detail
+
     private var events: [any CKEventSchema]
 
-    public init(observer: CKCalendarObserver, events: [any CKEventSchema], date: Binding<Date>) {
-        self._observer = .init(wrappedValue: observer)
+    public init(
+        @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
+        events: [any CKEventSchema],
+        date: Binding<Date>
+    ) {
+        self.detail = detail
         self.events = events
         self._date = date
     }
@@ -25,20 +29,40 @@ public struct CKCompactMonth: View {
         VStack {
             CKMonthComponent(calendar: Calendar(identifier: .gregorian), date: $date, events: events)
             Divider()
-            CKCompantMonthEvents(events: events)
+            CKCompantMonthEvents(events: events, detail: detail, date: $date)
                 .listStyle(.plain)
         }
     }
 }
 
 #Preview {
-    CKCompactMonth(
-        observer: CKCalendarObserver(),
-        events: [
-            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 00), endDate: Date().dateFrom(14, 4, 2024, 13, 00), text: "Date 1"),
-            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 30), endDate: Date().dateFrom(14, 4, 2024, 13, 30), text: "Date 2"),
-            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 15, 00), endDate: Date().dateFrom(14, 4, 2024, 16, 00), text: "Date 3"),
-        ],
-        date: .constant(Date().dateFrom(13, 4, 2024))
-    )
+    NavigationView {
+
+        let event1 = CKEvent(
+            startDate: Date().dateFrom(16, 4, 2024, 12, 00),
+            endDate: Date().dateFrom(16, 4, 2024, 13, 00),
+            text: "Date 1",
+            backCol: "#D74D64"
+        )
+
+        let event2 = CKEvent(
+            startDate: Date().dateFrom(16, 4, 2024, 12, 15),
+            endDate: Date().dateFrom(16, 4, 2024, 13, 15),
+            text: "Date 2",
+            backCol: "#3E56C2"
+        )
+
+        let event3 = CKEvent(
+            startDate: Date().dateFrom(16, 4, 2024, 12, 30),
+            endDate: Date().dateFrom(16, 4, 2024, 15, 01),
+            text: "Date 3",
+            backCol: "#F6D264"
+        )
+
+        CKCompactMonth(
+            detail: { event in EmptyView() },
+            events: [event1, event2, event3],
+            date: .constant(Date().dateFrom(16, 4, 2024))
+        )
+    }
 }

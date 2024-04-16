@@ -82,13 +82,31 @@ public struct CKTimelineWeek: View {
 }
 
 #Preview {
-    CKTimelineWeek(
+
+    let event1 = CKEvent(
+        startDate: Date().dateFrom(16, 4, 2024, 12, 00),
+        endDate: Date().dateFrom(16, 4, 2024, 13, 00),
+        text: "Date 1",
+        backCol: "#D74D64"
+    )
+
+    let event2 = CKEvent(
+        startDate: Date().dateFrom(16, 4, 2024, 12, 15),
+        endDate: Date().dateFrom(16, 4, 2024, 13, 15),
+        text: "Date 2",
+        backCol: "#3E56C2"
+    )
+
+    let event3 = CKEvent(
+        startDate: Date().dateFrom(16, 4, 2024, 12, 30),
+        endDate: Date().dateFrom(16, 4, 2024, 15, 01),
+        text: "Date 3",
+        backCol: "#F6D264"
+    )
+
+    return CKTimelineWeek(
         observer: CKCalendarObserver(),
-        events: [
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Date 1"),
-            CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 30), endDate: Date().dateFrom(14, 4, 2024, 13, 30), text: "Date 2"),
-            CKEvent(startDate: Date().dateFrom(15, 4, 2024, 15, 00), endDate: Date().dateFrom(15, 4, 2024, 16, 00), text: "Date 3"),
-        ],
-        date: .constant(Date().dateFrom(15, 4, 2024))
+        events: [event1, event2, event3],
+        date: .constant(Date().dateFrom(16, 4, 2024))
     )
 }

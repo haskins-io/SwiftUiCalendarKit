@@ -104,9 +104,9 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func event(event: any CKEventSchema, yOffset: CGFloat) -> some View {
         HStack{
-            Text(event.text).foregroundStyle(.white).padding(.leading, 4)
+            Text(event.text).foregroundStyle(event.textAsColor()).padding(.leading, 4)
             Spacer()
-            Text(event.startDate.formatted(.dateTime.hour().minute())).bold().foregroundStyle(.white)
+            Text(event.startDate.formatted(.dateTime.hour().minute())).bold().foregroundStyle(event.textAsColor())
 
         }
         .font(.caption)
@@ -115,7 +115,7 @@ struct CKMonthDayCell: View {
         .frame(height: 20, alignment: .center)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .fill(.blue).opacity(0.8)
+                .fill(event.backgroundAsColor()).opacity(0.8)
         )
         .padding(.trailing, 2)
         .offset(x: 0, y: yOffset)
