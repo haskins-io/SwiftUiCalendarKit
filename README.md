@@ -12,37 +12,37 @@ What is on the master branch should work.
 
 This shows all the events for a selected date. You can use this for MacOs and iPad
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/master/Screenshots/CKtimelineDay.png" width="300"/>
+<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKtimelineDay.png" width="300"/>
 
 ### CKTimelineWeek
 
 This shows all the events for a selected week. You can use this for MacOs and iPad
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/master/Screenshots/CKTimelineWeek.png" width="300"/>
+<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineWeek.png" width="300"/>
 
 ### CKMonth
 
 This shows all the events for a selected month. You can use this for MacOs and iPad
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/master/Screenshots/CKMonth.pngf" width="300"/>
+<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKMonth.pngf" width="300"/>
 
 ### CKCompactDay
 
 This shows all the events for a selected date. Best used on an iPhone
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/master/Screenshots/CKCompactDay.png" width="300"/>
+<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactDay.png" width="300"/>
 
 ### CKCompactWeek
 
 This shows all the events for a selected week. This only shows a single timeline and you select the date you want from the top. Best used on an iPhone
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/master/Screenshots/CKCompactWeek.png" width="300"/>
+<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactWeek.png" width="300"/>
 
 ### CKCompactMonth
 
 This shows all the events for a selected month. This shows a picker style calendar. Best used on an iPhone
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/master/Screenshots/CKCompactMonth" width="300"/>
+<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth" width="300"/>
 
 
 ## Events
