@@ -12,7 +12,7 @@ What is on the master branch should work.
 
 This shows all the events for a selected date. You can use this for MacOs and iPad
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKtimelineDay.png" width="300"/>
+<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineDay.png" width="300"/>
 
 ### CKTimelineWeek
 
@@ -24,7 +24,7 @@ This shows all the events for a selected week. You can use this for MacOs and iP
 
 This shows all the events for a selected month. You can use this for MacOs and iPad
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKMonth.pngf" width="300"/>
+<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKMonth.png" width="300"/>
 
 ### CKCompactDay
 
@@ -42,7 +42,7 @@ This shows all the events for a selected week. This only shows a single timeline
 
 This shows all the events for a selected month. This shows a picker style calendar. Best used on an iPhone
 
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth" width="300"/>
+<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth.png" width="300"/>
 
 
 ## Events
