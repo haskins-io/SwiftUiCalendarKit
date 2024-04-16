@@ -60,7 +60,7 @@ public struct CKTimelineWeek: View {
                     CKEventView(
                         event,
                         observer: observer,
-                        applyXOffset: true,
+                        applyXOffset: false,
                         startDay: calendar.firstDateOfWeek(week: date)
                     )
                 }
@@ -86,21 +86,21 @@ public struct CKTimelineWeek: View {
     let event1 = CKEvent(
         startDate: Date().dateFrom(16, 4, 2024, 12, 00),
         endDate: Date().dateFrom(16, 4, 2024, 13, 00),
-        text: "Date 1",
+        text: "Event 1",
         backCol: "#D74D64"
     )
 
     let event2 = CKEvent(
         startDate: Date().dateFrom(16, 4, 2024, 12, 15),
         endDate: Date().dateFrom(16, 4, 2024, 13, 15),
-        text: "Date 2",
+        text: "Event 2",
         backCol: "#3E56C2"
     )
 
     let event3 = CKEvent(
         startDate: Date().dateFrom(16, 4, 2024, 12, 30),
         endDate: Date().dateFrom(16, 4, 2024, 15, 01),
-        text: "Date 3",
+        text: "Event 3",
         backCol: "#F6D264"
     )
 

@@ -23,6 +23,6 @@ struct CKListEventView: View {
 
 #Preview {
     CKListEventView(
-        event: CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 00), endDate: Date().dateFrom(14, 4, 2024, 13, 00), text: "Date 1")
+        event: CKEvent(startDate: Date().dateFrom(14, 4, 2024, 12, 00), endDate: Date().dateFrom(14, 4, 2024, 13, 00), text: "Event 1")
     )
 }

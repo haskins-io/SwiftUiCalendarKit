@@ -7,13 +7,9 @@
 
 import Foundation
 
- // https://github.com/ThasianX/ElegantCalendar/blob/master/Sources/ElegantCalendar/Helpers/Extensions/EnvironmentKey%2BCalendarTheme.swift
-
-
+// Something to work on. How to customise the Calendars
 public struct CKCalendarConfig {
 
     // a theme
-    // what is the first day of the week
-
-
+    // what is the first day of the working week
 }
