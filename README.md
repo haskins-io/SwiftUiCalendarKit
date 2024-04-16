@@ -57,7 +57,7 @@ For the other calenders there is an CalendarObserver class. When you click/tap o
 ### Why are you using two dates to define an event, when you could be using a DateInterval.?
 The simple answer is that I'm using this with SwiftData, and it doesn't support DateInterval as a data type. There might be a way around this, but I'm good with what I have at the moment.
 
-### Why are you storing Colors as String?
+### Why are you storing Colors as String?
 Same answer as above. The Protocol does force you to implement functions to return Colors. How you implement them is up to you. The Color extension provides a function that converts a Hex string to a color. You might want to use this, or provide your own soluion.
 
 ## Known Issues
