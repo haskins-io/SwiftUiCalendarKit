@@ -43,7 +43,6 @@ struct CKCompactEventView<Detail: View>: View {
                     Text(event.text).bold().padding(.leading, 5)
                 }
                 .font(.caption)
-                .foregroundColor(event.textAsColor())
                 .frame(width: eventData.eventWidth, alignment: .leading)
                 .padding(4)
                 .frame(height: eventData.height, alignment: .top)

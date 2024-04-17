@@ -60,7 +60,7 @@ struct CKMonthDayCell: View {
             VStack {
                 ZStack {
                     if calendar.isDateInToday(date) {
-                        Capsule()
+                        RoundedRectangle(cornerRadius: 5)
                             .fill(Color.red)
                             .frame(width: 27, height: 27)
                             .offset(x: (cellWidth / 2) - 17, y: ((cellHeight / 2) - 20) * -1)
@@ -75,7 +75,6 @@ struct CKMonthDayCell: View {
             }
             .frame(width: cellWidth, height: cellHeight)
             .modifier(CKMonthDayCellModifier())
-
             addEvents()
         }
     }
@@ -90,13 +89,13 @@ struct CKMonthDayCell: View {
 
             if events.count == 2 {
                 event(event: events[0], yOffset: 36)
-                event(event: events[1], yOffset: 59)
+                event(event: events[1], yOffset: 55)
             }
 
             if events.count == 3 {
                 event(event: events[0], yOffset: 36)
-                event(event: events[1], yOffset: 59)
-                event(event: events[2], yOffset: 82)
+                event(event: events[1], yOffset: 52)
+                event(event: events[2], yOffset: 68)
             }
         }.padding(0)
     }
@@ -104,20 +103,17 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func event(event: any CKEventSchema, yOffset: CGFloat) -> some View {
         HStack{
-            Text(event.text).foregroundStyle(event.textAsColor()).padding(.leading, 4)
+            Circle()
+                .fill(event.backgroundAsColor())
+                .frame(width: 10, height: 10)
+            Text(event.text)
             Spacer()
-            Text(event.startDate.formatted(.dateTime.hour().minute())).bold().foregroundStyle(event.textAsColor())
-
+            Text(event.startDate.formatted(.dateTime.hour().minute()))
         }
         .font(.caption)
         .frame(maxWidth: cellWidth, alignment: .leading)
         .padding(4)
         .frame(height: 20, alignment: .center)
-        .background(
-            RoundedRectangle(cornerRadius: 3)
-                .fill(event.backgroundAsColor()).opacity(0.8)
-        )
-        .padding(.trailing, 2)
         .offset(x: 0, y: yOffset)
         .onTapGesture {
             observer.eventSelected = true
@@ -136,10 +132,32 @@ struct CKMonthDayCell: View {
 }
 
 #Preview {
-    CKMonthDayCell(
+
+    let event1 = CKEvent(
+        startDate: Date().dateFrom(13, 4, 2024, 12, 00),
+        endDate: Date().dateFrom(13, 4, 2024, 13, 00),
+        text: "Event 1",
+        backCol: "#D74D64"
+    )
+
+    let event2 = CKEvent(
+        startDate: Date().dateFrom(13, 4, 2024, 12, 15),
+        endDate: Date().dateFrom(13, 4, 2024, 13, 15),
+        text: "Event 2",
+        backCol: "#3E56C2"
+    )
+
+    let event3 = CKEvent(
+        startDate: Date().dateFrom(13, 4, 2024, 12, 30),
+        endDate: Date().dateFrom(13, 4, 2024, 15, 01),
+        text: "Event 3",
+        backCol: "#F6D264"
+    )
+
+    return CKMonthDayCell(
         date: Date(),
         observer: CKCalendarObserver(),
-        events: [],
+        events: [event1, event2, event3],
         month: Date(),
         width: 150,
         height: 150

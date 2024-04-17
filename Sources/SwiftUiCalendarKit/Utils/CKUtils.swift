@@ -11,8 +11,6 @@ class CKUtils {
 
     static func generateEventViewData(date: Date, events: [any CKEventSchema], width: CGFloat) -> [EventViewData] {
 
-        let calendar = Calendar(identifier: .gregorian)
-
         var pos1: [EventViewData] = []
         var pos2: [EventViewData] = []
         var pos3: [EventViewData] = []

@@ -69,7 +69,6 @@ public struct CKCompactDay<Detail: View>: View {
                     }
                 }
             }
-            .modifier(CKSwipeModifier(date: $date, component: .day))
         }
     }
 }

@@ -30,7 +30,6 @@ public struct CKCompactWeek<Detail: View>: View {
 
         VStack {
             timelineView()
-                .modifier(CKSwipeModifier(date: $date, component: .day))
                 .safeAreaInset(edge: .top, spacing: 0) {
                     headerView()
                         .modifier(CKSwipeModifier(date: $date, component: .weekOfYear))
@@ -89,22 +88,8 @@ public struct CKCompactWeek<Detail: View>: View {
             .padding(.leading, 10)
             .padding(.top, 5)
             .font(.title)
-
-            /// - Current Week row
+            
             weekRow().padding([.leading, .trailing], 10)
-        }
-
-        .background {
-            VStack(spacing: 0) {
-                Color.white
-                Rectangle()
-                    .fill(.linearGradient(colors: [
-                        .white,
-                        .clear
-                    ], startPoint: .top, endPoint: .bottom))
-                    .frame(height: 20)
-            }
-            .ignoresSafeArea()
         }
     }
 
