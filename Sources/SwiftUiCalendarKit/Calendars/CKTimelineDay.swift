@@ -66,6 +66,7 @@ public struct CKTimelineDay: View {
                     }
                 }
             }
+            .modifier(CKSwipeModifier(date: $date, component: .day))
         }
     }
 }

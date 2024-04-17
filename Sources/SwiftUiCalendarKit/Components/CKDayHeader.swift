@@ -38,8 +38,10 @@ struct CKDayHeader: View {
                     Text(weekDay.string.prefix(3))
                     if showDate {
                         ZStack {
-                            Capsule()
-                                .fill(status ? Color.red : .clear)
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ?
+                                      Color.red : calendar.isDate(weekDay.date, inSameDayAs: currentDate) ? Color.blue.opacity(0.10) :
+                                        .clear)
                                 .frame(width: 27, height: 27)
 
                             Text(weekDay.date.toString("dd"))

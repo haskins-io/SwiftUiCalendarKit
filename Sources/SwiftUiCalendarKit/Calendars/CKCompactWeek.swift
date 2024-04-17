@@ -5,7 +5,6 @@
 //  Created by Mark Haskins on 09/04/2024.
 //
 
-import SwiftData
 import SwiftUI
 
 public struct CKCompactWeek<Detail: View>: View {
@@ -29,9 +28,13 @@ public struct CKCompactWeek<Detail: View>: View {
     }
     public var body: some View {
 
-        timelineView()
-        .safeAreaInset(edge: .top, spacing: 0) {
-            headerView()
+        VStack {
+            timelineView()
+                .modifier(CKSwipeModifier(date: $date, component: .day))
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    headerView()
+                        .modifier(CKSwipeModifier(date: $date, component: .weekOfYear))
+                }
         }
     }
 
@@ -58,10 +61,12 @@ public struct CKCompactWeek<Detail: View>: View {
                         )
 
                         ForEach(eventData, id: \.anyHashableID) { event in
-                            CKCompactEventView(
-                                event,
-                                detail: detail
-                            )
+                            if calendar.isDate(event.event.startDate, inSameDayAs: date) {
+                                CKCompactEventView(
+                                    event,
+                                    detail: detail
+                                )
+                            }
                         }
                     }
                 }
@@ -88,6 +93,7 @@ public struct CKCompactWeek<Detail: View>: View {
             /// - Current Week row
             weekRow().padding([.leading, .trailing], 10)
         }
+
         .background {
             VStack(spacing: 0) {
                 Color.white
@@ -115,8 +121,12 @@ public struct CKCompactWeek<Detail: View>: View {
                 VStack(spacing: 6) {
                     Text(weekDay.string.prefix(3))
                     ZStack {
-                        Capsule()
-                            .fill(Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ? Color.red : .clear)
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(
+                                Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ?
+                                Color.red : calendar.isDate(weekDay.date, inSameDayAs: date) ? Color.blue.opacity(0.10) :
+                                        .clear
+                            )
                             .frame(width: 27, height: 27)
 
                         Text(weekDay.date.toString("dd"))

@@ -39,15 +39,15 @@ public struct CKCompactMonth<Detail: View>: View {
     NavigationView {
 
         let event1 = CKEvent(
-            startDate: Date().dateFrom(14, 4, 2024, 1, 00),
-            endDate: Date().dateFrom(14, 4, 2024, 2, 00),
+            startDate: Date().dateFrom(16, 4, 2024, 1, 00),
+            endDate: Date().dateFrom(16, 4, 2024, 2, 00),
             text: "Event 1",
             backCol: "#D74D64"
         )
 
         let event2 = CKEvent(
-            startDate: Date().dateFrom(15, 4, 2024, 2, 00),
-            endDate: Date().dateFrom(15, 4, 2024, 3, 00),
+            startDate: Date().dateFrom(16, 4, 2024, 2, 00),
+            endDate: Date().dateFrom(16, 4, 2024, 3, 00),
             text: "Event 2",
             backCol: "#3E56C2"
         )

@@ -59,14 +59,17 @@ public struct CKCompactDay<Detail: View>: View {
                         )
 
                         ForEach(eventData, id: \.anyHashableID) { event in
-                            CKCompactEventView(
-                                event,
-                                detail: detail
-                            )
+                            if calendar.isDate(event.event.startDate, inSameDayAs: date) {
+                                CKCompactEventView(
+                                    event,
+                                    detail: detail
+                                )
+                            }
                         }
                     }
                 }
             }
+            .modifier(CKSwipeModifier(date: $date, component: .day))
         }
     }
 }

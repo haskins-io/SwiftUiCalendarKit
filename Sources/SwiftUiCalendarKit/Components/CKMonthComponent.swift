@@ -45,8 +45,16 @@ struct CKMonthComponent: View {
                             ZStack {
 
                                 if calendar.isDateInToday(date) {
-                                    Capsule()
+
+                                    RoundedRectangle(cornerRadius: 5)
                                         .fill(Color.red)
+                                        .frame(width: 27, height: 27)
+                                        .offset(x: 1, y: 0)
+
+                                } else if calendar.isDate(date, inSameDayAs: selectedDate) {
+
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .fill(Color.blue.opacity(0.10))
                                         .frame(width: 27, height: 27)
                                         .offset(x: 1, y: 0)
                                 }
@@ -59,27 +67,11 @@ struct CKMonthComponent: View {
                             }
                         }
 
-                        if (numberOfEventsInDate(date: date) >= 2) {
-                            Circle()
-                                .size(CGSize(width: 5, height: 5))
-                                .foregroundColor(Color.green)
-                                .offset(x: CGFloat(16),
-                                        y: CGFloat(35))
-                        }
-
-                        if (numberOfEventsInDate(date: date) >= 1) {
+                        if (numberOfEventsInDate(date: date) > 0) {
                             Circle()
                                 .size(CGSize(width: 5, height: 5))
                                 .foregroundColor(Color.green)
                                 .offset(x: CGFloat(23),
-                                        y: CGFloat(35))
-                        }
-
-                        if (numberOfEventsInDate(date: date) >= 3) {
-                            Circle()
-                                .size(CGSize(width: 5, height: 5))
-                                .foregroundColor(Color.green)
-                                .offset(x: CGFloat(30),
                                         y: CGFloat(35))
                         }
                     }
@@ -157,7 +149,7 @@ struct CKMonthComponent: View {
         }
     }
 
-    func dateHasEvents(date: Date) -> Bool {
+    private func dateHasEvents(date: Date) -> Bool {
 
         for event in events {
             if calendar.isDate(date, inSameDayAs: event.startDate) {
@@ -168,7 +160,7 @@ struct CKMonthComponent: View {
         return false
     }
 
-    func numberOfEventsInDate(date: Date) -> Int {
+    private func numberOfEventsInDate(date: Date) -> Int {
         var count: Int = 0
         for event in events {
             if calendar.isDate(date, inSameDayAs: event.startDate) {

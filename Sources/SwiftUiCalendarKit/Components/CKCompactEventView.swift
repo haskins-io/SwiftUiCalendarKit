@@ -39,22 +39,49 @@ struct CKCompactEventView<Detail: View>: View {
                 detail(event)
             } label: {
                 VStack(alignment: .leading) {
-                    Text(event.startDate.formatted(.dateTime.hour().minute()))
-                    Text(event.text).bold()
+                    Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
+                    Text(event.text).bold().padding(.leading, 5)
                 }
                 .font(.caption)
                 .foregroundColor(event.textAsColor())
                 .frame(width: eventData.eventWidth, alignment: .leading)
                 .padding(4)
                 .frame(height: eventData.height, alignment: .top)
+                .background(.thinMaterial)
                 .background(
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(event.backgroundAsColor()).opacity(0.8)
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(event.backgroundAsColor()).opacity(0.5)
+                        .shadow(radius: 5, x: 2, y: 5)
                 )
+                .overlay {
+                    HStack {
+                        Rectangle()
+                            .fill(event.backgroundAsColor())
+                            .frame(maxHeight: .infinity, alignment: .leading)
+                            .frame(width: 4)
+                        Spacer()
+                    }
+                }
                 .padding(.trailing, 30)
             }
         }
         .offset(x: xOffset, y: eventData.yOffset + 30)
     }
+}
+
+#Preview {
+    CKCompactEventView(
+        EventViewData(
+            event: CKEvent(
+                startDate: Date().dateFrom(13, 4, 2024, 1, 00),
+                endDate: Date().dateFrom(13, 4, 2024, 2, 00),
+                text: "Event 1",
+                backCol: "#D74D64"),
+            overlapsWith: 1,
+            position: 1,
+            width: 150
+        ),
+        detail: { event in EmptyView() }
+    )
 }
 

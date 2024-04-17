@@ -36,8 +36,6 @@ struct CKCompantMonthEvents<Detail: View>: View {
                     NavigationLink(destination: detail(event)) {
                         CKListEventView(event: event)
                     }
-                    .listRowBackground(event.backgroundAsColor())
-
                 }
             }
         }
