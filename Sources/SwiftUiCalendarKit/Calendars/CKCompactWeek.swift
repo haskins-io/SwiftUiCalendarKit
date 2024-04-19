@@ -11,11 +11,15 @@ public struct CKCompactWeek<Detail: View>: View {
 
     @Binding private var date: Date
 
+    @State private var headerMonth: Date = Date()
+
+    @State private var weekSlider: [[Date.WeekDay]] = []
+    @State private var currentWeekIndex: Int = 1
+    @State private var createWeek: Bool = false
+
     private let detail: (any CKEventSchema) -> Detail
-
     private var events: [any CKEventSchema]
-
-    private let calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar.current
 
     public init(
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
@@ -24,7 +28,9 @@ public struct CKCompactWeek<Detail: View>: View {
     ) {
         self.detail = detail
         self.events = events
+
         self._date = date
+        self._headerMonth = State(initialValue: date.wrappedValue)
     }
     public var body: some View {
 
@@ -32,8 +38,31 @@ public struct CKCompactWeek<Detail: View>: View {
             timelineView()
                 .safeAreaInset(edge: .top, spacing: 0) {
                     headerView()
-                        .modifier(CKSwipeModifier(date: $date, component: .weekOfYear))
                 }
+        }
+        .onAppear(perform: {
+            if weekSlider.isEmpty {
+                let currentWeek = Date().fetchWeek()
+
+                if let firstDate = currentWeek.first?.date {
+                    weekSlider.append(firstDate.createPreviousWeek())
+                }
+
+                weekSlider.append(currentWeek)
+
+                if let lastDate = currentWeek.last?.date {
+                    weekSlider.append(lastDate.createNextWeek())
+                }
+            }
+        })
+        .onChange(of: currentWeekIndex) { newValue in
+            // do we need to create a new Week Row
+            if newValue == 0 || newValue == (weekSlider.count - 1) {
+                createWeek = true
+            }
+
+            // update header so Month reflects correctly
+            headerMonth = weekSlider[1][0].date
         }
     }
 
@@ -81,55 +110,94 @@ public struct CKCompactWeek<Detail: View>: View {
 
             // Date headline
             HStack {
-                Text(date.formatted(.dateTime.month(.wide)))
+                Text(headerMonth.formatted(.dateTime.month(.wide)))
                     .bold()
-                Text(date.formatted(.dateTime.year()))
+                Text(headerMonth.formatted(.dateTime.year()))
             }
             .padding(.leading, 10)
             .padding(.top, 5)
             .font(.title)
             
-            weekRow().padding([.leading, .trailing], 10)
+            TabView(selection: $currentWeekIndex){
+                ForEach(weekSlider.indices, id: \.self) { index in
+                    let week = weekSlider[index]
+                    weekRow(week)
+                        .tag(index)
+                }
+            }
+            #if !os(macOS)
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            #endif
+            .frame(height: 70)
+            .padding(5)
         }
     }
 
     /// - Week Row
     @ViewBuilder
-    func weekRow() -> some View {
+    func weekRow(_ week: [Date.WeekDay]) -> some View {
 
         HStack(spacing: 0) {
         
-            ForEach(calendar.currentWeek(today: date)) { weekDay in
+            ForEach(week) { day in
 
-                let status = Calendar.current.isDate(weekDay.date, inSameDayAs: Date())
+                let status = Calendar.current.isDate(day.date, inSameDayAs: Date())
 
                 VStack(spacing: 6) {
-                    Text(weekDay.string.prefix(3))
+                    Text(day.string.prefix(3))
                     ZStack {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(
-                                Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ?
-                                Color.red : calendar.isDate(weekDay.date, inSameDayAs: date) ? Color.blue.opacity(0.10) :
+                                Calendar.current.isDate(day.date, inSameDayAs: Date()) ?
+                                Color.red : calendar.isDate(day.date, inSameDayAs: date) ? Color.blue.opacity(0.10) :
                                         .clear
                             )
                             .frame(width: 27, height: 27)
 
-                        Text(weekDay.date.toString("dd"))
+                        Text(day.date.toString("dd"))
                             .foregroundColor(status ? Color.white : .primary)
 
                     }
                 }
                 .hAlign(.center)
-                .contentShape(Rectangle())
+                .contentShape(.rect)
                 .onTapGesture {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        date = weekDay.date
+                    withAnimation(.snappy) {
+                        date = day.date
                     }
                 }
             }
         }
-        .padding(.vertical, 10)
-        .padding(.horizontal, -15)
+        .background {
+            GeometryReader {
+                let minX = $0.frame(in: .global).minX
+
+                Color.clear
+                    .preference(key: OffsetKey.self, value: minX)
+                    .onPreferenceChange(OffsetKey.self) { value in
+                        if value.rounded() == 5 && createWeek {
+                            paginateWeek()
+                            createWeek = false
+                        }
+                    }
+            }
+        }
+    }
+
+    func paginateWeek() {
+        if weekSlider.indices.contains(currentWeekIndex) {
+            if let firstDate = weekSlider[currentWeekIndex].first?.date, currentWeekIndex == 0 {
+                weekSlider.insert(firstDate.createPreviousWeek(), at: 0)
+                weekSlider.removeLast()
+                currentWeekIndex = 1
+            }
+
+            if let lastDate = weekSlider[currentWeekIndex].last?.date, currentWeekIndex == (weekSlider.count - 1) {
+                weekSlider.append(lastDate.createNextWeek())
+                weekSlider.removeFirst()
+                currentWeekIndex = weekSlider.count - 2
+            }
+        }
     }
 }
 

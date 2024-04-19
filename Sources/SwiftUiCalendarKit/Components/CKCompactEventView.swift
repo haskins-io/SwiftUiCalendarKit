@@ -42,6 +42,7 @@ struct CKCompactEventView<Detail: View>: View {
                     Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
                     Text(event.text).bold().padding(.leading, 5)
                 }
+                .foregroundColor(.primary)
                 .font(.caption)
                 .frame(width: eventData.eventWidth, alignment: .leading)
                 .padding(4)

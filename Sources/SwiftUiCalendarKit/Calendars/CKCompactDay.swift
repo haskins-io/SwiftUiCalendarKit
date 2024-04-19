@@ -9,13 +9,17 @@ import SwiftUI
 
 public struct CKCompactDay<Detail: View>: View {
 
-    @Binding private var date: Date
+    @Binding private var currentDate: Date
+
+    @State private var headerMonth: Date = Date()
+
+    @State private var daySlider: [Date] = []
+    @State private var currentDayIndex: Int = 1
+    @State private var createDay: Bool = false
 
     private let detail: (any CKEventSchema) -> Detail
-
     private var events: [any CKEventSchema]
-
-    private let calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar.current
 
     public init(
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
@@ -24,7 +28,9 @@ public struct CKCompactDay<Detail: View>: View {
     {
         self.detail = detail
         self.events = events
-        self._date = date
+        self._currentDate = date
+
+        self._headerMonth = State(initialValue: date.wrappedValue)
     }
 
     public var body: some View {
@@ -33,41 +39,116 @@ public struct CKCompactDay<Detail: View>: View {
 
             VStack(alignment: .leading) {
 
-                HStack {
-                    Text(date.formatted(.dateTime.day().month(.wide)))
-                        .bold()
-                    Text(date.formatted(.dateTime.year()))
-                }
-                .padding(.leading, 10)
-                .padding(.top, 5)
-                .font(.title)
-
-                Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                header()
 
                 Divider().padding([.leading, .trailing], 10)
 
-                ScrollView {
+                timeline(width: proxy.size.width - 55)
 
-                    ZStack(alignment: .topLeading) {
+            }
+            .onAppear(perform: {
+                if daySlider.isEmpty {
+                    daySlider.append(Date().previousDate())
+                    daySlider.append(Date())
+                    daySlider.append(Date().nextDate())
+                }
+            })
+            .onChange(of: currentDayIndex) { newValue in
+                // do we need to create a new Week Row
+                if newValue == 0 || newValue == (daySlider.count - 1) {
+                    createDay = true
+                }
 
-                        CKTimeline()
+                // update header
+                headerMonth = daySlider[1]
+            }
+        }
+    }
 
-                        let eventData = CKUtils.generateEventViewData(
-                            date: date,
-                            events: events,
-                            width: proxy.size.width - 65
+    @ViewBuilder
+    func header() -> some View {
+        HStack {
+            Text(headerMonth.formatted(.dateTime.day().month(.wide)))
+                .bold()
+            Text(headerMonth.formatted(.dateTime.year()))
+        }
+        .padding(.leading, 10)
+        .padding(.top, 5)
+        .font(.title)
+
+        Text(headerMonth.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+    }
+
+    @ViewBuilder
+    func timeline(width: CGFloat) -> some View {
+
+        TabView(selection: $currentDayIndex){
+            ForEach(daySlider.indices, id: \.self) { index in
+                let day = daySlider[index]
+                dayView(day, width)
+                    .tag(index)
+            }
+        }
+#if !os(macOS)
+        .tabViewStyle(.page(indexDisplayMode: .never))
+#endif
+    }
+
+    @ViewBuilder
+    func dayView(_ date: Date, _ width: CGFloat) -> some View {
+
+        ScrollView {
+
+            ZStack(alignment: .topLeading) {
+
+                CKTimeline()
+
+                let eventData = CKUtils.generateEventViewData(
+                    date: date,
+                    events: events,
+                    width: width - 65
+                )
+
+                ForEach(eventData, id: \.anyHashableID) { event in
+                    if calendar.isDate(event.event.startDate, inSameDayAs: date) {
+                        CKCompactEventView(
+                            event,
+                            detail: detail
                         )
-
-                        ForEach(eventData, id: \.anyHashableID) { event in
-                            if calendar.isDate(event.event.startDate, inSameDayAs: date) {
-                                CKCompactEventView(
-                                    event,
-                                    detail: detail
-                                )
-                            }
-                        }
                     }
                 }
+            }
+            .padding(5)
+        }
+        .background {
+            GeometryReader {
+                let minX = $0.frame(in: .global).minX
+
+                Color.clear
+                    .preference(key: OffsetKey.self, value: minX)
+                    .onPreferenceChange(OffsetKey.self) { value in
+                        if value.rounded() == 0 && createDay {
+                            paginateDay()
+                            createDay = false
+                        }
+                    }
+            }
+        }
+    }
+
+    func paginateDay() {
+
+        if daySlider.indices.contains(currentDayIndex) {
+            if let firstDate = daySlider.first, currentDayIndex == 0 {
+                daySlider.insert(firstDate.previousDate(), at: 0)
+                daySlider.removeLast()
+                currentDayIndex = 1
+            }
+
+            if let lastDate = daySlider.last, currentDayIndex == (daySlider.count - 1) {
+                daySlider.append(lastDate.nextDate())
+                daySlider.removeFirst()
+                currentDayIndex = daySlider.count - 2
             }
         }
     }
@@ -101,7 +182,7 @@ public struct CKCompactDay<Detail: View>: View {
         CKCompactDay(
             detail: { event in EmptyView() },
             events: [event1, event2, event3],
-            date: .constant(Date().dateFrom(13, 4, 2024))
+            date: .constant(Date().dateFrom(19, 4, 2024))
         )
     }
 }

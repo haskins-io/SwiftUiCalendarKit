@@ -11,7 +11,7 @@ struct CKCompantMonthEvents<Detail: View>: View {
 
     @Binding private var date: Date
 
-    let calendar = Calendar(identifier: .gregorian)
+    let calendar = Calendar.current
 
     private let detail: (any CKEventSchema) -> Detail
     private var events: [any CKEventSchema]

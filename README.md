@@ -8,7 +8,7 @@ All the calendars are written purely in SwiftUI.
 ## Available Calendars
 ### CKTimelineDay
 
-This shows all the events for a selected date. You can use this for MacOs and iPad
+This shows all the events for a selected date. You can use this for MacOs and iPad.
 
 <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineDay.png" width="300"/>
 
@@ -26,13 +26,17 @@ This shows all the events for a selected month. You can use this for MacOs and i
 
 ### CKCompactDay
 
-This shows all the events for a selected date. Best used on an iPhone
+This shows all the events for a selected date. Best used on an iPhone.
+
+Swiping Left or Right on the timeline will change the date.
 
 <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactDay.png" width="300"/>
 
 ### CKCompactWeek
 
 This shows all the events for a selected week. This only shows a single timeline and you select the date you want from the top. Best used on an iPhone
+
+Swiping Left or Right on the week will change it.
 
 <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactWeek.png" width="300"/>
 

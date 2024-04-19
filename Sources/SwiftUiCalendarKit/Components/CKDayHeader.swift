@@ -16,7 +16,7 @@ struct CKDayHeader: View {
     var showTime: Bool
     var showDate: Bool
 
-    private let calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar.current
 
     var body: some View {
 
@@ -29,7 +29,9 @@ struct CKDayHeader: View {
 
         return ZStack {
 
-            ForEach(Array(calendar.currentWeek(today: currentDate).enumerated()), id: \.offset) { index, weekDay in
+            let currentWeek = currentDate.fetchWeek()
+
+            ForEach(Array(currentWeek.enumerated()), id: \.offset) { index, weekDay in
 
                 let status = Calendar.current.isDate(weekDay.date, inSameDayAs: Date())
                 let xOffset = (width * CGFloat(index)) + widthOfset

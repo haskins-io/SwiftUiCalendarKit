@@ -16,11 +16,6 @@ public protocol CKEventSchema: Identifiable {
 
     var text: String  {get set}
 
-    var font: String  {get set}
-
-    var textColor: String  {get set}
     var backgroundColor: String  {get set}
-
-    func textAsColor() -> Color
     func backgroundAsColor() -> Color
 }

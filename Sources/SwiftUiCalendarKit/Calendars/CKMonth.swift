@@ -13,7 +13,7 @@ public struct CKMonth: View {
 
     @Binding var date: Date
 
-    private let calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar.current
 
     private var events: [any CKEventSchema]
 

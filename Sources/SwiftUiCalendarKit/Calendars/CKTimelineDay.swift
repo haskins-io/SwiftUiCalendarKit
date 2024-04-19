@@ -15,7 +15,7 @@ public struct CKTimelineDay: View {
 
     private var events: [any CKEventSchema]
 
-    private let calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar.current
 
     public init(observer: CKCalendarObserver, events: [any CKEventSchema], date: Binding<Date>) {
         self._observer = .init(wrappedValue: observer)
@@ -42,31 +42,36 @@ public struct CKTimelineDay: View {
 
                 Divider().padding([.leading, .trailing], 10)
 
-                ScrollView {
+                dayView(width: proxy.size.width)
+            }
+        }
+    }
 
-                    ZStack(alignment: .topLeading) {
+    @ViewBuilder
+    func dayView(width: CGFloat) -> some View {
 
-                        CKTimeline()
+        ScrollView {
 
-                        let eventData = CKUtils.generateEventViewData(
-                            date: date,
-                            events: events,
-                            width: proxy.size.width - 55
+            ZStack(alignment: .topLeading) {
+
+                CKTimeline()
+
+                let eventData = CKUtils.generateEventViewData(
+                    date: date,
+                    events: events,
+                    width: width - 55
+                )
+
+                ForEach(eventData, id: \.anyHashableID) { event in
+                    if calendar.isDate(event.event.startDate, inSameDayAs: date) {
+                        CKEventView(
+                            event,
+                            observer: observer,
+                            weekView: false
                         )
-
-                        ForEach(eventData, id: \.anyHashableID) { event in
-                            if calendar.isDate(event.event.startDate, inSameDayAs: date) {
-                                CKEventView(
-                                    event,
-                                    observer: observer,
-                                    weekView: false
-                                )
-                            }
-                        }
                     }
                 }
             }
-            .modifier(CKSwipeModifier(date: $date, component: .day))
         }
     }
 }

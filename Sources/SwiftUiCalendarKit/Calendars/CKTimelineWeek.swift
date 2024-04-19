@@ -16,7 +16,7 @@ public struct CKTimelineWeek: View {
 
     private var events: [any CKEventSchema]
 
-    private let calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar.current
 
     public init(observer: CKCalendarObserver, events: [any CKEventSchema], date: Binding<Date>) {
         self._observer = .init(wrappedValue: observer)

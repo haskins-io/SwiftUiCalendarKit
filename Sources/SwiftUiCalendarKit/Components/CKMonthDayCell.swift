@@ -22,7 +22,7 @@ struct CKMonthDayCell: View {
 
     @ObservedObject var observer: CKCalendarObserver
 
-    let calendar = Calendar(identifier: .gregorian)
+    let calendar = Calendar.current
 
     private var date: Date
     private var month: Date
