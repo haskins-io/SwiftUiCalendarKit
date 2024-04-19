@@ -9,15 +9,6 @@ import SwiftUI
 
 class EventViewData: Identifiable {
 
-//    static func == (lhs: EventViewData, rhs: EventViewData) -> Bool {
-//        return lhs.id == rhs.id && lhs.id == rhs.id
-//    }
-//
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(id)
-//        hasher.combine(id)
-//    }
-
     public typealias Id = UUID
     let id = UUID()
 

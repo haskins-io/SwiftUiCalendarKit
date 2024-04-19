@@ -23,7 +23,14 @@ public struct CKEvent: CKEventSchema {
     public var textColor = "#000000"
     public var backgroundColor = "#ffffff"
 
-    public init(startDate: Date, endDate: Date, text: String, font: String = "", textCol: String = "#000000", backCol: String = "#ffffff") {
+    public init(
+        startDate: Date,
+        endDate: Date,
+        text: String,
+        font: String = "",
+        textCol: String = "#000000",
+        backCol: String = "#ffffff"
+    ) {
         self.startDate = startDate
         self.endDate = endDate
         self.text = text

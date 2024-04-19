@@ -25,29 +25,13 @@ public struct CKSwipeModifier: ViewModifier {
                 .onEnded { value in
                     switch(value.translation.width, value.translation.height) {
                     case (...0, -30...30):
-                        guard let newDate = calendar.date(
-                            byAdding: component,
-                            value: 1,
-                            to: date
-                        ) else {
-                            return
-                        }
-
                         withAnimation {
-                            date = newDate
+                            date = changeDate(forward: true)
                         }
 
                     case (0..., -30...30):
-                        guard let newDate = calendar.date(
-                            byAdding: component,
-                            value: -1,
-                            to: date
-                        ) else {
-                            return
-                        }
-
                         withAnimation {
-                            date = newDate
+                            date = changeDate(forward: false)
                         }
 
                     default:  print("no clue")
@@ -55,8 +39,22 @@ public struct CKSwipeModifier: ViewModifier {
                 }
             )
     }
-}
 
-//#Preview {
-//    CKSwipeModifier(date: .constant(Date()), component: .day)
-//}
+    private func changeDate(forward: Bool) -> Date {
+
+        var val = 1
+        if (!forward) {
+            val = -1
+        }
+
+        guard let newDate = calendar.date(
+            byAdding: component,
+            value: val,
+            to: date
+        ) else {
+            return date
+        }
+
+        return newDate
+    }
+}
