@@ -21,13 +21,17 @@ public struct CKCompactWeek<Detail: View>: View {
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
 
+    private let properties: CKProperties
+
     public init(
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
         events: [any CKEventSchema],
-        date: Binding<Date>
+        date: Binding<Date>,
+        props: CKProperties? = CKProperties()
     ) {
         self.detail = detail
         self.events = events
+        self.properties = props ?? CKProperties()
 
         self._date = date
         self._headerMonth = State(initialValue: date.wrappedValue)
@@ -41,20 +45,13 @@ public struct CKCompactWeek<Detail: View>: View {
                 }
         }
         .onAppear(perform: {
-            if weekSlider.isEmpty {
-                let currentWeek = Date().fetchWeek()
-
-                if let firstDate = currentWeek.first?.date {
-                    weekSlider.append(firstDate.createPreviousWeek())
-                }
-
-                weekSlider.append(currentWeek)
-
-                if let lastDate = currentWeek.last?.date {
-                    weekSlider.append(lastDate.createNextWeek())
-                }
-            }
+            calcWeekSliders(currentDate: date)
         })
+        .onChange(of: date) { newDate in
+            headerMonth = newDate
+            weekSlider.removeAll()
+            calcWeekSliders(currentDate: newDate)
+        }
         .onChange(of: currentWeekIndex) { newValue in
             // do we need to create a new Week Row
             if newValue == 0 || newValue == (weekSlider.count - 1) {
@@ -106,7 +103,7 @@ public struct CKCompactWeek<Detail: View>: View {
     @ViewBuilder
     func headerView() -> some View {
 
-        VStack(alignment: .leading) {
+        VStack(alignment: properties.headingAligment) {
 
             // Date headline
             HStack {
@@ -199,20 +196,37 @@ public struct CKCompactWeek<Detail: View>: View {
             }
         }
     }
+
+    func calcWeekSliders(currentDate: Date) {
+
+        if weekSlider.isEmpty {
+            let currentWeek = currentDate.fetchWeek()
+
+            if let firstDate = currentWeek.first?.date {
+                weekSlider.append(firstDate.createPreviousWeek())
+            }
+
+            weekSlider.append(currentWeek)
+
+            if let lastDate = currentWeek.last?.date {
+                weekSlider.append(lastDate.createNextWeek())
+            }
+        }
+    }
 }
 
 #Preview {
     NavigationView {
 
         let event1 = CKEvent(
-            startDate: Date().dateFrom(16, 4, 2024, 12, 00),
+            startDate: Date().dateFrom(16, 4, 2025, 12, 00),
             endDate: Date().dateFrom(16, 4, 2024, 13, 00),
             text: "Event 1",
             backCol: "#D74D64"
         )
 
         let event2 = CKEvent(
-            startDate: Date().dateFrom(16, 4, 2024, 12, 15),
+            startDate: Date().dateFrom(16, 6, 2025, 12, 15),
             endDate: Date().dateFrom(16, 4, 2024, 13, 15),
             text: "Event 2",
             backCol: "#3E56C2"
@@ -228,7 +242,8 @@ public struct CKCompactWeek<Detail: View>: View {
         CKCompactWeek(
             detail: { event in EmptyView() } ,
             events: [event1, event2, event3],
-            date: .constant(Date().dateFrom(16, 4, 2024))
+            date: .constant(Date().dateFrom(16, 4, 2024)),
+            props: CKProperties()
         )
     }
 }

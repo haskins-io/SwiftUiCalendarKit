@@ -46,7 +46,11 @@ extension Date {
         return formatter.string(from: self)
     }
 
-    func fetchWeek(_ date: Date = .init()) -> [WeekDay] {
+    func fetchWeek() -> [WeekDay] {
+        return fetchWeek(self)
+    }
+
+    func fetchWeek(_ date: Date) -> [WeekDay] {
 
         let calendar = Calendar.current
 
@@ -55,7 +59,7 @@ extension Date {
         }
 
         var week: [WeekDay] = []
-        
+
         (0..<7).forEach { index in
             if let weekDay = calendar.date(byAdding: .day, value: index, to: startOfWeek) {
                 let weekDaySymbol: String = weekDay.toString("EEEE")
