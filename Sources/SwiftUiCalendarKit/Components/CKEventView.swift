@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CKEventView: View {
 
-    private let eventData: EventViewData
+    private let eventData: CKEventViewData
 
     private let xOffset: CGFloat
 
@@ -17,7 +17,7 @@ struct CKEventView: View {
 
     @ObservedObject var observer: CKCalendarObserver
 
-    init(_ eventData: EventViewData,
+    init(_ eventData: CKEventViewData,
          observer: CKCalendarObserver,
          weekView: Bool)
     {
@@ -89,7 +89,7 @@ struct CKEventView: View {
 
 #Preview {
     CKEventView(
-        EventViewData(
+        CKEventViewData(
             event: CKEvent(
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),
                 endDate: Date().dateFrom(13, 4, 2024, 2, 00),

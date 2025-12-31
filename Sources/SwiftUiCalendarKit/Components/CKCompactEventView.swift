@@ -11,12 +11,12 @@ struct CKCompactEventView<Detail: View>: View {
 
     private let detail: (any CKEventSchema) -> Detail
 
-    private let eventData: EventViewData
+    private let eventData: CKEventViewData
     private let xOffset: CGFloat
     private let event: any CKEventSchema
 
 
-    init(_ eventData: EventViewData,
+    init(_ eventData: CKEventViewData,
          @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail)
     {
         self.detail = detail
@@ -71,7 +71,7 @@ struct CKCompactEventView<Detail: View>: View {
 
 #Preview {
     CKCompactEventView(
-        EventViewData(
+        CKEventViewData(
             event: CKEvent(
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),
                 endDate: Date().dateFrom(13, 4, 2024, 2, 00),

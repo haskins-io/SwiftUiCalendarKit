@@ -18,10 +18,18 @@ public struct CKTimelineWeek: View {
 
     private let calendar = Calendar.current
 
-    public init(observer: CKCalendarObserver, events: [any CKEventSchema], date: Binding<Date>) {
+    private let properties: CKProperties
+
+    public init(
+        observer: CKCalendarObserver,
+        events: [any CKEventSchema],
+        date: Binding<Date>,
+        props: CKProperties? = CKProperties()
+    ) {
         self._observer = .init(wrappedValue: observer)
         self.events = events
         self._date = date
+        self.properties = props ?? CKProperties()
     }
 
     public var body: some View {
@@ -41,13 +49,14 @@ public struct CKTimelineWeek: View {
         }
     }
 
+    @ViewBuilder
     private func timeline(proxy: GeometryProxy) -> some View {
 
-        return ScrollView {
+        ScrollView {
 
             ZStack(alignment: .topLeading) {
                 
-                CKTimeline()
+                CKTimeline(props: properties)
 
                 let eventData = CKUtils.generateEventViewData(
                     date: date,

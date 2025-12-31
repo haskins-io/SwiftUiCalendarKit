@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class EventViewData: Identifiable {
+class CKEventViewData: Identifiable {
 
     public typealias Id = UUID
     let id = UUID()
@@ -32,7 +32,13 @@ class EventViewData: Identifiable {
 
     let yOffset: CGFloat
 
-    init(event: any CKEventSchema, overlapsWith: CGFloat, position: CGFloat, width: CGFloat) {
+    public init(
+        event: any CKEventSchema,
+        overlapsWith: CGFloat,
+        position: CGFloat,
+        width: CGFloat,
+        startHour: Int = 0
+    ) {
 
         self.event = event
         self.overlapsWith = overlapsWith
@@ -43,7 +49,7 @@ class EventViewData: Identifiable {
         height = duration / 60 / 60 * CKTimeline.hourHeight
 
         day = calendar.component(.day, from: event.startDate)
-        hour = calendar.component(.hour, from: event.startDate)
+        hour = calendar.component(.hour, from: event.startDate) - startHour
         minute = calendar.component(.minute, from: event.startDate)
 
         eventWidth = (width / overlapsWith) - 5
@@ -51,3 +57,4 @@ class EventViewData: Identifiable {
         yOffset = (Double(hour) * (CKTimeline.hourHeight)) + Double(minute)
     }
 }
+

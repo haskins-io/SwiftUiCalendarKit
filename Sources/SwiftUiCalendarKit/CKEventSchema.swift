@@ -15,6 +15,8 @@ public protocol CKEventSchema: Identifiable {
     var endDate: Date  {get set}
 
     var text: String  {get set}
+    var primaryText: String  {get set}
+    var secondaryText: String  {get set}
 
     var backgroundColor: String  {get set}
     func backgroundAsColor() -> Color

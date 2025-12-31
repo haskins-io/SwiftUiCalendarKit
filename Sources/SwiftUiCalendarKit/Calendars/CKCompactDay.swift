@@ -21,16 +21,22 @@ public struct CKCompactDay<Detail: View>: View {
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
 
+    private let properties: CKProperties
+
     public init(
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
         events: [any CKEventSchema],
-        date: Binding<Date>)
+        date: Binding<Date>,
+        props: CKProperties? = CKProperties()
+    )
     {
         self.detail = detail
         self.events = events
         self._currentDate = date
 
         self._headerMonth = State(initialValue: date.wrappedValue)
+
+        self.properties = props ?? CKProperties()
     }
 
     public var body: some View {
@@ -101,12 +107,13 @@ public struct CKCompactDay<Detail: View>: View {
 
             ZStack(alignment: .topLeading) {
 
-                CKTimeline()
+                CKTimeline(props: properties)
 
                 let eventData = CKUtils.generateEventViewData(
                     date: date,
                     events: events,
-                    width: width - 65
+                    width: width - 65,
+                    props: properties
                 )
 
                 ForEach(eventData, id: \.anyHashableID) { event in

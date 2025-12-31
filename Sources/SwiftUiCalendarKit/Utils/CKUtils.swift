@@ -9,30 +9,69 @@ import Foundation
 
 class CKUtils {
 
-    static func generateEventViewData(date: Date, events: [any CKEventSchema], width: CGFloat) -> [EventViewData] {
+    static func generateEventViewData(
+        date: Date,
+        events: [any CKEventSchema],
+        width: CGFloat,
+        props: CKProperties = CKProperties()) -> [CKEventViewData] {
 
-        var pos1: [EventViewData] = []
-        var pos2: [EventViewData] = []
-        var pos3: [EventViewData] = []
-        var pos4: [EventViewData] = []
-        var pos5: [EventViewData] = []
+        var pos1: [CKEventViewData] = []
+        var pos2: [CKEventViewData] = []
+        var pos3: [CKEventViewData] = []
+        var pos4: [CKEventViewData] = []
+        var pos5: [CKEventViewData] = []
 
         for event in events {
             
             if !overLappings(event, pos1) {
-                pos1.append(EventViewData(event: event, overlapsWith: overLappingCount(event, events), position: 1, width: width))
+                pos1.append(
+                    CKEventViewData(
+                        event: event,
+                        overlapsWith: overLappingCount(event, events),
+                        position: 1,
+                        width: width,
+                        startHour: props.timelineStartHour)
+                )
             } else if !overLappings(event, pos2) {
-                pos2.append(EventViewData(event: event, overlapsWith: overLappingCount(event, events), position: 2, width: width))
+                pos2.append(
+                    CKEventViewData(
+                        event: event,
+                        overlapsWith: overLappingCount(event, events),
+                        position: 2,
+                        width: width,
+                        startHour: props.timelineStartHour)
+                )
             } else if !overLappings(event, pos3) {
-                pos3.append(EventViewData(event: event, overlapsWith: overLappingCount(event, events), position: 3, width: width))
+                pos3.append(
+                    CKEventViewData(
+                        event: event,
+                        overlapsWith: overLappingCount(event, events),
+                        position: 3,
+                        width: width,
+                        startHour: props.timelineStartHour)
+                )
             } else if !overLappings(event, pos4) {
-                pos4.append(EventViewData(event: event, overlapsWith: overLappingCount(event, events), position: 4, width: width))
+                pos4.append(
+                    CKEventViewData(
+                        event: event,
+                        overlapsWith: overLappingCount(event, events),
+                        position: 4,
+                        width: width,
+                        startHour: props.timelineStartHour)
+                )
             } else if !overLappings(event, pos5) {
-                pos5.append(EventViewData(event: event, overlapsWith: overLappingCount(event, events), position: 5, width: width))
+                pos5.append(
+                    CKEventViewData(
+                        event: event,
+                        overlapsWith: overLappingCount(event, events),
+                        position: 5,
+                        width: width,
+                        startHour: props.timelineStartHour)
+                )
             }
         }
 
-        var eventData: [EventViewData] = []
+        var eventData: [CKEventViewData] = []
         eventData.append(contentsOf: pos1)
         eventData.append(contentsOf: pos2)
         eventData.append(contentsOf: pos3)
@@ -42,7 +81,7 @@ class CKUtils {
         return eventData
     }
 
-    static func overLappings(_ currentEvent: any CKEventSchema, _ events: [EventViewData]) -> Bool {
+    static func overLappings(_ currentEvent: any CKEventSchema, _ events: [CKEventViewData]) -> Bool {
 
         for event in events {
             if doEventsOverlap(currentEvent, event.event) {

@@ -60,6 +60,7 @@ public struct CKCompactWeek<Detail: View>: View {
 
             // update header so Month reflects correctly
             headerMonth = weekSlider[1][0].date
+            date = headerMonth
         }
     }
 
@@ -77,12 +78,13 @@ public struct CKCompactWeek<Detail: View>: View {
                     
                     ZStack(alignment: .topLeading) {
 
-                        CKTimeline()
+                        CKTimeline(props: properties)
 
                         let eventData = CKUtils.generateEventViewData(
                             date: date,
                             events: events,
-                            width: proxy.size.width - 65
+                            width: proxy.size.width - 65,
+                            props: properties
                         )
 
                         ForEach(eventData, id: \.anyHashableID) { event in

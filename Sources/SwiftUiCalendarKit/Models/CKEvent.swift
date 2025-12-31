@@ -18,6 +18,8 @@ public struct CKEvent: CKEventSchema {
     public var endDate = Date()
 
     public var text = "Demo"
+    public var primaryText = "primary"
+    public var secondaryText = "secondary"
 
     public var backgroundColor = "#ffffff"
 
@@ -25,11 +27,16 @@ public struct CKEvent: CKEventSchema {
         startDate: Date,
         endDate: Date,
         text: String,
+        primaryText: String = "",
+        secondaryText: String = "",
         backCol: String = "#ffffff"
     ) {
         self.startDate = startDate
         self.endDate = endDate
+
         self.text = text
+        self.primaryText = primaryText
+        self.secondaryText = secondaryText
 
         self.backgroundColor = backCol
     }
