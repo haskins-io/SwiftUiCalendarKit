@@ -41,6 +41,12 @@ struct CKCompactEventView<Detail: View>: View {
                 VStack(alignment: .leading) {
                     Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
                     Text(event.text).bold().padding(.leading, 5)
+                    if event.primaryText != nil {
+                        Text(event.primaryText).font(.caption).foregroundColor(.secondary)
+                    }
+                    if event.secondaryText != nil {
+                        Text(event.secondaryText).font(.caption).foregroundColor(.secondary)
+                    }
                 }
                 .foregroundColor(.primary)
                 .font(.caption)

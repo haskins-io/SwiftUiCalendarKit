@@ -23,6 +23,8 @@ public struct CKEvent: CKEventSchema {
 
     public var backgroundColor = "#ffffff"
 
+    public var showTotalTime = false
+
     public init(
         startDate: Date,
         endDate: Date,
@@ -43,5 +45,13 @@ public struct CKEvent: CKEventSchema {
 
     public func backgroundAsColor() -> Color {
         return Color(hex: backgroundColor) ?? Color.white
+    }
+
+    public func totalTime() -> String {
+        let components = Calendar.current.dateComponents([.hour, .minute], from: startDate, to: endDate)
+        if let hours = components.hour, let minutes = components.minute {
+            return ("\(hours)h, \(minutes)m")
+        }
+        return ""
     }
 }

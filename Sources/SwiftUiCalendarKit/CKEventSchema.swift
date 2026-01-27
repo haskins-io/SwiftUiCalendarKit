@@ -19,5 +19,8 @@ public protocol CKEventSchema: Identifiable {
     var secondaryText: String  {get set}
 
     var backgroundColor: String  {get set}
+
+    var showTotalTime: Bool {get  set}
+
     func backgroundAsColor() -> Color
-}
+    func totalTime() -> String}
