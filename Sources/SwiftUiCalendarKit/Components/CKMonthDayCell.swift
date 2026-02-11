@@ -12,9 +12,9 @@ struct CKMonthDayCellModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .overlay(Rectangle().frame(width: 1, height: nil, alignment: .trailing)
-                .foregroundColor(Color.gray), alignment: .trailing)
+                .foregroundColor(Color.gray.opacity(0.5)), alignment: .trailing)
             .overlay(Rectangle().frame(width: nil, height: 1, alignment: .bottom)
-                .foregroundColor(Color.gray), alignment: .bottom)
+                .foregroundColor(Color.gray.opacity(0.5)), alignment: .bottom)
     }
 }
 
@@ -26,6 +26,7 @@ struct CKMonthDayCell: View {
 
     private var date: Date
     private var month: Date
+    private var showTime: Bool
 
     var events: [any CKEventSchema]
 
@@ -38,14 +39,16 @@ struct CKMonthDayCell: View {
         events: [any CKEventSchema],
         month: Date,
         width: CGFloat,
-        height: CGFloat
+        height: CGFloat,
+        showTime: Bool = false
     ) {
 
         self._observer = .init(wrappedValue: observer)
 
         self.date = date
         self.month = month
-        
+        self.showTime = showTime
+
         self.events = events
 
         cellWidth = width
@@ -62,21 +65,32 @@ struct CKMonthDayCell: View {
                     if calendar.isDateInToday(date) {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(Color.red)
-                            .frame(width: 27, height: 27)
-                            .offset(x: (cellWidth / 2) - 17, y: ((cellHeight / 2) - 20) * -1)
+                            .frame(width: 25, height: 25)
+                            .offset(x: (cellWidth / 2) - 15, y: ((cellHeight / 2) - 15) * -1)
                     }
 
-                    Text(formatDate())
-                        .padding(.trailing, 15)
-                        .foregroundColor(calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray)
-                        .offset(x: (cellWidth / 2) - 10, y: ((cellHeight / 2) - 20) * -1)
+                    if isFirstDayOfMonth() {
+                        Text(formatDate())
+                            .padding(.trailing, 35)
+                            .foregroundColor(calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray)
+                            .offset(x: (cellWidth / 2) - 8, y: ((cellHeight / 2) - 15) * -1)
+                    } else {
+                        Text(formatDate())
+                            .padding(.trailing, 15)
+                            .foregroundColor(calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray)
+                            .offset(x: (cellWidth / 2) - 8, y: ((cellHeight / 2) - 15) * -1)
+                    }
                 }
-
             }
             .frame(width: cellWidth, height: cellHeight)
             .modifier(CKMonthDayCellModifier())
+
             addEvents()
         }
+    }
+
+    private func isFirstDayOfMonth() -> Bool {
+        return calendar.component(.day, from: date) == 1
     }
 
     @ViewBuilder
@@ -85,17 +99,19 @@ struct CKMonthDayCell: View {
         ZStack {
             if events.count == 1 {
                 event(event: events[0], yOffset: 36)
-            }
-
-            if events.count == 2 {
+            } else if events.count == 2 {
                 event(event: events[0], yOffset: 36)
                 event(event: events[1], yOffset: 55)
-            }
-
-            if events.count == 3 {
+            } else if events.count == 3 {
                 event(event: events[0], yOffset: 36)
                 event(event: events[1], yOffset: 52)
                 event(event: events[2], yOffset: 68)
+            } else if events.count > 3 {
+                event(event: events[0], yOffset: 36)
+                event(event: events[1], yOffset: 52)
+                event(event: events[2], yOffset: 68)
+
+                Text("+ \(events.count - 3) more")
             }
         }.padding(0)
     }
@@ -103,16 +119,20 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func event(event: any CKEventSchema, yOffset: CGFloat) -> some View {
         HStack{
-            Circle()
-                .fill(event.backgroundAsColor())
-                .frame(width: 10, height: 10)
+            if event.backgroundColor.count == 7 {
+                Circle()
+                    .fill(event.backgroundAsColor())
+                    .frame(width: 10, height: 10)
+            }
             Text(event.text)
-            Spacer()
-            Text(event.startDate.formatted(.dateTime.hour().minute()))
+            if showTime {
+                Spacer()
+                Text(event.startDate.formatted(.dateTime.hour().minute()))
+            }
         }
         .font(.caption)
         .frame(maxWidth: cellWidth, alignment: .leading)
-        .padding(4)
+        .padding([.leading, .trailing], 5)
         .frame(height: 20, alignment: .center)
         .offset(x: 0, y: yOffset)
         .onTapGesture {
@@ -134,32 +154,33 @@ struct CKMonthDayCell: View {
 #Preview {
 
     let event1 = CKEvent(
-        startDate: Date().dateFrom(13, 4, 2024, 12, 00),
-        endDate: Date().dateFrom(13, 4, 2024, 13, 00),
-        text: "Event 1",
+        startDate: Date().dateFrom(3, 2, 2026, 1, 00),
+        endDate: Date().dateFrom(3, 2, 2026, 2, 00),
+        text: "Event 1 adf ads f asd f adsf asd f asd fasd",
         backCol: "#D74D64"
     )
 
     let event2 = CKEvent(
-        startDate: Date().dateFrom(13, 4, 2024, 12, 15),
-        endDate: Date().dateFrom(13, 4, 2024, 13, 15),
+        startDate: Date().dateFrom(3, 2, 2026, 2, 00),
+        endDate: Date().dateFrom(3, 2, 2026, 3, 00),
         text: "Event 2",
-        backCol: "#3E56C2"
+        backCol: ""
     )
 
     let event3 = CKEvent(
-        startDate: Date().dateFrom(13, 4, 2024, 12, 30),
-        endDate: Date().dateFrom(13, 4, 2024, 15, 01),
+        startDate: Date().dateFrom(33, 2, 2026, 3, 30),
+        endDate: Date().dateFrom(33, 2, 2026, 4, 30),
         text: "Event 3",
         backCol: "#F6D264"
     )
 
     return CKMonthDayCell(
-        date: Date(),
+        date: Date(timeIntervalSince1970: 1769977030),
         observer: CKCalendarObserver(),
         events: [event1, event2, event3],
         month: Date(),
         width: 150,
-        height: 150
+        height: 150,
+        showTime: false
     )
 }

@@ -27,10 +27,13 @@ public struct CKMonth: View {
 
         GeometryReader { proxy in
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
 
                 CKCalendarHeader(currentDate: $date, addWeek: false)
+                    .padding(.bottom, 5)
+
                 CKDayHeader(currentDate: $date, width: proxy.size.width, showTime: false, showDate: false)
+                    .padding(.bottom, 5)
 
                 Divider()
 
@@ -43,7 +46,7 @@ public struct CKMonth: View {
     private func monthGrid(proxy: GeometryProxy) -> some View {
 
         let cellWidth = proxy.size.width / 7
-        let cellHeight = ((proxy.size.height - 100) / 6) + 4
+        let cellHeight = ((proxy.size.height - 70) / 6) + 4
 
         let days = makeDays()
         let month = date.startOfMonth(using: calendar)
@@ -94,22 +97,21 @@ public struct CKMonth: View {
 
 
     let event1 = CKEvent(
-        startDate: Date().dateFrom(14, 4, 2024, 1, 00),
-        endDate: Date().dateFrom(14, 4, 2024, 2, 00),
+        startDate: Date().dateFrom(3, 2, 2026, 1, 00),
+        endDate: Date().dateFrom(3, 2, 2026, 2, 00),
         text: "Event 1",
         backCol: "#D74D64"
     )
 
     let event2 = CKEvent(
-        startDate: Date().dateFrom(15, 4, 2024, 2, 00),
-        endDate: Date().dateFrom(15, 4, 2024, 3, 00),
-        text: "Event 2",
-        backCol: "#3E56C2"
+        startDate: Date().dateFrom(3, 2, 2026, 2, 00),
+        endDate: Date().dateFrom(3, 2, 2026, 3, 00),
+        text: "Event 2"
     )
 
     let event3 = CKEvent(
-        startDate: Date().dateFrom(16, 4, 2024, 3, 30),
-        endDate: Date().dateFrom(16, 4, 2024, 4, 30),
+        startDate: Date().dateFrom(3, 2, 2026, 3, 30),
+        endDate: Date().dateFrom(3, 2, 2026, 4, 30),
         text: "Event 3",
         backCol: "#F6D264"
     )
@@ -117,6 +119,6 @@ public struct CKMonth: View {
     return CKMonth(
         observer: CKCalendarObserver(),
         events: [event1, event2, event3],
-        date: .constant(Date().dateFrom(13, 4, 2024))
+        date: .constant(Date().dateFrom(11, 2, 2026))
     )
 }
