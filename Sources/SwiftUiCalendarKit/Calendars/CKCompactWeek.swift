@@ -221,15 +221,15 @@ public struct CKCompactWeek<Detail: View>: View {
     NavigationView {
 
         let event1 = CKEvent(
-            startDate: Date().dateFrom(16, 4, 2025, 12, 00),
+            startDate: Date().dateFrom(16, 4, 2024, 12, 00),
             endDate: Date().dateFrom(16, 4, 2024, 13, 00),
             text: "Event 1",
             backCol: "#D74D64"
         )
 
         let event2 = CKEvent(
-            startDate: Date().dateFrom(16, 6, 2025, 12, 15),
-            endDate: Date().dateFrom(16, 4, 2024, 13, 15),
+            startDate: Date().dateFrom(16, 6, 2024, 12, 15),
+            endDate: Date().dateFrom(16, 6, 2024, 13, 15),
             text: "Event 2",
             backCol: "#3E56C2"
         )
