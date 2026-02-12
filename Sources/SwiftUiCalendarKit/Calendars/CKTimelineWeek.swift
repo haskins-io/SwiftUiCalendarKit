@@ -85,6 +85,9 @@ public struct CKTimelineWeek: View {
                 }
             }
         }
+        if #available(iOS 17, macOS 14, *) {
+            self.defaultScrollAnchor(.center)
+        }
     }
 }
 

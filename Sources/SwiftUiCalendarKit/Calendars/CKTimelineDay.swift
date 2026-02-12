@@ -81,6 +81,9 @@ public struct CKTimelineDay: View {
                 }
             }
         }
+        if #available(iOS 17, macOS 14, *) {
+            self.defaultScrollAnchor(.center)
+        }
     }
 }
 
