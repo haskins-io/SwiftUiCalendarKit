@@ -21,7 +21,7 @@ struct CKCalendarHeader: View {
                     .bold()
                 Text(currentDate.formatted(.dateTime.year()))
             }
-            .padding(.leading, 10)
+            .padding(.leading, 20)
             .padding(.top, 5)
             .font(.title)
 
@@ -61,7 +61,7 @@ struct CKCalendarHeader: View {
                     Image(systemName: "chevron.right")
                 }
             }
-            .padding(.trailing, 10)
+            .padding(.trailing, 30)
             .padding(.top, 5)
         }
     }

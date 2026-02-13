@@ -29,7 +29,11 @@ enum CKUtils {
         var pos5: [CKEventViewData] = []
 
         for event in events {
-            
+
+            if !date.fetchWeekRange().contains(event.startDate) {
+                continue
+            }
+
             if !overLappings(event, pos1) {
                 pos1.append(
                     CKEventViewData(

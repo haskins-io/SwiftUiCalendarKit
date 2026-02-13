@@ -12,7 +12,7 @@ public struct CKCompactDay<Detail: View>: View {
 
     @Binding private var currentDate: Date
 
-    @State private var headerMonth: Date = Date()
+    @State private var headerDay: Date = Date()
 
     @State private var daySlider: [Date] = []
     @State private var currentDayIndex: Int = 1
@@ -38,7 +38,7 @@ public struct CKCompactDay<Detail: View>: View {
         self.events = events
         self._currentDate = date
 
-        self._headerMonth = State(initialValue: date.wrappedValue)
+        self._headerDay = State(initialValue: date.wrappedValue)
 
         self.properties = props ?? CKProperties()
 
@@ -63,12 +63,13 @@ public struct CKCompactDay<Detail: View>: View {
 
             }
             .onAppear(perform: {
-                if daySlider.isEmpty {
-                    daySlider.append(Date().previousDate())
-                    daySlider.append(Date())
-                    daySlider.append(Date().nextDate())
-                }
+                calcDaySliders(newDate: currentDate)
             })
+            .onChange(of: currentDate) { newDate in
+                headerDay = newDate
+                daySlider.removeAll()
+                calcDaySliders(newDate: newDate)
+            }
             .onChange(of: currentDayIndex) { newValue in
                 // do we need to create a new Week Row
                 if newValue == 0 || newValue == (daySlider.count - 1) {
@@ -76,23 +77,26 @@ public struct CKCompactDay<Detail: View>: View {
                 }
 
                 // update header
-                headerMonth = daySlider[1]
+                headerDay = daySlider[1]
+                currentDate = headerDay
             }
         }
     }
 
     @ViewBuilder
     func header() -> some View {
-        HStack {
-            Text(headerMonth.formatted(.dateTime.day().month(.wide)))
-                .bold()
-            Text(headerMonth.formatted(.dateTime.year()))
-        }
-        .padding(.leading, 10)
-        .padding(.top, 5)
-        .font(.title)
+        VStack(alignment: .leading) {
+            HStack {
+                Text(headerDay.formatted(.dateTime.day().month(.wide)))
+                    .bold()
+                Text(headerDay.formatted(.dateTime.year()))
+            }
+            .padding(.leading, 10)
+            .padding(.top, 5)
+            .font(.title)
 
-        Text(headerMonth.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+            Text(headerDay.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+        }
     }
 
     @ViewBuilder
@@ -178,6 +182,15 @@ public struct CKCompactDay<Detail: View>: View {
                 daySlider.removeFirst()
                 currentDayIndex = daySlider.count - 2
             }
+        }
+    }
+
+    func calcDaySliders(newDate: Date) {
+
+        if daySlider.isEmpty {
+            daySlider.append(newDate.previousDate())
+            daySlider.append(newDate)
+            daySlider.append(newDate.nextDate())
         }
     }
 }

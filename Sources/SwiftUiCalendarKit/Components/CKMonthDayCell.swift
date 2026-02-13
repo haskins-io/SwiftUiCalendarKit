@@ -66,17 +66,17 @@ struct CKMonthDayCell: View {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(Color.red)
                             .frame(width: 25, height: 25)
-                            .offset(x: (cellWidth / 2) - 15, y: ((cellHeight / 2) - 15) * -1)
+                            .offset(x: (cellWidth / 2) - 20, y: ((cellHeight / 2) - 15) * -1)
                     }
 
                     if isFirstDayOfMonth() {
                         Text(formatDate())
-                            .padding(.trailing, 35)
+                            .padding(.trailing, 55)
                             .foregroundColor(calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray)
                             .offset(x: (cellWidth / 2) - 8, y: ((cellHeight / 2) - 15) * -1)
                     } else {
                         Text(formatDate())
-                            .padding(.trailing, 15)
+                            .padding(.trailing, 25)
                             .foregroundColor(calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray)
                             .offset(x: (cellWidth / 2) - 8, y: ((cellHeight / 2) - 15) * -1)
                     }

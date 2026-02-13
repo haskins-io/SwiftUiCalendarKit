@@ -35,7 +35,6 @@ public struct CKTimelineWeek: View {
         self._date = date
         self.properties = props ?? CKProperties()
 
-
         let showTimelineTime = props?.showTimelineTime == true
         self.timer = Timer.publish(every: showTimelineTime ? 1 : 0, on: .main, in: .common).autoconnect()
         if showTimelineTime {
@@ -104,6 +103,7 @@ public struct CKTimelineWeek: View {
                 guard properties.showTimelineTime else {
                     return
                 }
+
                 if Calendar.current.component(.second, from: Date()) == 0 {
                     timelinePosition = CKUtils.currentTimelinePosition()
                 }
