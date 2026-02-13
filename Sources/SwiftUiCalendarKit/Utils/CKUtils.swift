@@ -7,7 +7,14 @@
 
 import Foundation
 
-class CKUtils {
+enum CKUtils {
+
+    static func currentTimelinePosition(calendar: Calendar = .current) -> Double {
+        let now = Date()
+        let hour = calendar.component(.hour, from: now)
+        let minute = calendar.component(.minute, from: now)
+        return (Double(hour) * CKTimeline.hourHeight) + Double(minute) + 30.0
+    }
 
     static func generateEventViewData(
         date: Date,

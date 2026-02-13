@@ -14,39 +14,34 @@ public struct CKProperties {
     public var timelineStartHour: Int
     public var timelineEndHour: Int
 
-    public init() {
-        self.headingAligment = .leading
+    public var showTimelineTime: Bool
 
-        self.timelineStartHour = 0
-        self.timelineEndHour = 24
-    }
+    public init(
+        headingAliignment: HorizontalAlignment = .leading,
+        timelineStartHour: Int = 0,
+        timelineEndHour: Int = 24,
+        showTimelineTime: Bool = true,
+    ) {
+        self.headingAligment = headingAliignment
 
-    public init(headingAligment: HorizontalAlignment = .leading) {
-        self.headingAligment = headingAligment
-
-        self.timelineStartHour = 0
-        self.timelineEndHour = 24
-    }
-
-    public init(startHour: Int, endHour: Int) {
-        self.headingAligment = .leading
-
-        if startHour > endHour {
+        if timelineStartHour > timelineEndHour {
             self.timelineStartHour = 0
             self.timelineEndHour = 24
         } else {
 
-            if (startHour-2) >= 0  {
-                self.timelineStartHour = (startHour - 2)
+            if (timelineStartHour-2) >= 0  {
+                self.timelineStartHour = (timelineStartHour - 2)
             } else {
-                self.timelineStartHour = startHour
+                self.timelineStartHour = timelineStartHour
             }
 
-            if (endHour + 2) <= 24 {
-                self.timelineEndHour = (endHour + 2)
+            if (timelineEndHour + 2) <= 24 {
+                self.timelineEndHour = (timelineEndHour + 2)
             } else {
-                self.timelineEndHour = endHour
+                self.timelineEndHour = timelineEndHour
             }
         }
+
+        self.showTimelineTime = showTimelineTime
     }
 }

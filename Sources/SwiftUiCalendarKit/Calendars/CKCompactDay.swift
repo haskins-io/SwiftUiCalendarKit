@@ -5,6 +5,7 @@
 //  Created by Mark Haskins on 15/04/2024.
 //
 
+import Combine
 import SwiftUI
 
 public struct CKCompactDay<Detail: View>: View {
@@ -23,6 +24,9 @@ public struct CKCompactDay<Detail: View>: View {
 
     private let properties: CKProperties
 
+    @State private var timelinePosition = 0.0
+    private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
+
     public init(
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
         events: [any CKEventSchema],
@@ -37,6 +41,12 @@ public struct CKCompactDay<Detail: View>: View {
         self._headerMonth = State(initialValue: date.wrappedValue)
 
         self.properties = props ?? CKProperties()
+
+        let showTimelineTime = props?.showTimelineTime == true
+        self.timer = Timer.publish(every: showTimelineTime ? 1 : 0, on: .main, in: .common).autoconnect()
+        if showTimelineTime {
+            _timelinePosition = State(initialValue: CKUtils.currentTimelinePosition())
+        }
     }
 
     public var body: some View {
@@ -95,9 +105,6 @@ public struct CKCompactDay<Detail: View>: View {
                     .tag(index)
             }
         }
-#if !os(macOS)
-        .tabViewStyle(.page(indexDisplayMode: .never))
-#endif
     }
 
     @ViewBuilder
@@ -124,6 +131,19 @@ public struct CKCompactDay<Detail: View>: View {
                         )
                     }
                 }
+
+                if properties.showTimelineTime {
+                    CKTimeIndicator()
+                        .offset(x:0, y: timelinePosition)
+                }
+            }
+            .onReceive(timer) { time in
+                guard properties.showTimelineTime else {
+                    return
+                }
+                if Calendar.current.component(.second, from: Date()) == 0 {
+                    timelinePosition = CKUtils.currentTimelinePosition()
+                }
             }
             .padding(5)
         }
@@ -141,6 +161,7 @@ public struct CKCompactDay<Detail: View>: View {
                     }
             }
         }
+        .defaultScrollAnchor(.center)
     }
 
     func paginateDay() {

@@ -5,7 +5,7 @@
 //  Created by Mark Haskins on 09/04/2024.
 //
 
-import SwiftData
+import Combine
 import SwiftUI
 
 public struct CKTimelineWeek: View {
@@ -14,11 +14,15 @@ public struct CKTimelineWeek: View {
 
     @Binding var date: Date
 
+    @State private var timelinePosition = 0.0
+
     private var events: [any CKEventSchema]
 
     private let calendar = Calendar.current
 
     private let properties: CKProperties
+
+    private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
     public init(
         observer: CKCalendarObserver,
@@ -30,6 +34,13 @@ public struct CKTimelineWeek: View {
         self.events = events
         self._date = date
         self.properties = props ?? CKProperties()
+
+
+        let showTimelineTime = props?.showTimelineTime == true
+        self.timer = Timer.publish(every: showTimelineTime ? 1 : 0, on: .main, in: .common).autoconnect()
+        if showTimelineTime {
+            _timelinePosition = State(initialValue: CKUtils.currentTimelinePosition())
+        }
     }
 
     public var body: some View {
@@ -83,11 +94,22 @@ public struct CKTimelineWeek: View {
                                alignment: .center)
                         .offset(x: offset + 45, y: 10)
                 }
+
+                if properties.showTimelineTime {
+                    CKTimeIndicator()
+                        .offset(x:0, y: timelinePosition)
+                }
+            }
+            .onReceive(timer) { time in
+                guard properties.showTimelineTime else {
+                    return
+                }
+                if Calendar.current.component(.second, from: Date()) == 0 {
+                    timelinePosition = CKUtils.currentTimelinePosition()
+                }
             }
         }
-        if #available(iOS 17, macOS 14, *) {
-            self.defaultScrollAnchor(.center)
-        }
+        .defaultScrollAnchor(.center)
     }
 }
 
