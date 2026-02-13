@@ -71,13 +71,24 @@ public struct CKCompactDay<Detail: View>: View {
                 calcDaySliders(newDate: newDate)
             }
             .onChange(of: currentDayIndex) { newValue in
-                // do we need to create a new Week Row
-                if newValue == 0 || newValue == (daySlider.count - 1) {
-                    createDay = true
+
+                // If user hits an edge, immediately paginate and reposition
+                if newValue == 0 {
+                    if let firstDate = daySlider.first {
+                        daySlider.insert(firstDate.previousDate(), at: 0)
+                        daySlider.removeLast()
+                        currentDayIndex = 1
+                    }
+                } else if newValue == daySlider.count - 1 {
+                    if let lastDate = daySlider.last {
+                        daySlider.append(lastDate.nextDate())
+                        daySlider.removeFirst()
+                        currentDayIndex = daySlider.count - 2
+                    }
                 }
 
-                // update header
-                headerDay = daySlider[1]
+                // Update header/date bindings
+                headerDay = daySlider[currentDayIndex]
                 currentDate = headerDay
             }
         }
@@ -151,38 +162,7 @@ public struct CKCompactDay<Detail: View>: View {
             }
             .padding(5)
         }
-        .background {
-            GeometryReader {
-                let minX = $0.frame(in: .global).minX
-
-                Color.clear
-                    .preference(key: OffsetKey.self, value: minX)
-                    .onPreferenceChange(OffsetKey.self) { value in
-                        if value.rounded() == 0 && createDay {
-                            paginateDay()
-                            createDay = false
-                        }
-                    }
-            }
-        }
         .defaultScrollAnchor(.center)
-    }
-
-    func paginateDay() {
-
-        if daySlider.indices.contains(currentDayIndex) {
-            if let firstDate = daySlider.first, currentDayIndex == 0 {
-                daySlider.insert(firstDate.previousDate(), at: 0)
-                daySlider.removeLast()
-                currentDayIndex = 1
-            }
-
-            if let lastDate = daySlider.last, currentDayIndex == (daySlider.count - 1) {
-                daySlider.append(lastDate.nextDate())
-                daySlider.removeFirst()
-                currentDayIndex = daySlider.count - 2
-            }
-        }
     }
 
     func calcDaySliders(newDate: Date) {
@@ -200,22 +180,22 @@ public struct CKCompactDay<Detail: View>: View {
     NavigationView {
 
         let event1 = CKEvent(
-            startDate: Date().dateFrom(13, 4, 2024, 12, 00),
-            endDate: Date().dateFrom(13, 4, 2024, 13, 00),
+            startDate: Date().dateFrom(13, 2, 2026, 12, 00),
+            endDate: Date().dateFrom(13, 2, 2026, 13, 00),
             text: "Event 1",
             backCol: "#D74D64"
         )
 
         let event2 = CKEvent(
-            startDate: Date().dateFrom(13, 4, 2024, 12, 15),
-            endDate: Date().dateFrom(13, 4, 2024, 13, 15),
+            startDate: Date().dateFrom(14, 2, 2026, 12, 15),
+            endDate: Date().dateFrom(14, 2, 2026, 13, 15),
             text: "Event 2",
             backCol: "#3E56C2"
         )
 
         let event3 = CKEvent(
-            startDate: Date().dateFrom(13, 4, 2024, 12, 30),
-            endDate: Date().dateFrom(13, 4, 2024, 15, 01),
+            startDate: Date().dateFrom(15, 2, 2026, 12, 30),
+            endDate: Date().dateFrom(15, 2, 2026, 13, 01),
             text: "Event 3",
             backCol: "#F6D264"
         )
@@ -223,7 +203,7 @@ public struct CKCompactDay<Detail: View>: View {
         CKCompactDay(
             detail: { event in EmptyView() },
             events: [event1, event2, event3],
-            date: .constant(Date().dateFrom(19, 4, 2024))
+            date: .constant(Date())
         )
     }
 }

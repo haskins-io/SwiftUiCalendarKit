@@ -62,7 +62,7 @@ public struct CKCompactMonth<Detail: View>: View {
         CKCompactMonth(
             detail: { event in EmptyView() },
             events: [event1, event2, event3],
-            date: .constant(Date().dateFrom(16, 4, 2024))
+            date: .constant(Date())
         )
     }
 }

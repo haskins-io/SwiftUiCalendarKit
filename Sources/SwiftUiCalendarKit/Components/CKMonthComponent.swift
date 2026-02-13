@@ -79,6 +79,7 @@ struct CKMonthComponent: View {
                 trailing: { date in
                     Text(dayFormatter.string(from: date))
                         .foregroundColor(.secondary)
+                        .padding(6)
                 },
                 header: { date in
                     Text(weekDayFormatter.string(from: date)).fontWeight(.bold)
@@ -268,12 +269,10 @@ struct CalendarViewComponent_Previews: PreviewProvider {
 
     static var previews: some View {
 
-        CalendarComponent(calendar: Calendar(identifier: .gregorian),
-                              date: .constant(Date()),
-                              content: { _ in  Text("2") },
-                              trailing: { _ in  Text("1").foregroundColor(.secondary) },
-                              header: { _ in  Text("Mon") },
-                              title: { _ in  Text("Month") }
+        CKMonthComponent(
+            calendar: Calendar(identifier: .gregorian),
+            date: .constant(Date()),
+            events: []
         )
         .previewDevice("iPhone 11")
     }
