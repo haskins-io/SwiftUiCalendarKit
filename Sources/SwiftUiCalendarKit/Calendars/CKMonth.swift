@@ -95,23 +95,23 @@ public struct CKMonth: View {
 
 #Preview {
 
-
     let event1 = CKEvent(
-        startDate: Date().dateFrom(3, 2, 2026, 1, 00),
-        endDate: Date().dateFrom(3, 2, 2026, 2, 00),
+        startDate: Date().dateFrom(13, 2, 2026, 12, 00),
+        endDate: Date().dateFrom(13, 2, 2026, 13, 00),
         text: "Event 1",
         backCol: "#D74D64"
     )
 
     let event2 = CKEvent(
-        startDate: Date().dateFrom(3, 2, 2026, 2, 00),
-        endDate: Date().dateFrom(3, 2, 2026, 3, 00),
-        text: "Event 2"
+        startDate: Date().dateFrom(14, 2, 2026, 14, 15),
+        endDate: Date().dateFrom(14, 2, 2026, 14, 45),
+        text: "Event 2",
+        backCol: "#3E56C2"
     )
 
     let event3 = CKEvent(
-        startDate: Date().dateFrom(3, 2, 2026, 3, 30),
-        endDate: Date().dateFrom(3, 2, 2026, 4, 30),
+        startDate: Date().dateFrom(15, 2, 2026, 16, 30),
+        endDate: Date().dateFrom(15, 2, 2026, 17, 00),
         text: "Event 3",
         backCol: "#F6D264"
     )
@@ -119,6 +119,6 @@ public struct CKMonth: View {
     return CKMonth(
         observer: CKCalendarObserver(),
         events: [event1, event2, event3],
-        date: .constant(Date().dateFrom(11, 2, 2026))
+        date: .constant(Date())
     )
 }

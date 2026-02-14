@@ -40,8 +40,7 @@ enum CKUtils {
                         event: event,
                         overlapsWith: overLappingCount(event, events),
                         position: 1,
-                        width: width,
-                        startHour: props.timelineStartHour)
+                        width: width)
                 )
             } else if !overLappings(event, pos2) {
                 pos2.append(
@@ -49,8 +48,7 @@ enum CKUtils {
                         event: event,
                         overlapsWith: overLappingCount(event, events),
                         position: 2,
-                        width: width,
-                        startHour: props.timelineStartHour)
+                        width: width)
                 )
             } else if !overLappings(event, pos3) {
                 pos3.append(
@@ -58,8 +56,7 @@ enum CKUtils {
                         event: event,
                         overlapsWith: overLappingCount(event, events),
                         position: 3,
-                        width: width,
-                        startHour: props.timelineStartHour)
+                        width: width)
                 )
             } else if !overLappings(event, pos4) {
                 pos4.append(
@@ -67,8 +64,7 @@ enum CKUtils {
                         event: event,
                         overlapsWith: overLappingCount(event, events),
                         position: 4,
-                        width: width,
-                        startHour: props.timelineStartHour)
+                        width: width)
                 )
             } else if !overLappings(event, pos5) {
                 pos5.append(
@@ -76,8 +72,7 @@ enum CKUtils {
                         event: event,
                         overlapsWith: overLappingCount(event, events),
                         position: 5,
-                        width: width,
-                        startHour: props.timelineStartHour)
+                        width: width)
                 )
             }
         }

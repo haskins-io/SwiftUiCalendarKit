@@ -18,28 +18,18 @@ public struct CKProperties {
 
     public init(
         headingAliignment: HorizontalAlignment = .leading,
-        timelineStartHour: Int = 0,
-        timelineEndHour: Int = 24,
+        timelineStartHour: Int = 9,
+        timelineEndHour: Int = 17,
         showTimelineTime: Bool = true,
     ) {
         self.headingAligment = headingAliignment
 
         if timelineStartHour > timelineEndHour {
-            self.timelineStartHour = 0
-            self.timelineEndHour = 24
+            self.timelineStartHour = 9
+            self.timelineEndHour = 17
         } else {
-
-            if (timelineStartHour-2) >= 0  {
-                self.timelineStartHour = (timelineStartHour - 2)
-            } else {
-                self.timelineStartHour = timelineStartHour
-            }
-
-            if (timelineEndHour + 2) <= 24 {
-                self.timelineEndHour = (timelineEndHour + 2)
-            } else {
-                self.timelineEndHour = timelineEndHour
-            }
+            self.timelineStartHour = timelineStartHour
+            self.timelineEndHour = timelineEndHour
         }
 
         self.showTimelineTime = showTimelineTime

@@ -85,8 +85,12 @@ struct CKMonthDayCell: View {
             .frame(width: cellWidth, height: cellHeight)
             .modifier(CKMonthDayCellModifier())
 
-            addEvents()
+            var maxRows = calcEventlistSize()
+            if maxRows > 0 {
+                addEvents()
+            }
         }
+        .background(calendar.isDateInWeekend(date) ? Color.gray.opacity(0.1) : Color.clear)
     }
 
     private func isFirstDayOfMonth() -> Bool {
@@ -96,28 +100,35 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func addEvents() -> some View {
 
-        ZStack {
-            if events.count == 1 {
-                event(event: events[0], yOffset: 36)
-            } else if events.count == 2 {
-                event(event: events[0], yOffset: 36)
-                event(event: events[1], yOffset: 55)
-            } else if events.count == 3 {
-                event(event: events[0], yOffset: 36)
-                event(event: events[1], yOffset: 52)
-                event(event: events[2], yOffset: 68)
-            } else if events.count > 3 {
-                event(event: events[0], yOffset: 36)
-                event(event: events[1], yOffset: 52)
-                event(event: events[2], yOffset: 68)
+        var maxRows = calcEventlistSize()
 
-                Text("+ \(events.count - 3) more")
+        return ZStack {
+
+            ForEach(0..<maxRows, id: \.self) { index in
+                eventView(event: events[index], yOffset: 15 + (20 * CGFloat(index)))
+            }
+
+            if events.count > maxRows {
+                Text("+ \(events.count - maxRows) more").font(.caption)
+                .offset(x: 0, y: cellHeight - 23)
             }
         }.padding(0)
     }
 
+    private func calcEventlistSize() -> Int {
+        let offset: CGFloat = 15 + 25
+
+        var maxRows = Int((cellHeight - offset) / 20)
+
+        if maxRows > events.count {
+            maxRows = events.count
+        }
+
+        return maxRows
+    }
+
     @ViewBuilder
-    private func event(event: any CKEventSchema, yOffset: CGFloat) -> some View {
+    private func eventView(event: any CKEventSchema, yOffset: CGFloat) -> some View {
         HStack{
             if event.backgroundColor.count == 7 {
                 Circle()
@@ -153,31 +164,55 @@ struct CKMonthDayCell: View {
 
 #Preview {
 
-    let event1 = CKEvent(
-        startDate: Date().dateFrom(3, 2, 2026, 1, 00),
-        endDate: Date().dateFrom(3, 2, 2026, 2, 00),
-        text: "Event 1 adf ads f asd f adsf asd f asd fasd",
-        backCol: "#D74D64"
-    )
-
-    let event2 = CKEvent(
-        startDate: Date().dateFrom(3, 2, 2026, 2, 00),
-        endDate: Date().dateFrom(3, 2, 2026, 3, 00),
-        text: "Event 2",
-        backCol: ""
-    )
-
-    let event3 = CKEvent(
-        startDate: Date().dateFrom(33, 2, 2026, 3, 30),
-        endDate: Date().dateFrom(33, 2, 2026, 4, 30),
-        text: "Event 3",
-        backCol: "#F6D264"
-    )
+    let events: [any CKEventSchema] = [
+        CKEvent(
+            startDate: Date().dateFrom(09, 2, 2026, 12, 30),
+            endDate: Date().dateFrom(09, 2, 2026, 13, 30),
+            text: "Monday",
+            backCol: "#D74D64"
+        ),
+        CKEvent(
+            startDate: Date().dateFrom(10, 2, 2026, 12, 30),
+            endDate: Date().dateFrom(10, 2, 2026, 13, 30),
+            text: "Tuesday",
+            backCol: "#D74D64"
+        ),
+        CKEvent(
+            startDate: Date().dateFrom(11, 2, 2026, 13, 00),
+            endDate: Date().dateFrom(11, 2, 2026, 14, 00),
+            text: "Wednesday",
+            backCol: "#3E56C2"
+        ),
+        CKEvent(
+            startDate: Date().dateFrom(12, 2, 2026, 16, 30),
+            endDate: Date().dateFrom(12, 2, 2026, 17),
+            text: "Thursday",
+            backCol: "#F6D264"
+        ),
+        CKEvent(
+            startDate: Date().dateFrom(13, 2, 2026, 12, 30),
+            endDate: Date().dateFrom(13, 2, 2026, 13, 30),
+            text: "Friday",
+            backCol: "#D74D64"
+        ),
+        CKEvent(
+            startDate: Date().dateFrom(14, 2, 2026, 13, 00),
+            endDate: Date().dateFrom(14, 2, 2026, 14, 00),
+            text: "Saturday",
+            backCol: "#3E56C2"
+        ),
+        CKEvent(
+            startDate: Date().dateFrom(15, 2, 2026, 16, 30),
+            endDate: Date().dateFrom(15, 2, 2026, 17),
+            text: "Sunday",
+            backCol: "#F6D264"
+        )
+    ]
 
     return CKMonthDayCell(
         date: Date(timeIntervalSince1970: 1769977030),
         observer: CKCalendarObserver(),
-        events: [event1, event2, event3],
+        events: events,
         month: Date(),
         width: 150,
         height: 150,

@@ -26,7 +26,10 @@ struct CKEventView: View {
 
         self.event = eventData.event
 
-        let dayOfWeek = Date.dayOfWeek(event.startDate)
+        var dayOfWeek = Date.dayOfWeek(event.startDate)
+        if dayOfWeek == 1 {
+            dayOfWeek = 8
+        }
 
         if weekView {
 
@@ -38,7 +41,7 @@ struct CKEventView: View {
                 if dayOfWeek == 1 {
                     xOffset = 47
                 } else {
-                    xOffset = 47 + (eventData.cellWidth * CGFloat(dayOfWeek - 1))
+                    xOffset = 47 + (eventData.cellWidth * CGFloat(dayOfWeek - 2))
                 }
             }
         } else {

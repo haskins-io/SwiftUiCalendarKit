@@ -37,7 +37,6 @@ class CKEventViewData: Identifiable {
         overlapsWith: CGFloat,
         position: CGFloat,
         width: CGFloat,
-        startHour: Int = 0
     ) {
 
         self.event = event
@@ -49,7 +48,7 @@ class CKEventViewData: Identifiable {
         height = duration / 60 / 60 * CKTimeline.hourHeight
 
         day = calendar.component(.day, from: event.startDate)
-        hour = calendar.component(.hour, from: event.startDate) - startHour
+        hour = calendar.component(.hour, from: event.startDate)
         minute = calendar.component(.minute, from: event.startDate)
 
         eventWidth = (width / overlapsWith) - 5

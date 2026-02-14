@@ -9,20 +9,18 @@ import SwiftUI
 
 struct CKTimeline: View {
 
-    let startHour: Int
-    let endHour: Int
+    private let startHour = 0
+    private let endHour = 24
+
+    private let showLines: Bool
+
+    private let properties: CKProperties?
 
     static let hourHeight = 60.0
 
-    init(props: CKProperties? = CKProperties()) {
-
-        if let properties = props {
-            self.startHour = properties.timelineStartHour
-            self.endHour = properties.timelineEndHour
-        } else {
-            self.startHour = 0
-            self.endHour = 24
-        }
+    init(props: CKProperties? = CKProperties(), showlines: Bool = true) {
+        self.showLines = showlines
+        self.properties = props
     }
 
     var body: some View {
@@ -44,8 +42,20 @@ struct CKTimeline: View {
         }
     }
 
+    private func isOutOfHours(hour: Int) -> Bool {
+        guard let props = properties else {
+            return false
+        }
+
+        if hour < props.timelineStartHour || hour >= props.timelineEndHour {
+            return true
+        }
+
+        return false
+    }
+
 }
 
 #Preview {
-    CKTimeline()
+    CKTimeline(showlines: true)
 }
