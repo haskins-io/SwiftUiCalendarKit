@@ -90,7 +90,7 @@ public struct CKCompactWeek<Detail: View>: View {
                 Divider()
 
                 ScrollView {
-                    
+
                     ZStack(alignment: .topLeading) {
 
                         CKTimeline()
@@ -112,10 +112,10 @@ public struct CKCompactWeek<Detail: View>: View {
 
                         if config.showTime {
                             CKTimeIndicator()
-                                .offset(x:0, y: timelinePosition)
+                                .offset(x: 0, y: timelinePosition)
                         }
                     }
-                    .onReceive(timer) { time in
+                    .onReceive(timer) { _ in
                         guard config.showTime else {
                             return
                         }
@@ -144,8 +144,8 @@ public struct CKCompactWeek<Detail: View>: View {
             .padding(.leading, 10)
             .padding(.top, 5)
             .font(.title)
-            
-            TabView(selection: $currentWeekIndex){
+
+            TabView(selection: $currentWeekIndex) {
                 ForEach(weekSlider.indices, id: \.self) { index in
                     let week = weekSlider[index]
                     weekRow(week)
@@ -165,7 +165,7 @@ public struct CKCompactWeek<Detail: View>: View {
     private func weekRow(_ week: [Date.WeekDay]) -> some View {
 
         HStack(spacing: 0) {
-        
+
             ForEach(week) { day in
 
                 let status = Calendar.current.isDate(day.date, inSameDayAs: Date())
@@ -270,7 +270,7 @@ public struct CKCompactWeek<Detail: View>: View {
         )
 
         CKCompactWeek(
-            detail: { event in EmptyView() } ,
+            detail: { _ in EmptyView() },
             events: [event1, event2, event3],
             date: .constant(Date())
         )

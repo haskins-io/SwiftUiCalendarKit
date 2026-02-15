@@ -25,16 +25,16 @@ public protocol CKEventSchema: Identifiable {
 
     var anyHashableID: AnyHashable { get }
 
-    var startDate: Date  {get set}
-    var endDate: Date  {get set}
+    var startDate: Date { get set }
+    var endDate: Date { get set }
 
-    var text: String  {get set}
-    var primaryText: String  {get set}
-    var secondaryText: String  {get set}
+    var text: String { get set }
+    var primaryText: String { get set }
+    var secondaryText: String { get set }
 
-    var backgroundColor: String  {get set}
+    var backgroundColor: String { get set }
 
-    var showTotalTime: Bool {get  set}
+    var showTotalTime: Bool { get set }
 
     /// Returns the colur of the event
     func backgroundAsColor() -> Color

@@ -13,6 +13,6 @@ public class CKCalendarObserver: ObservableObject {
     @Published public var eventSelected = false
 
     public init() {
-        
+
     }
 }

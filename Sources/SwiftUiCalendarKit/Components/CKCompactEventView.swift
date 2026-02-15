@@ -15,10 +15,9 @@ struct CKCompactEventView<Detail: View>: View {
     private let xOffset: CGFloat
     private let event: any CKEventSchema
 
-
     init(_ eventData: CKEventViewData,
-         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail)
-    {
+         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail
+    ) {
         self.detail = detail
 
         self.eventData = eventData
@@ -87,7 +86,6 @@ struct CKCompactEventView<Detail: View>: View {
             position: 1,
             width: 150
         ),
-        detail: { event in EmptyView() }
+        detail: { _ in EmptyView() }
     )
 }
-

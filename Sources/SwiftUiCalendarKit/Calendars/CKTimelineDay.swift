@@ -96,10 +96,10 @@ public struct CKTimelineDay: View {
 
                 if config.showTime {
                     CKTimeIndicator()
-                        .offset(x:0, y: timelinePosition)
+                        .offset(x: 0, y: timelinePosition)
                 }
             }
-            .onReceive(timer) { time in
+            .onReceive(timer) { _ in
                 guard config.showTime else {
                     return
                 }
@@ -141,4 +141,3 @@ public struct CKTimelineDay: View {
         date: .constant(Date())
     )
 }
-

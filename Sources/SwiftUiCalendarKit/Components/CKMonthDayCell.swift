@@ -131,7 +131,7 @@ struct CKMonthDayCell: View {
 
     @ViewBuilder
     private func eventView(event: any CKEventSchema, yOffset: CGFloat) -> some View {
-        HStack{
+        HStack {
             if event.backgroundColor.count == 7 {
                 Circle()
                     .fill(event.backgroundAsColor())

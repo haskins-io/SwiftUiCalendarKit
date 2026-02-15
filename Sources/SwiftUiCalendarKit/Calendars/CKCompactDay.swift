@@ -41,8 +41,7 @@ public struct CKCompactDay<Detail: View>: View {
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
         events: [any CKEventSchema],
         date: Binding<Date>
-    )
-    {
+    ) {
         self.detail = detail
         self.events = events
         self._currentDate = date
@@ -117,7 +116,7 @@ public struct CKCompactDay<Detail: View>: View {
     @ViewBuilder
     private func timeline(width: CGFloat) -> some View {
 
-        TabView(selection: $currentDayIndex){
+        TabView(selection: $currentDayIndex) {
             ForEach(daySlider.indices, id: \.self) { index in
                 let day = daySlider[index]
                 dayView(day, width)
@@ -152,10 +151,10 @@ public struct CKCompactDay<Detail: View>: View {
 
                 if config.showTime {
                     CKTimeIndicator()
-                        .offset(x:0, y: timelinePosition)
+                        .offset(x: 0, y: timelinePosition)
                 }
             }
-            .onReceive(timer) { time in
+            .onReceive(timer) { _ in
                 guard config.showTime else {
                     return
                 }
@@ -204,10 +203,9 @@ public struct CKCompactDay<Detail: View>: View {
         )
 
         CKCompactDay(
-            detail: { event in EmptyView() },
+            detail: { _ in EmptyView() },
             events: [event1, event2, event3],
             date: .constant(Date())
         )
     }
 }
-

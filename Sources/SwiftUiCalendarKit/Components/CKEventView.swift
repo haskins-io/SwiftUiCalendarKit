@@ -19,8 +19,8 @@ struct CKEventView: View {
 
     init(_ eventData: CKEventViewData,
          observer: CKCalendarObserver,
-         weekView: Bool)
-    {
+         weekView: Bool
+    ) {
         self.eventData = eventData
         self._observer = .init(wrappedValue: observer)
 

@@ -90,13 +90,11 @@ public struct CKMonth: View {
     }
 
     private func eventsForDay(day: Date) -> [any CKEventSchema] {
-        
+
         var dayEvents: [any CKEventSchema] = []
 
-        for event in events {
-            if Calendar.current.isDate(event.startDate, inSameDayAs: day) {
-                dayEvents.append(event)
-            }
+        for event in events where Calendar.current.isDate(event.startDate, inSameDayAs: day) {
+            dayEvents.append(event)
         }
 
         return dayEvents

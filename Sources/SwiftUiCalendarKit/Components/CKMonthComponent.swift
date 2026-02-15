@@ -42,7 +42,7 @@ struct CKMonthComponent: View {
                 calendar: calendar,
                 date: $selectedDate,
                 content: { date in
-                    ZStack{
+                    ZStack {
                         Button(action: { selectedDate = date }) {
                             ZStack {
 
@@ -69,7 +69,7 @@ struct CKMonthComponent: View {
                             }
                         }
 
-                        if (numberOfEventsInDate(date: date) > 0) {
+                        if numberOfEventsInDate(date: date) > 0 {
                             Circle()
                                 .size(CGSize(width: 5, height: 5))
                                 .foregroundColor(Color.green)
@@ -166,10 +166,8 @@ struct CKMonthComponent: View {
 
     private func numberOfEventsInDate(date: Date) -> Int {
         var count: Int = 0
-        for event in events {
-            if calendar.isDate(date, inSameDayAs: event.startDate) {
-                count += 1
-            }
+        for event in events where calendar.isDate(date, inSameDayAs: event.startDate) {
+            count += 1
         }
         return count
     }

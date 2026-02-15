@@ -70,7 +70,7 @@ public struct CKCompactMonth<Detail: View>: View {
         )
 
         CKCompactMonth(
-            detail: { event in EmptyView() },
+            detail: { _ in EmptyView() },
             events: [event1, event2, event3],
             date: .constant(Date())
         )

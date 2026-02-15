@@ -68,7 +68,7 @@ public struct CKTimelineWeek: View {
         ScrollView {
 
             ZStack(alignment: .topLeading) {
-                
+
                 CKTimeline()
 
                 let eventData = CKUtils.generateEventViewData(
@@ -99,10 +99,10 @@ public struct CKTimelineWeek: View {
 
                 if config.showTime {
                     CKTimeIndicator()
-                        .offset(x:0, y: timelinePosition)
+                        .offset(x: 0, y: timelinePosition)
                 }
             }
-            .onReceive(timer) { time in
+            .onReceive(timer) { _ in
                 guard config.showTime else {
                     return
                 }

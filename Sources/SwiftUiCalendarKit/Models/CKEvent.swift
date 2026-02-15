@@ -10,7 +10,7 @@ import SwiftUI
 public struct CKEvent: CKEventSchema {
 
     public typealias Id = UUID
-    public var id : Id = UUID()
+    public var id: Id = UUID()
 
     public var anyHashableID: AnyHashable { AnyHashable(id) }
 

@@ -56,4 +56,3 @@ class CKEventViewData: Identifiable {
         yOffset = (Double(hour) * (CKTimeline.hourHeight)) + Double(minute)
     }
 }
-
