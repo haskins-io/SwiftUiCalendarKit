@@ -30,6 +30,7 @@ public struct CKTimelineDay: View {
     private let calendar = Calendar.current
 
     @State private var timelinePosition = 0.0
+    @State private var time = Date()
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
     public init(
@@ -95,7 +96,7 @@ public struct CKTimelineDay: View {
                 }
 
                 if config.showTime {
-                    CKTimeIndicator()
+                    CKTimeIndicator(time: time)
                         .offset(x: 0, y: timelinePosition)
                 }
             }
@@ -104,6 +105,7 @@ public struct CKTimelineDay: View {
                     return
                 }
                 if Calendar.current.component(.second, from: Date()) == 0 {
+                    time = Date()
                     timelinePosition = CKUtils.currentTimelinePosition()
                 }
             }
@@ -140,4 +142,5 @@ public struct CKTimelineDay: View {
         events: [event1, event2, event3],
         date: .constant(Date())
     )
+    .showTime(true)
 }
