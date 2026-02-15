@@ -1,9 +1,72 @@
-
 # SwiftUiCalendarKit
 
-I'm developing this as part of an application that requires multiple calendar views, on different devices. This means at this time I'm trying to get the functionality that I need for my larger application working, and not spending too much time at this moment looking at localisation, customisations, etc. I'm sure I'll get around to those at some time, just not planned as yet.
+A SwiftUi library that provides different Calendar formats that can be included in any SwiftUI application.
 
 All the calendars are written purely in SwiftUI.
+
+## Installation
+1. Open your existing Xcode project or create a new one
+2. Open the Swift Packages Manager
+	- In the project navigator, select your project file to open the project settings.
+	- Navigate to the the **Package Dependencies** tab
+3. Add the SwiftUICalendarKit Package
+	- Click the **+** button at the bottom of the tab
+	- In the dialog box that appears, enter the URL for SwiftUiCalendarKit: `https://github.com/haskins-io/SwiftUiCalendarKit.git`
+4. Specify version rules
+	- Xcode will prompt you to specify version rules for the package. "Up to Next Major Version" ensures compatibility with future updates that don't introduce breaking changes.
+	- Click **Add Package**
+ 
+## Usage   
+```
+import SwiftUiCalendarKit
+
+struct CalendarTest: View {
+
+    let events: [any CKEventSchema] = [
+        CKEvent(
+            startDate: Date().dateFrom(09, 2, 2026, 12, 30),
+            endDate: Date().dateFrom(09, 2, 2026, 13, 30),
+            text: "Monday",
+            backCol: "#D74D64"
+        ),
+        CKEvent(
+            startDate: Date().dateFrom(10, 2, 2026, 12, 30),
+            endDate: Date().dateFrom(10, 2, 2026, 13, 30),
+            text: "Tuesday",
+            backCol: "#D74D64"
+        )
+    ]
+    
+    @State private var date = Date()
+
+    var body: some View {
+        CKCompactDay(
+            detail: { event in EventDetail(event: event) },
+            events: events,
+            date: $date
+        )
+        .showTime(true)
+        .workingHours(start: 7, end: 19)
+        .currentDayColour(.blue)
+    }
+}
+
+```
+
+## Configurations
+There are some view modifiers that can be used to configure the calendars. These are
+
+#### currentDayColour
+Applying this will change the colour that is used to indicate the current date.
+
+#### showTime
+Applying this will show a line on a Timeline calendar that indicates the time.
+
+#### headingAlignment
+Applying this changes the position of the heading on the CKCompactWeek
+
+#### workingHours
+Applying this sets the working hours of a Timeline calendar. This will change the colour of the non working hours to be light grey.
 
 ## Available Calendars
 ### CKTimelineDay
@@ -46,12 +109,15 @@ This shows all the events for a selected month. This shows a picker style calend
 
 <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth.png" width="300"/>
 
+## Examples
+There is an example of how to use all the calendars in /Examples
+
 
 ## Events
 There is a Protocal called CKEventSchema that defines what a Calendar entry should look like. There is an example implementation called 'CKEvent'. Though you can use your own classes/structs if you want and simply add a reference to the protocol.
 
 ## Navigation
-For the Compact calendars you can pass in a View that provides your EventDetail. This is used as part of a NavigationLink and when tapping an Event it will navigate to the passed View. See in the Examples folder.
+For the Compact calendars you can pass in a View that provides your *EventDetail*. This is used as part of a NavigationLink and when tapping an Event it will navigate to the passed View. See in the Examples folder.
 
 For the other calenders there is an CalendarObserver class. When you click/tap on an event it will set the event object that was tapped on the class and then set 'eventSelected' flag to be true. How you handle this is down to your application.
 
@@ -65,3 +131,4 @@ Same answer as above. The Protocol does force you to implement functions to retu
 ## Known Issues
 ### Overlapping events
 While the code can handle overlapping events, and display them correctly, there are some overlay scenarios which it doesn't handle very well.
+
