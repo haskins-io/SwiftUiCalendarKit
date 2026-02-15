@@ -8,6 +8,16 @@
 import Combine
 import SwiftUI
 
+///
+/// CKTimelineWeek
+///
+/// This Calendar type is used for showing a single week on a large screen size such as an iPad or Mac
+///
+/// - Paramters
+///   - observer: Listen to this to be notified when an event is tapped/clicked
+///   - events: an array of events that conform to CKEventSchema
+///   - date: The date for the calendar to show
+///
 public struct CKTimelineWeek: View {
 
     @Environment(\.ckConfig) private var config

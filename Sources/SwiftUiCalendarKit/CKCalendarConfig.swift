@@ -47,10 +47,12 @@ struct CKModifier: ViewModifier {
 
 extension View {
 
+    /// When set changes the background colour of the curent date
     public func currentDayColour(_ value: Color) -> some View {
         transformEnvironment(\.ckConfig) { $0.currentDayColour = value }
     }
 
+    /// When set shows a red line on a timeline to indicate the time
     public func showTime(_ value: Bool) -> some View {
         transformEnvironment(\.ckConfig) { $0.showTime = value }
     }
@@ -59,6 +61,7 @@ extension View {
         transformEnvironment(\.ckConfig) { $0.headingAlignment = alignment }
     }
 
+    /// Setting the working hours, will grey out the hours that are not worked on a Timeline calendar
     public func workingHours(start: Int, end: Int) -> some View {
         transformEnvironment(\.ckConfig) {
             $0.dayStart = start

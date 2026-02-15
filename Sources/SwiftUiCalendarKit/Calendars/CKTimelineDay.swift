@@ -8,6 +8,16 @@
 import Combine
 import SwiftUI
 
+///
+/// CKTimelineDay
+///
+/// This Calendar type is used for showing a single day on a large screen size such as an iPad or Mac
+///
+/// - Paramters
+///   - observer: Listen to this to be notified when an event is tapped/clicked
+///   - events: an array of events that conform to CKEventSchema
+///   - date: The date for the calendar to show
+///
 public struct CKTimelineDay: View {
 
     @Environment(\.ckConfig) private var config
@@ -60,7 +70,7 @@ public struct CKTimelineDay: View {
     }
 
     @ViewBuilder
-    func dayView(width: CGFloat) -> some View {
+    private func dayView(width: CGFloat) -> some View {
 
         ScrollView {
 

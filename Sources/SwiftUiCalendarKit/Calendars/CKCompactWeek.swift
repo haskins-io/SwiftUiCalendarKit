@@ -8,6 +8,16 @@
 import Combine
 import SwiftUI
 
+///
+/// CKCompactMonth
+///
+/// This Calendar type is used for showing a week on a compact screen size such as an iPhone
+///
+/// - Paramters
+///   - detail: The view that should be shown when an event in the Calendar is tapped.
+///   - events: an array of events that conform to CKEventSchema
+///   - date: The date for the calendar to show
+///
 public struct CKCompactWeek<Detail: View>: View {
 
     @Environment(\.ckConfig) private var config
@@ -71,7 +81,7 @@ public struct CKCompactWeek<Detail: View>: View {
 
     /// - Timeline View
     @ViewBuilder
-    func timelineView() -> some View {
+    private func timelineView() -> some View {
 
         GeometryReader { proxy in
 
@@ -121,7 +131,7 @@ public struct CKCompactWeek<Detail: View>: View {
 
     /// - Header View
     @ViewBuilder
-    func headerView() -> some View {
+    private func headerView() -> some View {
 
         VStack(alignment: config.headingAlignment) {
 
@@ -152,7 +162,7 @@ public struct CKCompactWeek<Detail: View>: View {
 
     /// - Week Row
     @ViewBuilder
-    func weekRow(_ week: [Date.WeekDay]) -> some View {
+    private func weekRow(_ week: [Date.WeekDay]) -> some View {
 
         HStack(spacing: 0) {
         
@@ -201,7 +211,7 @@ public struct CKCompactWeek<Detail: View>: View {
         }
     }
 
-    func paginateWeek() {
+    private func paginateWeek() {
         if weekSlider.indices.contains(currentWeekIndex) {
             if let firstDate = weekSlider[currentWeekIndex].first?.date, currentWeekIndex == 0 {
                 weekSlider.insert(firstDate.createPreviousWeek(), at: 0)
@@ -217,7 +227,7 @@ public struct CKCompactWeek<Detail: View>: View {
         }
     }
 
-    func calcWeekSliders(currentDate: Date) {
+    private func calcWeekSliders(currentDate: Date) {
 
         if weekSlider.isEmpty {
             let currentWeek = currentDate.fetchWeek()

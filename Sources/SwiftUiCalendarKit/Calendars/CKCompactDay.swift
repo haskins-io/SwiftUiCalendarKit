@@ -8,6 +8,16 @@
 import Combine
 import SwiftUI
 
+///
+/// CKCompactDay
+///
+/// This Calendar type is used for showing a single day on a compact screen size such as an iPhone
+///
+/// - Paramters
+///   - detail: The view that should be shown when an event in the Calendar is tapped.
+///   - events: an array of events that conform to CKEventSchema
+///   - date: The date for the calendar to show
+///
 public struct CKCompactDay<Detail: View>: View {
 
     @Environment(\.ckConfig) private var config
@@ -23,7 +33,6 @@ public struct CKCompactDay<Detail: View>: View {
     private let detail: (any CKEventSchema) -> Detail
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
-
 
     @State private var timelinePosition = 0.0
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
@@ -90,7 +99,7 @@ public struct CKCompactDay<Detail: View>: View {
     }
 
     @ViewBuilder
-    func header() -> some View {
+    private func header() -> some View {
         VStack(alignment: .leading) {
             HStack {
                 Text(headerDay.formatted(.dateTime.day().month(.wide)))
@@ -106,7 +115,7 @@ public struct CKCompactDay<Detail: View>: View {
     }
 
     @ViewBuilder
-    func timeline(width: CGFloat) -> some View {
+    private func timeline(width: CGFloat) -> some View {
 
         TabView(selection: $currentDayIndex){
             ForEach(daySlider.indices, id: \.self) { index in
@@ -118,7 +127,7 @@ public struct CKCompactDay<Detail: View>: View {
     }
 
     @ViewBuilder
-    func dayView(_ date: Date, _ width: CGFloat) -> some View {
+    private func dayView(_ date: Date, _ width: CGFloat) -> some View {
 
         ScrollView {
 
@@ -159,7 +168,7 @@ public struct CKCompactDay<Detail: View>: View {
         .defaultScrollAnchor(.center)
     }
 
-    func calcDaySliders(newDate: Date) {
+    private func calcDaySliders(newDate: Date) {
 
         if daySlider.isEmpty {
             daySlider.append(newDate.previousDate())

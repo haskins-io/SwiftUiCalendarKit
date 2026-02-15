@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+///
+/// CKCompactMonth
+///
+/// This Calendar type is used for showing a week on a large screen size such as an iPad or Mac
+///
+/// - Paramters
+///   - observer: Listen to this to be notified when an event is tapped/clicked
+///   - events: an array of events that conform to CKEventSchema
+///   - date: The date for the calendar to show
+///
 public struct CKMonth: View {
 
     @ObservedObject var observer: CKCalendarObserver
