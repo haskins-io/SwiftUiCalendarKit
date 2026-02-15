@@ -10,6 +10,8 @@ import SwiftUI
 
 public struct CKCompactDay<Detail: View>: View {
 
+    @Environment(\.ckConfig) private var config
+
     @Binding private var currentDate: Date
 
     @State private var headerDay: Date = Date()
@@ -22,7 +24,6 @@ public struct CKCompactDay<Detail: View>: View {
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
 
-    private let properties: CKProperties
 
     @State private var timelinePosition = 0.0
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
@@ -30,8 +31,7 @@ public struct CKCompactDay<Detail: View>: View {
     public init(
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
         events: [any CKEventSchema],
-        date: Binding<Date>,
-        props: CKProperties? = CKProperties()
+        date: Binding<Date>
     )
     {
         self.detail = detail
@@ -40,13 +40,8 @@ public struct CKCompactDay<Detail: View>: View {
 
         self._headerDay = State(initialValue: date.wrappedValue)
 
-        self.properties = props ?? CKProperties()
-
-        let showTimelineTime = props?.showTimelineTime == true
-        self.timer = Timer.publish(every: showTimelineTime ? 1 : 0, on: .main, in: .common).autoconnect()
-        if showTimelineTime {
-            _timelinePosition = State(initialValue: CKUtils.currentTimelinePosition())
-        }
+        self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+        _timelinePosition = State(initialValue: CKUtils.currentTimelinePosition())
     }
 
     public var body: some View {
@@ -129,13 +124,12 @@ public struct CKCompactDay<Detail: View>: View {
 
             ZStack(alignment: .topLeading) {
 
-                CKTimeline(props: properties)
+                CKTimeline()
 
                 let eventData = CKUtils.generateEventViewData(
                     date: date,
                     events: events,
-                    width: width - 65,
-                    props: properties
+                    width: width - 65
                 )
 
                 ForEach(eventData, id: \.anyHashableID) { event in
@@ -147,13 +141,13 @@ public struct CKCompactDay<Detail: View>: View {
                     }
                 }
 
-                if properties.showTimelineTime {
+                if config.showTime {
                     CKTimeIndicator()
                         .offset(x:0, y: timelinePosition)
                 }
             }
             .onReceive(timer) { time in
-                guard properties.showTimelineTime else {
+                guard config.showTime else {
                     return
                 }
                 if Calendar.current.component(.second, from: Date()) == 0 {

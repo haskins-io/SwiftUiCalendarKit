@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CKDayHeader: View {
 
+    @Environment(\.ckConfig) private var config
+
     @Binding var currentDate: Date
 
     var width: CGFloat
@@ -42,7 +44,7 @@ struct CKDayHeader: View {
                         ZStack {
                             RoundedRectangle(cornerRadius: 5)
                                 .fill(Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ?
-                                      Color.red : calendar.isDate(weekDay.date, inSameDayAs: currentDate) ? Color.blue.opacity(0.10) :
+                                      config.currentDayColour : calendar.isDate(weekDay.date, inSameDayAs: currentDate) ? Color.blue.opacity(0.10) :
                                         .clear)
                                 .frame(width: 27, height: 27)
 

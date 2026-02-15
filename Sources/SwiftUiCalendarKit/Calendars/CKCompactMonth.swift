@@ -29,7 +29,7 @@ public struct CKCompactMonth<Detail: View>: View {
         VStack {
             CKMonthComponent(calendar: Calendar(identifier: .gregorian), date: $date, events: events)
             Divider()
-            CKCompantMonthEvents(events: events, detail: detail, date: $date)
+            CKCompactMonthEvents(events: events, detail: detail, date: $date)
                 .listStyle(.plain)
         }
     }

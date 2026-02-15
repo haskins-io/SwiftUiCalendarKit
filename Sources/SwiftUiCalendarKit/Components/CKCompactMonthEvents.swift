@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CKCompantMonthEvents<Detail: View>: View {
+struct CKCompactMonthEvents<Detail: View>: View {
 
     @Binding private var date: Date
 
@@ -44,7 +44,7 @@ struct CKCompantMonthEvents<Detail: View>: View {
 }
 
 #Preview {
-    CKCompantMonthEvents (
+    CKCompactMonthEvents (
         events: [
             CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Event 1"),
             CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 15), endDate: Date().dateFrom(13, 4, 2024, 13, 15), text: "Event 2"),

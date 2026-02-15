@@ -20,6 +20,8 @@ struct CKMonthDayCellModifier: ViewModifier {
 
 struct CKMonthDayCell: View {
 
+    @Environment(\.ckConfig) private var config
+
     @ObservedObject var observer: CKCalendarObserver
 
     let calendar = Calendar.current
@@ -64,7 +66,7 @@ struct CKMonthDayCell: View {
                 ZStack {
                     if calendar.isDateInToday(date) {
                         RoundedRectangle(cornerRadius: 5)
-                            .fill(Color.red)
+                            .fill(config.currentDayColour)
                             .frame(width: 25, height: 25)
                             .offset(x: (cellWidth / 2) - 20, y: ((cellHeight / 2) - 15) * -1)
                     }

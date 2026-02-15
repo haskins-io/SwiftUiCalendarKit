@@ -10,6 +10,8 @@ import SwiftUI
 
 struct CKMonthComponent: View {
 
+    @Environment(\.ckConfig) private var config
+
     private let calendar: Calendar
     private let monthFormatter: DateFormatter
     private let dayFormatter: DateFormatter
@@ -47,7 +49,7 @@ struct CKMonthComponent: View {
                                 if calendar.isDateInToday(date) {
 
                                     RoundedRectangle(cornerRadius: 5)
-                                        .fill(Color.red)
+                                        .fill(config.currentDayColour)
                                         .frame(width: 27, height: 27)
                                         .offset(x: 1, y: 0)
 

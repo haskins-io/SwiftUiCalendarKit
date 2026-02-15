@@ -10,36 +10,29 @@ import SwiftUI
 
 public struct CKTimelineWeek: View {
 
+    @Environment(\.ckConfig) private var config
+
     @ObservedObject var observer: CKCalendarObserver
 
     @Binding var date: Date
 
-    @State private var timelinePosition = 0.0
-
     private var events: [any CKEventSchema]
-
     private let calendar = Calendar.current
 
-    private let properties: CKProperties
-
+    @State private var timelinePosition = 0.0
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
     public init(
         observer: CKCalendarObserver,
         events: [any CKEventSchema],
-        date: Binding<Date>,
-        props: CKProperties? = CKProperties()
+        date: Binding<Date>
     ) {
         self._observer = .init(wrappedValue: observer)
         self.events = events
         self._date = date
-        self.properties = props ?? CKProperties()
 
-        let showTimelineTime = props?.showTimelineTime == true
-        self.timer = Timer.publish(every: showTimelineTime ? 1 : 0, on: .main, in: .common).autoconnect()
-        if showTimelineTime {
-            _timelinePosition = State(initialValue: CKUtils.currentTimelinePosition())
-        }
+        self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+        _timelinePosition = State(initialValue: CKUtils.currentTimelinePosition())
     }
 
     public var body: some View {
@@ -66,7 +59,7 @@ public struct CKTimelineWeek: View {
 
             ZStack(alignment: .topLeading) {
                 
-                CKTimeline(props: properties)
+                CKTimeline()
 
                 let eventData = CKUtils.generateEventViewData(
                     date: date,
@@ -94,13 +87,13 @@ public struct CKTimelineWeek: View {
                         .offset(x: offset + 45, y: 10)
                 }
 
-                if properties.showTimelineTime {
+                if config.showTime {
                     CKTimeIndicator()
                         .offset(x:0, y: timelinePosition)
                 }
             }
             .onReceive(timer) { time in
-                guard properties.showTimelineTime else {
+                guard config.showTime else {
                     return
                 }
 

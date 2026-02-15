@@ -19,8 +19,7 @@ enum CKUtils {
     static func generateEventViewData(
         date: Date,
         events: [any CKEventSchema],
-        width: CGFloat,
-        props: CKProperties = CKProperties()) -> [CKEventViewData] {
+        width: CGFloat) -> [CKEventViewData] {
 
         var pos1: [CKEventViewData] = []
         var pos2: [CKEventViewData] = []

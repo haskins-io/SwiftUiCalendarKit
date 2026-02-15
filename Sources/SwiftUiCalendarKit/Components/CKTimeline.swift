@@ -9,45 +9,38 @@ import SwiftUI
 
 struct CKTimeline: View {
 
-    private let startHour = 0
-    private let endHour = 24
-
-    private let showLines: Bool
-
-    private let properties: CKProperties?
+    @Environment(\.ckConfig) private var config
 
     static let hourHeight = 60.0
-
-    init(props: CKProperties? = CKProperties(), showlines: Bool = true) {
-        self.showLines = showlines
-        self.properties = props
-    }
 
     var body: some View {
 
         VStack(alignment: .leading, spacing: 0) {
 
-            ForEach(startHour..<endHour) { hour in
+            ForEach(0..<24) { hour in
 
-                HStack {
-                    Text(String(format: "%02d:00", hour))
-                        .font(.caption)
-                        .frame(width: 40, alignment: .trailing)
-                    Color.gray
-                        .padding(.trailing, 10)
-                        .frame(height: 1)
+                ZStack {
+                    Rectangle()
+                        .fill(isOutOfHours(hour: hour) ? Color.gray.opacity(0.2) : Color.clear)
+                        .frame(height: CKTimeline.hourHeight)
+                        .offset(x: 0, y: 30)
+
+                    HStack {
+                        Text(String(format: "%02d:00", hour))
+                            .font(.caption)
+                            .frame(width: 40, alignment: .trailing)
+                        Color.gray
+                            .frame(height: 1)
+                    }
+                    .frame(height: CKTimeline.hourHeight)
                 }
-                .frame(height: CKTimeline.hourHeight)
             }
         }
     }
 
     private func isOutOfHours(hour: Int) -> Bool {
-        guard let props = properties else {
-            return false
-        }
 
-        if hour < props.timelineStartHour || hour >= props.timelineEndHour {
+        if hour < config.dayStart || hour >= config.dayEnd {
             return true
         }
 
@@ -57,5 +50,6 @@ struct CKTimeline: View {
 }
 
 #Preview {
-    CKTimeline(showlines: true)
+    CKTimeline()
+
 }

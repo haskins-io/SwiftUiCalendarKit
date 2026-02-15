@@ -10,6 +10,8 @@ import SwiftUI
 
 public struct CKCompactWeek<Detail: View>: View {
 
+    @Environment(\.ckConfig) private var config
+
     @Binding private var date: Date
 
     @State private var headerMonth: Date = Date()
@@ -22,29 +24,22 @@ public struct CKCompactWeek<Detail: View>: View {
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
 
-    private let properties: CKProperties
-
     @State private var timelinePosition = 0.0
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
     public init(
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
         events: [any CKEventSchema],
-        date: Binding<Date>,
-        props: CKProperties? = CKProperties()
+        date: Binding<Date>
     ) {
         self.detail = detail
         self.events = events
-        self.properties = props ?? CKProperties()
 
         self._date = date
         self._headerMonth = State(initialValue: date.wrappedValue)
 
-        let showTimelineTime = props?.showTimelineTime == true
-        self.timer = Timer.publish(every: showTimelineTime ? 1 : 0, on: .main, in: .common).autoconnect()
-        if showTimelineTime {
-            _timelinePosition = State(initialValue: CKUtils.currentTimelinePosition())
-        }
+        self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+        _timelinePosition = State(initialValue: CKUtils.currentTimelinePosition())
     }
     public var body: some View {
 
@@ -88,13 +83,12 @@ public struct CKCompactWeek<Detail: View>: View {
                     
                     ZStack(alignment: .topLeading) {
 
-                        CKTimeline(props: properties)
+                        CKTimeline()
 
                         let eventData = CKUtils.generateEventViewData(
                             date: date,
                             events: events,
-                            width: proxy.size.width - 65,
-                            props: properties
+                            width: proxy.size.width - 65
                         )
 
                         ForEach(eventData, id: \.anyHashableID) { event in
@@ -106,13 +100,13 @@ public struct CKCompactWeek<Detail: View>: View {
                             }
                         }
 
-                        if properties.showTimelineTime {
+                        if config.showTime {
                             CKTimeIndicator()
                                 .offset(x:0, y: timelinePosition)
                         }
                     }
                     .onReceive(timer) { time in
-                        guard properties.showTimelineTime else {
+                        guard config.showTime else {
                             return
                         }
                         if Calendar.current.component(.second, from: Date()) == 0 {
@@ -129,7 +123,7 @@ public struct CKCompactWeek<Detail: View>: View {
     @ViewBuilder
     func headerView() -> some View {
 
-        VStack(alignment: properties.headingAligment) {
+        VStack(alignment: config.headingAlignment) {
 
             // Date headline
             HStack {
@@ -172,7 +166,7 @@ public struct CKCompactWeek<Detail: View>: View {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(
                                 Calendar.current.isDate(day.date, inSameDayAs: Date()) ?
-                                Color.red : calendar.isDate(day.date, inSameDayAs: date) ? Color.blue.opacity(0.10) :
+                                config.currentDayColour : calendar.isDate(day.date, inSameDayAs: date) ? Color.blue.opacity(0.10) :
                                         .clear
                             )
                             .frame(width: 27, height: 27)
@@ -268,8 +262,7 @@ public struct CKCompactWeek<Detail: View>: View {
         CKCompactWeek(
             detail: { event in EmptyView() } ,
             events: [event1, event2, event3],
-            date: .constant(Date()),
-            props: CKProperties()
+            date: .constant(Date())
         )
     }
 }
