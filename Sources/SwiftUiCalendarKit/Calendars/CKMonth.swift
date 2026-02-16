@@ -1,6 +1,5 @@
 //
-//  CalendarMonthView.swift
-//  freya
+//  CKMonth.swift
 //
 //  Created by Mark Haskins on 09/04/2024.
 //
@@ -93,7 +92,7 @@ public struct CKMonth: View {
 
         var dayEvents: [any CKEventSchema] = []
 
-        for event in events where Calendar.current.isDate(event.startDate, inSameDayAs: day) {
+        for event in events where calendar.isDate(event.startDate, inSameDayAs: day) {
             dayEvents.append(event)
         }
 
@@ -102,31 +101,9 @@ public struct CKMonth: View {
 }
 
 #Preview {
-
-    let event1 = CKEvent(
-        startDate: Date().dateFrom(13, 2, 2026, 12, 00),
-        endDate: Date().dateFrom(13, 2, 2026, 13, 00),
-        text: "Event 1",
-        backCol: "#D74D64"
-    )
-
-    let event2 = CKEvent(
-        startDate: Date().dateFrom(14, 2, 2026, 14, 15),
-        endDate: Date().dateFrom(14, 2, 2026, 14, 45),
-        text: "Event 2",
-        backCol: "#3E56C2"
-    )
-
-    let event3 = CKEvent(
-        startDate: Date().dateFrom(15, 2, 2026, 16, 30),
-        endDate: Date().dateFrom(15, 2, 2026, 17, 00),
-        text: "Event 3",
-        backCol: "#F6D264"
-    )
-
     return CKMonth(
         observer: CKCalendarObserver(),
-        events: [event1, event2, event3],
+        events: testEvents,
         date: .constant(Date())
     )
 }

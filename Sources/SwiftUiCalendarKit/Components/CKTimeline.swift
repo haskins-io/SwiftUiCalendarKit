@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  CKTimeline.swift
 //  
 //
 //  Created by Mark Haskins on 12/04/2024.
@@ -51,5 +51,4 @@ struct CKTimeline: View {
 
 #Preview {
     CKTimeline()
-
 }

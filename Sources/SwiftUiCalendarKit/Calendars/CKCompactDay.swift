@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CKCompactDay.swift
 //  
 //
 //  Created by Mark Haskins on 15/04/2024.
@@ -69,20 +69,20 @@ public struct CKCompactDay<Detail: View>: View {
             .onAppear(perform: {
                 calcDaySliders(newDate: currentDate)
             })
-            .onChange(of: currentDate) { newDate in
-                headerDay = newDate
+            .onChange(of: currentDate, initial: false) {
+                headerDay = currentDate
                 daySlider.removeAll()
-                calcDaySliders(newDate: newDate)
+                calcDaySliders(newDate: currentDate)
             }
-            .onChange(of: currentDayIndex) { newValue in
+            .onChange(of: currentDayIndex, initial: false) {
 
-                if newValue == 0 {
+                if currentDayIndex == 0 {
                     if let firstDate = daySlider.first {
                         daySlider.insert(firstDate.previousDate(), at: 0)
                         daySlider.removeLast()
                         currentDayIndex = 1
                     }
-                } else if newValue == daySlider.count - 1 {
+                } else if currentDayIndex == daySlider.count - 1 {
                     if let lastDate = daySlider.last {
                         daySlider.append(lastDate.nextDate())
                         daySlider.removeFirst()
@@ -157,7 +157,7 @@ public struct CKCompactDay<Detail: View>: View {
                 guard config.showTime else {
                     return
                 }
-                if Calendar.current.component(.second, from: Date()) == 0 {
+                if calendar.component(.second, from: Date()) == 0 {
                     time = Date()
                     timelinePosition = CKUtils.currentTimelinePosition()
                 }
@@ -180,31 +180,9 @@ public struct CKCompactDay<Detail: View>: View {
 #Preview {
 
     NavigationView {
-
-        let event1 = CKEvent(
-            startDate: Date().dateFrom(13, 2, 2026, 12, 00),
-            endDate: Date().dateFrom(13, 2, 2026, 13, 00),
-            text: "Event 1",
-            backCol: "#D74D64"
-        )
-
-        let event2 = CKEvent(
-            startDate: Date().dateFrom(14, 2, 2026, 14, 15),
-            endDate: Date().dateFrom(14, 2, 2026, 14, 45),
-            text: "Event 2",
-            backCol: "#3E56C2"
-        )
-
-        let event3 = CKEvent(
-            startDate: Date().dateFrom(15, 2, 2026, 16, 30),
-            endDate: Date().dateFrom(15, 2, 2026, 17, 00),
-            text: "Event 3",
-            backCol: "#F6D264"
-        )
-
         CKCompactDay(
             detail: { _ in EmptyView() },
-            events: [event1, event2, event3],
+            events: testEvents,
             date: .constant(Date())
         )
         .workingHours(start: 9, end: 17)

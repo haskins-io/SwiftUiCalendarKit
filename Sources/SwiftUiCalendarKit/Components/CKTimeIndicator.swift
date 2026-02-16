@@ -1,6 +1,5 @@
 //
-//  SwiftUIView.swift
-//  SwiftUiCalendarKit
+//  CKTimeIndicator.swift
 //
 //  Created by Mark Haskins on 13/02/2026.
 //
@@ -27,5 +26,7 @@ struct CKTimeIndicator: View {
 }
 
 #Preview {
-    CKTimeIndicator(time: Date())
+    CKTimeIndicator(
+        time: Date()
+    )
 }

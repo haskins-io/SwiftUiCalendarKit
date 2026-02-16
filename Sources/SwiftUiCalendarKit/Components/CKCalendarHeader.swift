@@ -1,6 +1,5 @@
 //
-//  CalendarHeader.swift
-//  Freya
+//  CKCalendarHeader.swift
 //
 //  Created by Mark Haskins on 11/04/2024.
 //
@@ -68,5 +67,8 @@ struct CKCalendarHeader: View {
 }
 
 #Preview {
-    CKCalendarHeader(currentDate: .constant(Date()), addWeek: false)
+    CKCalendarHeader(
+        currentDate: .constant(Date()),
+        addWeek: false
+    )
 }

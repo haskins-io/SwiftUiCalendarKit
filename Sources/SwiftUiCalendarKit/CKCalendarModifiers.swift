@@ -1,6 +1,5 @@
 //
-//  File.swift
-//  SwiftUiCalendarKit
+//  CKCalendarModifiers.swift
 //
 //  Created by Mark Haskins on 14/02/2026.
 //

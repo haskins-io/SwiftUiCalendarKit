@@ -1,6 +1,5 @@
 //
-//  MonthDayCell.swift
-//  Freya
+//  CKMonthDayCell.swift
 //
 //  Created by Mark Haskins on 11/04/2024.
 //
@@ -87,7 +86,7 @@ struct CKMonthDayCell: View {
             .frame(width: cellWidth, height: cellHeight)
             .modifier(CKMonthDayCellModifier())
 
-            var maxRows = calcEventlistSize()
+            let maxRows = calcEventlistSize()
             if maxRows > 0 {
                 addEvents()
             }
@@ -102,9 +101,9 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func addEvents() -> some View {
 
-        var maxRows = calcEventlistSize()
+        let maxRows = calcEventlistSize()
 
-        return ZStack {
+        ZStack {
 
             ForEach(0..<maxRows, id: \.self) { index in
                 eventView(event: events[index], yOffset: 15 + (20 * CGFloat(index)))
@@ -166,55 +165,10 @@ struct CKMonthDayCell: View {
 
 #Preview {
 
-    let events: [any CKEventSchema] = [
-        CKEvent(
-            startDate: Date().dateFrom(09, 2, 2026, 12, 30),
-            endDate: Date().dateFrom(09, 2, 2026, 13, 30),
-            text: "Monday",
-            backCol: "#D74D64"
-        ),
-        CKEvent(
-            startDate: Date().dateFrom(10, 2, 2026, 12, 30),
-            endDate: Date().dateFrom(10, 2, 2026, 13, 30),
-            text: "Tuesday",
-            backCol: "#D74D64"
-        ),
-        CKEvent(
-            startDate: Date().dateFrom(11, 2, 2026, 13, 00),
-            endDate: Date().dateFrom(11, 2, 2026, 14, 00),
-            text: "Wednesday",
-            backCol: "#3E56C2"
-        ),
-        CKEvent(
-            startDate: Date().dateFrom(12, 2, 2026, 16, 30),
-            endDate: Date().dateFrom(12, 2, 2026, 17),
-            text: "Thursday",
-            backCol: "#F6D264"
-        ),
-        CKEvent(
-            startDate: Date().dateFrom(13, 2, 2026, 12, 30),
-            endDate: Date().dateFrom(13, 2, 2026, 13, 30),
-            text: "Friday",
-            backCol: "#D74D64"
-        ),
-        CKEvent(
-            startDate: Date().dateFrom(14, 2, 2026, 13, 00),
-            endDate: Date().dateFrom(14, 2, 2026, 14, 00),
-            text: "Saturday",
-            backCol: "#3E56C2"
-        ),
-        CKEvent(
-            startDate: Date().dateFrom(15, 2, 2026, 16, 30),
-            endDate: Date().dateFrom(15, 2, 2026, 17),
-            text: "Sunday",
-            backCol: "#F6D264"
-        )
-    ]
-
-    return CKMonthDayCell(
-        date: Date(timeIntervalSince1970: 1769977030),
+    CKMonthDayCell(
+        date: Date(),
         observer: CKCalendarObserver(),
-        events: events,
+        events: testEvents,
         month: Date(),
         width: 150,
         height: 150,

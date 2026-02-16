@@ -1,6 +1,5 @@
 //
-//  Event.swift
-//  SwiftUiCalendars
+//  CKEventSchema.swift
 //
 //  Created by Mark Haskins on 11/04/2024.
 //
@@ -27,6 +26,7 @@ public protocol CKEventSchema: Identifiable {
 
     var startDate: Date { get set }
     var endDate: Date { get set }
+    var isAllDay: Bool { get set }
 
     var text: String { get set }
     var primaryText: String { get set }

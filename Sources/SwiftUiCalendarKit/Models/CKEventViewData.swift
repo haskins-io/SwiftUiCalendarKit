@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CKEventViewData.swift
 //  
 //
 //  Created by Mark Haskins on 14/04/2024.
@@ -26,6 +26,7 @@ class CKEventViewData: Identifiable {
     let day: Int
     let hour: Int
     let minute: Int
+    let allDay: Bool
 
     let cellWidth: CGFloat
     let eventWidth: CGFloat
@@ -45,14 +46,16 @@ class CKEventViewData: Identifiable {
         self.cellWidth = width
 
         self.duration = event.endDate.timeIntervalSince(event.startDate)
-        height = duration / 60 / 60 * CKTimeline.hourHeight
+        self.height = duration / 60 / 60 * CKTimeline.hourHeight
 
-        day = calendar.component(.day, from: event.startDate)
-        hour = calendar.component(.hour, from: event.startDate)
-        minute = calendar.component(.minute, from: event.startDate)
+        self.day = calendar.component(.day, from: event.startDate)
+        self.hour = calendar.component(.hour, from: event.startDate)
+        self.minute = calendar.component(.minute, from: event.startDate)
 
-        eventWidth = (width / overlapsWith) - 5
+        self.allDay = event.isAllDay
 
-        yOffset = (Double(hour) * (CKTimeline.hourHeight)) + Double(minute)
+        self.eventWidth = (width / overlapsWith) - 5
+
+        self.yOffset = (Double(hour) * (CKTimeline.hourHeight)) + Double(minute)
     }
 }

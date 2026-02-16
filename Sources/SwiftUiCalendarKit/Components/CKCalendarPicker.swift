@@ -1,6 +1,5 @@
 //
-//  CalendarPicker.swift
-//  freya
+//  CKCalendarPicker.swift
 //
 //  Created by Mark Haskins on 09/04/2024.
 //
@@ -26,5 +25,7 @@ public struct CKCalendarPicker: View {
 }
 
 #Preview {
-    CKCalendarPicker(mode: .constant(CKCalendarMode.day))
+    CKCalendarPicker(
+        mode: .constant(CKCalendarMode.day)
+    )
 }
