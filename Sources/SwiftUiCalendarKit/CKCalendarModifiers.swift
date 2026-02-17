@@ -19,6 +19,8 @@ struct CKConfig: Equatable {
     var showTime: Bool = false
     var timeFormat24hr: Bool = false
     var showMinutes: Bool = false
+
+    var showWeekNumber: Bool = false
 }
 
 private struct CKConfigKey: EnvironmentKey {
@@ -66,6 +68,11 @@ extension View {
     /// When set the timeline time scale shows minutes, when you are using the 24hrs clock
     public func showTimelineShowsMinutes(_ value: Bool) -> some View {
         transformEnvironment(\.ckConfig) { $0.showMinutes = value }
+    }
+
+    /// When set the shows the week number
+    public func showWeekNumbers(_ value: Bool) -> some View {
+        transformEnvironment(\.ckConfig) { $0.showWeekNumber = value }
     }
 
     public func headingAlignment(_ alignment: HorizontalAlignment) -> some View {

@@ -60,7 +60,10 @@ public struct CKTimelineDay: View {
                 .padding(.top, 5)
                 .font(.title)
 
-                Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                HStack {
+                    Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                    CKWeekOfYear(date: date)
+                }
 
                 Divider().padding([.leading, .trailing], 10)
 
@@ -142,4 +145,5 @@ public struct CKTimelineDay: View {
         events: testEvents,
         date: .constant(Date())
     )
+    .showWeekNumbers(true)
 }

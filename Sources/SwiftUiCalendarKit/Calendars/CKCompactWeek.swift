@@ -146,6 +146,8 @@ public struct CKCompactWeek<Detail: View>: View {
             .padding(.top, 5)
             .font(.title)
 
+            CKWeekOfYear(date: date)
+
             TabView(selection: $currentWeekIndex) {
                 ForEach(weekSlider.indices, id: \.self) { index in
                     let week = weekSlider[index]
@@ -251,5 +253,6 @@ public struct CKCompactWeek<Detail: View>: View {
             events: testEvents,
             date: .constant(Date())
         )
+        .showWeekNumbers(true)
     }
 }

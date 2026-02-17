@@ -108,7 +108,10 @@ public struct CKCompactDay<Detail: View>: View {
             .padding(.top, 5)
             .font(.title)
 
-            Text(headerDay.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+            HStack {
+                Text(headerDay.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                CKWeekOfYear(date: currentDate)
+            }
         }
     }
 
@@ -198,7 +201,6 @@ public struct CKCompactDay<Detail: View>: View {
             date: .constant(Date())
         )
         .workingHours(start: 9, end: 17)
-        .timelineShows24hrClock(false)
-        .showTimelineShowsMinutes(false)
+        .showWeekNumbers(true)
     }
 }

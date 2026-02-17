@@ -63,4 +63,8 @@ extension Calendar {
     func differenceInMinutes(start: Date, end: Date) -> Int {
         return dateComponents([.minute], from: start, to: end).minute ?? 30
     }
+
+    func weekOfYear(currentDate: Date) -> Int {
+        return dateComponents([.weekOfYear], from: currentDate).weekOfYear ?? -1
+    }
 }
