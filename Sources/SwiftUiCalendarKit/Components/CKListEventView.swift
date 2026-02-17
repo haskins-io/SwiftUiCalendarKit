@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  CKListEventView.swift
 //  
 //
 //  Created by Mark Haskins on 16/04/2024.
@@ -39,6 +39,7 @@ struct CKListEventView: View {
         CKEvent(
             startDate: Date().dateFrom(13, 4, 2024, 1, 00),
             endDate: Date().dateFrom(13, 4, 2024, 2, 00),
+            isAllDay: false,
             text: "Event 1",
             backCol: "#D74D64")
     )

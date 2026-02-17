@@ -1,6 +1,5 @@
 //
 //  Calendar.swift
-//  SwiftUiCalendars
 //
 //  Created by Mark Haskins on 11/04/2024.
 //
@@ -59,5 +58,13 @@ extension Calendar {
             for: dateInterval,
             matching: dateComponents([.hour, .minute, .second], from: dateInterval.start)
         )
+    }
+
+    func differenceInMinutes(start: Date, end: Date) -> Int {
+        return dateComponents([.minute], from: start, to: end).minute ?? 30
+    }
+
+    func weekOfYear(currentDate: Date) -> Int {
+        return dateComponents([.weekOfYear], from: currentDate).weekOfYear ?? -1
     }
 }

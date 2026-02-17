@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CKEvent.swift
 //  
 //
 //  Created by Mark Haskins on 12/04/2024.
@@ -16,6 +16,7 @@ public struct CKEvent: CKEventSchema {
 
     public var startDate = Date()
     public var endDate = Date()
+    public var isAllDay = false
 
     public var text = "Demo"
     public var primaryText = "primary"
@@ -28,6 +29,7 @@ public struct CKEvent: CKEventSchema {
     public init(
         startDate: Date,
         endDate: Date,
+        isAllDay: Bool,
         text: String,
         primaryText: String = "",
         secondaryText: String = "",
@@ -35,6 +37,7 @@ public struct CKEvent: CKEventSchema {
     ) {
         self.startDate = startDate
         self.endDate = endDate
+        self.isAllDay = isAllDay
 
         self.text = text
         self.primaryText = primaryText

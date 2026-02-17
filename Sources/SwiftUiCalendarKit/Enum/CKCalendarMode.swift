@@ -1,6 +1,5 @@
 //
-//  CalendarMode.swift
-//  SwiftUiCalendars
+//  CKCalendarMode.swift
 //
 //  Created by Mark Haskins on 11/04/2024.
 //

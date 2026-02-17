@@ -1,6 +1,5 @@
 //
-//  DayHeader.swift
-//  Freya
+//  CKDayHeader.swift
 //
 //  Created by Mark Haskins on 11/04/2024.
 //
@@ -63,5 +62,10 @@ struct CKDayHeader: View {
 }
 
  #Preview {
-     CKDayHeader(currentDate: .constant(Date()), width: 1500, showTime: true, showDate: true)
+     CKDayHeader(
+        currentDate: .constant(Date()),
+        width: 1500,
+        showTime: true,
+        showDate: true
+     )
  }

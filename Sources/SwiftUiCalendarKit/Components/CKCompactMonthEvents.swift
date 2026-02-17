@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CKCompactMonthEvents.swift
 //  
 //
 //  Created by Mark Haskins on 14/04/2024.
@@ -45,12 +45,8 @@ struct CKCompactMonthEvents<Detail: View>: View {
 
 #Preview {
     CKCompactMonthEvents(
-        events: [
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 00), endDate: Date().dateFrom(13, 4, 2024, 13, 00), text: "Event 1"),
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 15), endDate: Date().dateFrom(13, 4, 2024, 13, 15), text: "Event 2"),
-            CKEvent(startDate: Date().dateFrom(13, 4, 2024, 12, 30), endDate: Date().dateFrom(13, 4, 2024, 15, 01), text: "Event 3")
-        ],
+        events: testEvents,
         detail: { _ in EmptyView() },
-        date: .constant(Date().dateFrom(13, 4, 2024))
+        date: .constant(Date())
     )
 }

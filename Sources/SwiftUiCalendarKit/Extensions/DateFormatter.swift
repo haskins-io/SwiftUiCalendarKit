@@ -1,6 +1,5 @@
 //
 //  DateFormatter.swift
-//  SwiftUiCalendars
 //
 //  Created by Mark Haskins on 11/04/2024.
 //

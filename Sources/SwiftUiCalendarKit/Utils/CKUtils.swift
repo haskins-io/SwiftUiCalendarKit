@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CKUtils.swift
 //  
 //
 //  Created by Mark Haskins on 13/04/2024.
@@ -111,6 +111,11 @@ enum CKUtils {
     }
 
     static func doEventsOverlap(_ event1: any CKEventSchema, _ event2: any CKEventSchema) -> Bool {
+
+        guard event1.isAllDay else {
+            return false
+        }
+
         let leftRange = event1.startDate ... event1.endDate
         let rightRange = event2.startDate ... event2.endDate
 

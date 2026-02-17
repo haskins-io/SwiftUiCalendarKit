@@ -1,6 +1,5 @@
 //
-//  CalendarCompactWeekView.swift
-//  freya
+//  CKCompactWeek.swift
 //
 //  Created by Mark Haskins on 09/04/2024.
 //
@@ -63,14 +62,14 @@ public struct CKCompactWeek<Detail: View>: View {
         .onAppear(perform: {
             calcWeekSliders(currentDate: date)
         })
-        .onChange(of: date) { newDate in
-            headerMonth = newDate
+        .onChange(of: date, initial: false) {
+            headerMonth = date
             weekSlider.removeAll()
-            calcWeekSliders(currentDate: newDate)
+            calcWeekSliders(currentDate: date)
         }
-        .onChange(of: currentWeekIndex) { newValue in
+        .onChange(of: currentWeekIndex, initial: false) {
             // do we need to create a new Week Row
-            if newValue == 0 || newValue == (weekSlider.count - 1) {
+            if currentWeekIndex == 0 || currentWeekIndex == (weekSlider.count - 1) {
                 createWeek = true
             }
 
@@ -86,47 +85,47 @@ public struct CKCompactWeek<Detail: View>: View {
 
         GeometryReader { proxy in
 
+            let eventData = CKUtils.generateEventViewData(
+                date: date,
+                events: events,
+                width: proxy.size.width - 65
+            )
+
             VStack(alignment: .leading) {
 
                 Divider()
 
+                CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
+
                 ScrollView {
-
-                    ZStack(alignment: .topLeading) {
-
-                        CKTimeline()
-
-                        let eventData = CKUtils.generateEventViewData(
-                            date: date,
-                            events: events,
-                            width: proxy.size.width - 65
-                        )
-
-                        ForEach(eventData, id: \.anyHashableID) { event in
-                            if calendar.isDate(event.event.startDate, inSameDayAs: date) {
-                                CKCompactEventView(
-                                    event,
-                                    detail: detail
-                                )
-                            }
-                        }
-
-                        if config.showTime {
-                            CKTimeIndicator(time: time)
-                                .offset(x: 0, y: timelinePosition)
-                        }
-                    }
-                    .onReceive(timer) { _ in
-                        guard config.showTime else {
-                            return
-                        }
-                        if Calendar.current.component(.second, from: Date()) == 0 {
-                            time = Date()
-                            timelinePosition = CKUtils.currentTimelinePosition()
-                        }
-                    }
+                    timelineEvents(eventData: eventData)
                 }
                 .defaultScrollAnchor(.center)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func timelineEvents(eventData: [CKEventViewData]) -> some View {
+
+        ZStack(alignment: .topLeading) {
+
+            CKTimeline()
+
+            CKCompactEventsView(date: date, eventData: eventData, detail: detail)
+
+            if config.showTime {
+                CKTimeIndicator(time: time)
+                    .offset(x: 0, y: timelinePosition)
+            }
+        }
+        .onReceive(timer) { _ in
+            guard config.showTime else {
+                return
+            }
+            if calendar.component(.second, from: Date()) == 0 {
+                time = Date()
+                timelinePosition = CKUtils.currentTimelinePosition()
             }
         }
     }
@@ -147,6 +146,8 @@ public struct CKCompactWeek<Detail: View>: View {
             .padding(.top, 5)
             .font(.title)
 
+            CKWeekOfYear(date: date)
+
             TabView(selection: $currentWeekIndex) {
                 ForEach(weekSlider.indices, id: \.self) { index in
                     let week = weekSlider[index]
@@ -154,9 +155,7 @@ public struct CKCompactWeek<Detail: View>: View {
                         .tag(index)
                 }
             }
-            #if !os(macOS)
             .tabViewStyle(.page(indexDisplayMode: .never))
-            #endif
             .frame(height: 70)
             .padding(5)
         }
@@ -170,14 +169,14 @@ public struct CKCompactWeek<Detail: View>: View {
 
             ForEach(week) { day in
 
-                let status = Calendar.current.isDate(day.date, inSameDayAs: Date())
+                let status = calendar.isDate(day.date, inSameDayAs: Date())
 
                 VStack(spacing: 6) {
                     Text(day.string.prefix(3))
                     ZStack {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(
-                                Calendar.current.isDate(day.date, inSameDayAs: Date()) ?
+                                calendar.isDate(day.date, inSameDayAs: Date()) ?
                                 config.currentDayColour : calendar.isDate(day.date, inSameDayAs: date) ? Color.blue.opacity(0.10) :
                                         .clear
                             )
@@ -249,32 +248,11 @@ public struct CKCompactWeek<Detail: View>: View {
 
 #Preview {
     NavigationView {
-
-        let event1 = CKEvent(
-            startDate: Date().dateFrom(13, 2, 2026, 12, 00),
-            endDate: Date().dateFrom(13, 2, 2026, 13, 00),
-            text: "Event 1",
-            backCol: "#D74D64"
-        )
-
-        let event2 = CKEvent(
-            startDate: Date().dateFrom(14, 2, 2026, 14, 15),
-            endDate: Date().dateFrom(14, 2, 2026, 14, 45),
-            text: "Event 2",
-            backCol: "#3E56C2"
-        )
-
-        let event3 = CKEvent(
-            startDate: Date().dateFrom(15, 2, 2026, 16, 30),
-            endDate: Date().dateFrom(15, 2, 2026, 17, 00),
-            text: "Event 3",
-            backCol: "#F6D264"
-        )
-
         CKCompactWeek(
             detail: { _ in EmptyView() },
-            events: [event1, event2, event3],
+            events: testEvents,
             date: .constant(Date())
         )
+        .showWeekNumbers(true)
     }
 }

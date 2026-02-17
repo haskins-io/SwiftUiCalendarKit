@@ -1,6 +1,5 @@
 //
-//  CalendarCompactMonth.swift
-//  freya
+//  CKCompactMonth.swift
 //
 //  Created by Mark Haskins on 09/04/2024.
 //
@@ -37,7 +36,7 @@ public struct CKCompactMonth<Detail: View>: View {
 
     public var body: some View {
         VStack {
-            CKMonthComponent(calendar: Calendar(identifier: .gregorian), date: $date, events: events)
+            CKMonthComponent(calendar: Calendar.current, date: $date, events: events)
             Divider()
             CKCompactMonthEvents(events: events, detail: detail, date: $date)
                 .listStyle(.plain)
@@ -47,31 +46,9 @@ public struct CKCompactMonth<Detail: View>: View {
 
 #Preview {
     NavigationView {
-
-        let event1 = CKEvent(
-            startDate: Date().dateFrom(13, 2, 2026, 12, 00),
-            endDate: Date().dateFrom(13, 2, 2026, 13, 00),
-            text: "Event 1",
-            backCol: "#D74D64"
-        )
-
-        let event2 = CKEvent(
-            startDate: Date().dateFrom(14, 2, 2026, 14, 15),
-            endDate: Date().dateFrom(14, 2, 2026, 14, 45),
-            text: "Event 2",
-            backCol: "#3E56C2"
-        )
-
-        let event3 = CKEvent(
-            startDate: Date().dateFrom(15, 2, 2026, 16, 30),
-            endDate: Date().dateFrom(15, 2, 2026, 17, 00),
-            text: "Event 3",
-            backCol: "#F6D264"
-        )
-
         CKCompactMonth(
             detail: { _ in EmptyView() },
-            events: [event1, event2, event3],
+            events: testEvents,
             date: .constant(Date())
         )
     }
