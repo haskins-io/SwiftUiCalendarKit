@@ -1,6 +1,7 @@
 ToDo.txt
 .swiftlint.yml
 Package.resolved
+.swiftpm
 
 .DS_Store
 /.build
