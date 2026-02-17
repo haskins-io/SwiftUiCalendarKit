@@ -92,7 +92,7 @@ public struct CKCompactWeek<Detail: View>: View {
                 width: proxy.size.width - 65
             )
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
 
                 Divider()
 

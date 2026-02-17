@@ -50,7 +50,7 @@ public struct CKTimelineDay: View {
 
         GeometryReader { proxy in
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
 
                 HStack {
                     Text(date.formatted(.dateTime.day().month(.wide)))
@@ -63,6 +63,7 @@ public struct CKTimelineDay: View {
 
                 HStack {
                     Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                    Spacer()
                     CKWeekOfYear(date: date)
                 }
 

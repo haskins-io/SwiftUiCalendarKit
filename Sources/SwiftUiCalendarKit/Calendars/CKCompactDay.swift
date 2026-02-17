@@ -58,7 +58,7 @@ public struct CKCompactDay<Detail: View>: View {
 
         GeometryReader { proxy in
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
 
                 header()
 
@@ -108,8 +108,9 @@ public struct CKCompactDay<Detail: View>: View {
             .padding(.top, 5)
             .font(.title)
 
-            HStack {
+            HStack(alignment: .center) {
                 Text(headerDay.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                Spacer()
                 CKWeekOfYear(date: currentDate)
             }
         }

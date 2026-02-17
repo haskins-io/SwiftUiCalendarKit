@@ -38,7 +38,7 @@ struct CKDayHeader: View {
                 let status = Calendar.current.isDate(weekDay.date, inSameDayAs: Date())
                 let xOffset = (width * CGFloat(index)) + widthOfset
 
-                VStack(alignment: .center) {
+                VStack(alignment: .center, spacing: 0) {
                     Text(weekDay.string.prefix(3))
                     if showDate {
                         ZStack {

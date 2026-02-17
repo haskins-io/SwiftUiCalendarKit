@@ -20,7 +20,7 @@ struct CKWeekOfYear: View {
         if config.showWeekNumber && calendar.weekOfYear(currentDate: date) != -1 {
             Text("Week \(calendar.weekOfYear(currentDate: date))")
                 .padding([.trailing, .leading], 10)
-                .font(.body)
+                .font(.footnote)
                 .foregroundStyle(Color.gray.opacity(0.75))
         }
     }
@@ -28,4 +28,5 @@ struct CKWeekOfYear: View {
 
 #Preview {
     CKWeekOfYear(date: Date())
+        .showWeekNumbers(true)
 }

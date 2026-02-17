@@ -55,6 +55,7 @@ public struct CKTimelineWeek: View {
                 CKCalendarHeader(currentDate: $date, addWeek: true)
 
                 CKWeekOfYear(date: date)
+                    .padding(.leading, 10)
 
                 CKDayHeader(currentDate: $date, width: proxy.size.width, showTime: true, showDate: true)
 
