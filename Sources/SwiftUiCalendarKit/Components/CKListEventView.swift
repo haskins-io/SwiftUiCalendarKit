@@ -12,6 +12,33 @@ struct CKListEventView: View {
     var event: any CKEventSchema
 
     var body: some View {
+        if event.isAllDay {
+            allDayEvent()
+        } else {
+            timedEvent()
+        }
+    }
+
+    @ViewBuilder
+    private func allDayEvent() -> some View {
+            Text(event.text)
+                .bold()
+                .padding(.leading, 5)
+                .padding(.leading, 5)
+        .font(.caption)
+        .overlay {
+            HStack {
+                Rectangle()
+                    .fill(event.backgroundAsColor())
+                    .frame(maxHeight: .infinity, alignment: .leading)
+                    .frame(width: 4)
+                Spacer()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func timedEvent() -> some View {
         VStack(alignment: .leading) {
             HStack {
                 Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)

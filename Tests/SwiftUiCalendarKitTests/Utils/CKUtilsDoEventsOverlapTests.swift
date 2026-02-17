@@ -4,8 +4,8 @@
 
 import Foundation
 import SwiftUI
-import Testing
 @testable import SwiftUiCalendarKit // Replace with your actual module name
+import Testing
 
 // MARK: - Mock
 
@@ -30,7 +30,7 @@ private struct MockEvent: CKEventSchema {
 
 // MARK: - Helpers
 
-private extension MockEvent {
+extension MockEvent {
 
     /// Convenience to build dates without typing Calendar boilerplate in every test.
     static func makeDate(hour: Int, minute: Int = 0) -> Date {
@@ -39,7 +39,7 @@ private extension MockEvent {
             minute: minute,
             second: 0,
             of: Date()
-        )!
+        ) ?? Date()
     }
 }
 
@@ -54,13 +54,13 @@ struct CKUtilsDoEventsOverlapTests {
     func notAllDayReturnsFalse() {
         let event1 = MockEvent(
             startDate: MockEvent.makeDate(hour: 9),
-            endDate:   MockEvent.makeDate(hour: 10),
-            isAllDay:  false                          // ← guard condition
+            endDate: MockEvent.makeDate(hour: 10),
+            isAllDay: false                          // ← guard condition
         )
         let event2 = MockEvent(
             startDate: MockEvent.makeDate(hour: 9),
-            endDate:   MockEvent.makeDate(hour: 11),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 11),
+            isAllDay: true
         )
 
         #expect(CKUtils.doEventsOverlap(event1, event2) == false)
@@ -72,13 +72,13 @@ struct CKUtilsDoEventsOverlapTests {
     func allDayFullOverlapReturnsTrue() {
         let event1 = MockEvent(
             startDate: MockEvent.makeDate(hour: 9),
-            endDate:   MockEvent.makeDate(hour: 11),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 11),
+            isAllDay: true
         )
         let event2 = MockEvent(
             startDate: MockEvent.makeDate(hour: 9),
-            endDate:   MockEvent.makeDate(hour: 11),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 11),
+            isAllDay: true
         )
 
         #expect(CKUtils.doEventsOverlap(event1, event2) == true)
@@ -88,13 +88,13 @@ struct CKUtilsDoEventsOverlapTests {
     func allDayPartialOverlapReturnsTrue() {
         let event1 = MockEvent(
             startDate: MockEvent.makeDate(hour: 9),
-            endDate:   MockEvent.makeDate(hour: 12),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 12),
+            isAllDay: true
         )
         let event2 = MockEvent(
             startDate: MockEvent.makeDate(hour: 11),
-            endDate:   MockEvent.makeDate(hour: 14),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 14),
+            isAllDay: true
         )
 
         #expect(CKUtils.doEventsOverlap(event1, event2) == true)
@@ -104,13 +104,13 @@ struct CKUtilsDoEventsOverlapTests {
     func allDayContainedOverlapReturnsTrue() {
         let event1 = MockEvent(
             startDate: MockEvent.makeDate(hour: 8),
-            endDate:   MockEvent.makeDate(hour: 18),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 18),
+            isAllDay: true
         )
         let event2 = MockEvent(
             startDate: MockEvent.makeDate(hour: 10),
-            endDate:   MockEvent.makeDate(hour: 12),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 12),
+            isAllDay: true
         )
 
         #expect(CKUtils.doEventsOverlap(event1, event2) == true)
@@ -122,13 +122,13 @@ struct CKUtilsDoEventsOverlapTests {
     func allDayNoOverlapEvent2BeforeEvent1ReturnsFalse() {
         let event1 = MockEvent(
             startDate: MockEvent.makeDate(hour: 14),
-            endDate:   MockEvent.makeDate(hour: 16),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 16),
+            isAllDay: true
         )
         let event2 = MockEvent(
             startDate: MockEvent.makeDate(hour: 9),
-            endDate:   MockEvent.makeDate(hour: 11),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 11),
+            isAllDay: true
         )
 
         #expect(CKUtils.doEventsOverlap(event1, event2) == false)
@@ -138,13 +138,13 @@ struct CKUtilsDoEventsOverlapTests {
     func allDayNoOverlapEvent2AfterEvent1ReturnsFalse() {
         let event1 = MockEvent(
             startDate: MockEvent.makeDate(hour: 9),
-            endDate:   MockEvent.makeDate(hour: 11),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 11),
+            isAllDay: true
         )
         let event2 = MockEvent(
             startDate: MockEvent.makeDate(hour: 14),
-            endDate:   MockEvent.makeDate(hour: 16),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 16),
+            isAllDay: true
         )
 
         #expect(CKUtils.doEventsOverlap(event1, event2) == false)
@@ -158,13 +158,13 @@ struct CKUtilsDoEventsOverlapTests {
 
         let event1 = MockEvent(
             startDate: MockEvent.makeDate(hour: 9),
-            endDate:   boundary,
-            isAllDay:  true
+            endDate: boundary,
+            isAllDay: true
         )
         let event2 = MockEvent(
             startDate: boundary,
-            endDate:   MockEvent.makeDate(hour: 15),
-            isAllDay:  true
+            endDate: MockEvent.makeDate(hour: 15),
+            isAllDay: true
         )
 
         // Closed-range `...` includes both endpoints, so they overlap at the boundary.

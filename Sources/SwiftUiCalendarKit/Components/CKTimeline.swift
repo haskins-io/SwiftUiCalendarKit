@@ -22,14 +22,14 @@ struct CKTimeline: View {
 
                 ZStack {
                     Rectangle()
-                        .fill(isOutOfHours(hour: hour) ? Color.gray.opacity(0.2) : Color.clear)
+                        .fill(isOutOfHours(hour: hour) ? Color.gray.opacity(0.1) : Color.clear)
                         .frame(height: CKTimeline.hourHeight)
                         .offset(x: 0, y: 30)
 
                     HStack {
                         Text(timelineconfiguration(hour: hour))
                             .font(.caption)
-                            .frame(width: 40, alignment: .trailing)
+                            .frame(width: frameWidth(), alignment: .trailing)
                         Color.gray
                             .frame(height: 1)
                     }
@@ -40,6 +40,7 @@ struct CKTimeline: View {
     }
 
     private func timelineconfiguration(hour: Int) -> String {
+
         if config.timeFormat24hr {
             if config.showMinutes {
                 return String(format: "%02d:00", hour)
@@ -56,6 +57,18 @@ struct CKTimeline: View {
         }
     }
 
+    private func frameWidth() -> CGFloat {
+        if config.timeFormat24hr {
+            if config.showMinutes {
+                return 35
+            } else {
+                return 20
+            }
+        } else {
+            return 35
+        }
+    }
+
     private func isOutOfHours(hour: Int) -> Bool {
 
         if hour < config.dayStart || hour >= config.dayEnd {
@@ -68,4 +81,5 @@ struct CKTimeline: View {
 
 #Preview {
     CKTimeline()
+        .workingHours(start: 9, end: 17)
 }

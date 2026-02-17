@@ -134,7 +134,7 @@ public struct CKCompactDay<Detail: View>: View {
         let eventData = CKUtils.generateEventViewData(
             date: date,
             events: events,
-            width: width - 65
+            width: width - 10
         )
 
         VStack(spacing: 0) {
@@ -202,6 +202,5 @@ public struct CKCompactDay<Detail: View>: View {
             date: .constant(Date())
         )
         .workingHours(start: 9, end: 17)
-        .showWeekNumbers(true)
     }
 }

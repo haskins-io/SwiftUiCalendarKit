@@ -149,4 +149,5 @@ public struct CKTimelineWeek: View {
         date: .constant(Date())
     )
     .showWeekNumbers(true)
+    .workingHours(start: 9, end: 17)
 }

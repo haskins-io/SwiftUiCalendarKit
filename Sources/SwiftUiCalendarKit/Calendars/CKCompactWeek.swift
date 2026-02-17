@@ -254,5 +254,6 @@ public struct CKCompactWeek<Detail: View>: View {
             date: .constant(Date())
         )
         .showWeekNumbers(true)
+        .workingHours(start: 9, end: 17)
     }
 }

@@ -12,26 +12,13 @@ struct CKMonthComponent: View {
     @Environment(\.ckConfig)
     private var config
 
-    private let calendar: Calendar
-    private let monthFormatter: DateFormatter
-    private let dayFormatter: DateFormatter
-    private let weekDayFormatter: DateFormatter
-    private let fullFormatter: DateFormatter
-
     @Binding private var selectedDate: Date
 
     var events: [any CKEventSchema] = []
 
     init(calendar: Calendar, date: Binding<Date>, events: [any CKEventSchema]) {
-
         self._selectedDate = date
         self.events = events
-
-        self.calendar = calendar
-        self.monthFormatter = DateFormatter(dateFormat: "MMMM YYYY", calendar: calendar)
-        self.dayFormatter = DateFormatter(dateFormat: "d", calendar: calendar)
-        self.weekDayFormatter = DateFormatter(dateFormat: "E", calendar: calendar)
-        self.fullFormatter = DateFormatter(dateFormat: "dd MMM yyyy", calendar: calendar)
     }
 
     var body: some View {
@@ -60,7 +47,7 @@ struct CKMonthComponent: View {
                                         .offset(x: 1, y: 0)
                                 }
 
-                                Text(dayFormatter.string(from: date))
+                                Text(date.formatted(Date.FormatStyle().day()))
                                     .padding(6)
                                     .frame(width: 33, height: 33)
                                     .foregroundColor(calendar.isDateInToday(date) ? Color.white : .primary)
@@ -78,12 +65,12 @@ struct CKMonthComponent: View {
                     }
                 },
                 trailing: { date in
-                    Text(dayFormatter.string(from: date))
+                    Text(date.formatted(Date.FormatStyle().day()))
                         .foregroundColor(.secondary)
                         .padding(6)
                 },
                 header: { date in
-                    Text(weekDayFormatter.string(from: date)).fontWeight(.bold)
+                    Text(date.formatted(Date.FormatStyle().weekday(.abbreviated))).fontWeight(.bold)
                 },
                 title: { date in
                     HStack {
@@ -115,7 +102,7 @@ struct CKMonthComponent: View {
                         Button {
                             selectedDate = Date.now
                         } label: {
-                            Text(monthFormatter.string(from: date))
+                            Text(date.formatted(Date.FormatStyle().month(.wide).year(.defaultDigits)))
                                 .foregroundColor(.blue)
                                 .font(.title2)
                                 .padding(2)

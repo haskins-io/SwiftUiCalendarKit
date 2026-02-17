@@ -39,6 +39,15 @@ struct CKCompactDayEventView<Detail: View>: View {
                     .opacity(0.5)
                     .shadow(radius: 5, x: 2, y: 5)
             )
+            .overlay {
+                HStack {
+                    Rectangle()
+                        .fill(event.backgroundAsColor())
+                        .frame(maxHeight: .infinity, alignment: .leading)
+                        .frame(width: 4)
+                    Spacer()
+                }
+            }
         }
     }
 }

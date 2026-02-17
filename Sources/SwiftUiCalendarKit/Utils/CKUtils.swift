@@ -19,71 +19,48 @@ enum CKUtils {
     static func generateEventViewData(
         date: Date,
         events: [any CKEventSchema],
-        width: CGFloat) -> [CKEventViewData] {
+        width: CGFloat
+    ) -> [CKEventViewData] {
 
-        var pos1: [CKEventViewData] = []
-        var pos2: [CKEventViewData] = []
-        var pos3: [CKEventViewData] = []
-        var pos4: [CKEventViewData] = []
-        var pos5: [CKEventViewData] = []
+        let weekRange = date.fetchWeekRange()
+
+        // Pre-compute overlap counts once per event, keyed by ID.
+        var overlapCounts: [AnyHashable: CGFloat] = [:]
+        for event in events where weekRange.contains(event.startDate) {
+            overlapCounts[event.anyHashableID] = overLappingCount(event, events)
+        }
+
+        // Assign each event to the first position bucket it doesn't overlap with.
+        var positions: [[CKEventViewData]] = []
 
         for event in events {
+            guard weekRange.contains(event.startDate) else { continue }
 
-            if !date.fetchWeekRange().contains(event.startDate) {
-                continue
-            }
+            let overlapCount = overlapCounts[event.anyHashableID] ?? 1
 
-            if !overLappings(event, pos1) {
-                pos1.append(
+            if let bucketIndex = positions.firstIndex(where: { !overLappings(event, $0) }) {
+                positions[bucketIndex].append(
                     CKEventViewData(
                         event: event,
-                        overlapsWith: overLappingCount(event, events),
-                        position: 1,
-                        width: width)
+                        overlapsWith: overlapCount,
+                        position: CGFloat(bucketIndex + 1),
+                        width: width
+                    )
                 )
-            } else if !overLappings(event, pos2) {
-                pos2.append(
+            } else {
+                // No suitable bucket found — start a new one.
+                positions.append([
                     CKEventViewData(
                         event: event,
-                        overlapsWith: overLappingCount(event, events),
-                        position: 2,
-                        width: width)
-                )
-            } else if !overLappings(event, pos3) {
-                pos3.append(
-                    CKEventViewData(
-                        event: event,
-                        overlapsWith: overLappingCount(event, events),
-                        position: 3,
-                        width: width)
-                )
-            } else if !overLappings(event, pos4) {
-                pos4.append(
-                    CKEventViewData(
-                        event: event,
-                        overlapsWith: overLappingCount(event, events),
-                        position: 4,
-                        width: width)
-                )
-            } else if !overLappings(event, pos5) {
-                pos5.append(
-                    CKEventViewData(
-                        event: event,
-                        overlapsWith: overLappingCount(event, events),
-                        position: 5,
-                        width: width)
-                )
+                        overlapsWith: overlapCount,
+                        position: CGFloat(positions.count + 1),
+                        width: width
+                    )
+                ])
             }
         }
 
-        var eventData: [CKEventViewData] = []
-        eventData.append(contentsOf: pos1)
-        eventData.append(contentsOf: pos2)
-        eventData.append(contentsOf: pos3)
-        eventData.append(contentsOf: pos4)
-        eventData.append(contentsOf: pos5)
-
-        return eventData
+        return positions.flatMap { $0 }
     }
 
     static func overLappings(_ currentEvent: any CKEventSchema, _ events: [CKEventViewData]) -> Bool {
@@ -112,7 +89,7 @@ enum CKUtils {
 
     static func doEventsOverlap(_ event1: any CKEventSchema, _ event2: any CKEventSchema) -> Bool {
 
-        guard event1.isAllDay else {
+        if event1.isAllDay || event2.isAllDay {
             return false
         }
 

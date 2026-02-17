@@ -9,13 +9,14 @@ import SwiftUI
 
 struct CKEventView: View {
 
-    private let eventData: CKEventViewData
-
-    private let xOffset: CGFloat
-
-    private let event: any CKEventSchema
+    @Environment(\.ckConfig)
+    private var config
 
     @ObservedObject var observer: CKCalendarObserver
+
+    private let eventData: CKEventViewData
+    private let xOffset: CGFloat
+    private let event: any CKEventSchema
 
     init(_ eventData: CKEventViewData,
          observer: CKCalendarObserver,
@@ -35,7 +36,7 @@ struct CKEventView: View {
 
             // WeekTimeline
             if eventData.position > 1 {
-                let edgeOfDayCell = 47 + (eventData.cellWidth * CGFloat(dayOfWeek - 1))
+                let edgeOfDayCell = 47 + (eventData.cellWidth * CGFloat(dayOfWeek - 2))
                 xOffset = (edgeOfDayCell + ((eventData.position - 1) * (eventData.eventWidth + 5)))
             } else {
                 if dayOfWeek == 1 {
@@ -139,7 +140,7 @@ struct CKEventView: View {
         CKEventViewData(
             event: CKEvent(
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),
-                endDate: Date().dateFrom(13, 4, 2024, 1, 20),
+                endDate: Date().dateFrom(13, 4, 2024, 2, 00),
                 isAllDay: false,
                 text: "Event 1",
                 backCol: "#D74D64"),

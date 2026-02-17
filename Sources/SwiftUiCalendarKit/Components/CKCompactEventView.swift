@@ -9,6 +9,9 @@ import SwiftUI
 
 struct CKCompactEventView<Detail: View>: View {
 
+    @Environment(\.ckConfig)
+    private var config
+
     private let detail: (any CKEventSchema) -> Detail
 
     private let eventData: CKEventViewData
@@ -19,9 +22,7 @@ struct CKCompactEventView<Detail: View>: View {
          @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail
     ) {
         self.detail = detail
-
         self.eventData = eventData
-
         self.event = eventData.event
 
         if eventData.position > 1 {
@@ -125,7 +126,7 @@ struct CKCompactEventView<Detail: View>: View {
         CKEventViewData(
             event: CKEvent(
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),
-                endDate: Date().dateFrom(13, 4, 2024, 1, 20),
+                endDate: Date().dateFrom(13, 4, 2024, 2, 20),
                 isAllDay: false,
                 text: "Event 1 Event 1 Event 1",
                 backCol: "#D74D64"),

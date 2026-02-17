@@ -58,6 +58,15 @@ struct CKDayEventView: View {
                 .opacity(0.5)
                 .shadow(radius: 5, x: 2, y: 5)
         )
+        .overlay {
+            HStack {
+                Rectangle()
+                    .fill(event.backgroundAsColor())
+                    .frame(maxHeight: .infinity, alignment: .leading)
+                    .frame(width: 4)
+                Spacer()
+            }
+        }
         .offset(x: xOffset, y: 0)
         .onTapGesture {
             observer.eventSelected = true
@@ -75,7 +84,7 @@ struct CKDayEventView: View {
                 isAllDay: true,
                 text: "Event 1",
                 backCol: "#D74D64"),
-            overlapsWith: 1,
+            overlapsWith: 0,
             position: 1,
             width: 150
         ),
