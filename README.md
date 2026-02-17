@@ -4,6 +4,7 @@ A SwiftUi library that provides different Calendar formats that can be included 
 
 All the calendars are written purely in SwiftUI.
 
+
 ## Installation
 1. Open your existing Xcode project or create a new one
 2. Open the Swift Packages Manager
@@ -16,6 +17,7 @@ All the calendars are written purely in SwiftUI.
 	- Xcode will prompt you to specify version rules for the package. "Up to Next Major Version" ensures compatibility with future updates that don't introduce breaking changes.
 	- Click **Add Package**
  
+
 ## Usage   
 ```
 import SwiftUiCalendarKit
@@ -68,46 +70,22 @@ Applying this changes the position of the heading on the CKCompactWeek
 #### workingHours
 Applying this sets the working hours of a Timeline calendar. This will change the colour of the non working hours to be light grey.
 
+
 ## Available Calendars
-### CKTimelineDay
 
-This shows all the events for a selected date. You can use this for MacOs and iPad.
+| CKTimelineDay | CKTimelineWeek | CKMonth |
+|---------------|----------------|---------|
+| This shows all the events for a selected date. You can use this for MacOs and iPad. | This shows all the events for a selected week. You can use this for MacOs and iPad | This shows all the events for a selected month. You can use this for MacOs and iPad|
+|<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineDay.png" width="300"/>| <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineWeek.png" width="300"/>| <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKMonth.png" width="300"/> |
 
-<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineDay.png" width="300"/>
+| CKCompactDay | CKCompactWeek | CKCompactMonth |
+|---------------|----------------|---------|
+| This shows all the events for a selected date. Best used on an iPhone.
 
-### CKTimelineWeek
+Swiping Left or Right on the timeline will change the date.| This shows all the events for a selected week. This only shows a single timeline and you select the date you want from the top. Best used on an iPhone
 
-This shows all the events for a selected week. You can use this for MacOs and iPad
-
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineWeek.png" width="300"/>
-
-### CKMonth
-
-This shows all the events for a selected month. You can use this for MacOs and iPad
-
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKMonth.png" width="300"/>
-
-### CKCompactDay
-
-This shows all the events for a selected date. Best used on an iPhone.
-
-Swiping Left or Right on the timeline will change the date.
-
-<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactDay.png" width="300"/>
-
-### CKCompactWeek
-
-This shows all the events for a selected week. This only shows a single timeline and you select the date you want from the top. Best used on an iPhone
-
-Swiping Left or Right on the week will change it.
-
-<img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactWeek.png" width="300"/>
-
-### CKCompactMonth
-
-This shows all the events for a selected month. This shows a picker style calendar. Best used on an iPhone
-
-<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth.png" width="300"/>
+Swiping Left or Right on the week will change it. | This shows all the events for a selected month. This shows a picker style calendar. Best used on an iPhone|
+|<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactDay.png" width="300"/>| <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactWeek.png" width="300"/>| <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth.png" width="300"/>|
 
 ## Examples
 There is an example of how to use all the calendars in /Examples
@@ -121,6 +99,7 @@ For the Compact calendars you can pass in a View that provides your *EventDetail
 
 For the other calenders there is an CalendarObserver class. When you click/tap on an event it will set the event object that was tapped on the class and then set 'eventSelected' flag to be true. How you handle this is down to your application.
 
+
 ## FAQ
 ### Why are you using two dates to define an event, when you could be using a DateInterval.?
 The simple answer is that I'm using this with SwiftData, and it doesn't support DateInterval as a data type. There might be a way around this, but I'm good with what I have at the moment.
@@ -128,7 +107,7 @@ The simple answer is that I'm using this with SwiftData, and it doesn't support 
 ### Why are you storing Colors as String?
 Same answer as above. The Protocol does force you to implement functions to return Colors. How you implement them is up to you. The Color extension provides a function that converts a Hex string to a color. You might want to use this, or provide your own soluion.
 
+
 ## Known Issues
 ### Overlapping events
 While the code can handle overlapping events, and display them correctly, there are some overlay scenarios which it doesn't handle very well.
-
