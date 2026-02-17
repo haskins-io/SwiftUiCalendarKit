@@ -59,4 +59,8 @@ extension Calendar {
             matching: dateComponents([.hour, .minute, .second], from: dateInterval.start)
         )
     }
+
+    func differenceInMinutes(start: Date, end: Date) -> Int {
+        return dateComponents([.minute], from: start, to: end).minute ?? 30
+    }
 }

@@ -32,7 +32,15 @@ struct CKCompactEventView<Detail: View>: View {
     }
 
     var body: some View {
+        if Calendar.current.differenceInMinutes(start: event.startDate, end: event.endDate) >= 30 {
+            greaterThan30mins()
+        } else {
+            lessThan30mins()
+        }
+    }
 
+    @ViewBuilder
+    private func greaterThan30mins() -> some View {
         VStack {
             NavigationLink {
                 detail(event)
@@ -72,6 +80,42 @@ struct CKCompactEventView<Detail: View>: View {
         }
         .offset(x: xOffset, y: eventData.yOffset + 30)
     }
+
+    @ViewBuilder
+    private func lessThan30mins() -> some View {
+        VStack {
+            NavigationLink {
+                detail(event)
+            } label: {
+                HStack(alignment: .center) {
+                    Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
+                    Text(event.text).bold()
+                }
+                .foregroundColor(.primary)
+                .font(.caption)
+                .frame(width: eventData.eventWidth, alignment: .leading)
+                .padding(4)
+                .frame(height: eventData.height, alignment: .top)
+                .background(.thinMaterial)
+                .background(
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(event.backgroundAsColor()).opacity(0.5)
+                        .shadow(radius: 5, x: 2, y: 5)
+                )
+                .overlay {
+                    HStack {
+                        Rectangle()
+                            .fill(event.backgroundAsColor())
+                            .frame(maxHeight: .infinity, alignment: .leading)
+                            .frame(width: 4)
+                        Spacer()
+                    }
+                }
+                .padding(.trailing, 30)
+            }
+        }
+        .offset(x: xOffset, y: eventData.yOffset + 30)
+    }
 }
 
 #Preview {
@@ -79,9 +123,9 @@ struct CKCompactEventView<Detail: View>: View {
         CKEventViewData(
             event: CKEvent(
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),
-                endDate: Date().dateFrom(13, 4, 2024, 2, 00),
+                endDate: Date().dateFrom(13, 4, 2024, 1, 20),
                 isAllDay: false,
-                text: "Event 1",
+                text: "Event 1 Event 1 Event 1",
                 backCol: "#D74D64"),
             overlapsWith: 1,
             position: 1,

@@ -52,14 +52,14 @@ let testEvents: [any CKEventSchema] = [
         backCol: "#E2ECE9"
     ),
     CKEvent(
-        startDate: calendar.date(byAdding: .hour, value: -4, to: midEventStart) ??  Date(),
-        endDate: calendar.date(byAdding: .minute, value: -210, to: midEventStart) ??  Date(),
+        startDate: calendar.date(byAdding: .minute, value: -240, to: midEventStart) ??  Date(),
+        endDate: calendar.date(byAdding: .minute, value: -218, to: midEventStart) ??  Date(),
         isAllDay: false,
         text: "Event 4",
         backCol: "#E2ECE9"
     ),
     CKEvent(
-        startDate: calendar.date(byAdding: .hour, value: -2, to: midEventStart) ??  Date(),
+        startDate: calendar.date(byAdding: .minute, value: -120, to: midEventStart) ??  Date(),
         endDate: calendar.date(byAdding: .minute, value: -100, to: midEventStart) ??  Date(),
         isAllDay: false,
         text: "Event 5",
