@@ -17,6 +17,8 @@ struct CKConfig: Equatable {
     var dayStart: Int = 0
     var dayEnd: Int = 24
     var showTime: Bool = false
+    var timeFormat24hr: Bool = false
+    var showMinutes: Bool = false
 }
 
 private struct CKConfigKey: EnvironmentKey {
@@ -54,6 +56,16 @@ extension View {
     /// When set shows a red line on a timeline to indicate the time
     public func showTime(_ value: Bool) -> some View {
         transformEnvironment(\.ckConfig) { $0.showTime = value }
+    }
+
+    /// When set the timeline timescale uses the 24hr clock 1 - 24. Default is 12hr clock 1pm, 2pm, etc
+    public func timelineShows24hrClock(_ value: Bool) -> some View {
+        transformEnvironment(\.ckConfig) { $0.timeFormat24hr = value }
+    }
+
+    /// When set the timeline time scale shows minutes, when you are using the 24hrs clock
+    public func showTimelineShowsMinutes(_ value: Bool) -> some View {
+        transformEnvironment(\.ckConfig) { $0.showMinutes = value }
     }
 
     public func headingAlignment(_ alignment: HorizontalAlignment) -> some View {

@@ -198,5 +198,7 @@ public struct CKCompactDay<Detail: View>: View {
             date: .constant(Date())
         )
         .workingHours(start: 9, end: 17)
+        .timelineShows24hrClock(false)
+        .showTimelineShowsMinutes(false)
     }
 }
