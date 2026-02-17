@@ -78,13 +78,10 @@ Applying this sets the working hours of a Timeline calendar. This will change th
 | This shows all the events for a selected date. You can use this for MacOs and iPad. | This shows all the events for a selected week. You can use this for MacOs and iPad | This shows all the events for a selected month. You can use this for MacOs and iPad|
 |<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineDay.png" width="300"/>| <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineWeek.png" width="300"/>| <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKMonth.png" width="300"/> |
 
+
 | CKCompactDay | CKCompactWeek | CKCompactMonth |
 |---------------|----------------|---------|
-| This shows all the events for a selected date. Best used on an iPhone.
-
-Swiping Left or Right on the timeline will change the date.| This shows all the events for a selected week. This only shows a single timeline and you select the date you want from the top. Best used on an iPhone
-
-Swiping Left or Right on the week will change it. | This shows all the events for a selected month. This shows a picker style calendar. Best used on an iPhone|
+| This shows all the events for a selected date. Best used on an iPhone. Swiping Left or Right on the timeline will change the date.| This shows all the events for a selected week. This only shows a single timeline and you select the date you want from the top. Best used on an iPhone. Swiping Left or Right on the week will change it. | This shows all the events for a selected month. This shows a picker style calendar. Best used on an iPhone|
 |<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactDay.png" width="300"/>| <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactWeek.png" width="300"/>| <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth.png" width="300"/>|
 
 ## Examples
