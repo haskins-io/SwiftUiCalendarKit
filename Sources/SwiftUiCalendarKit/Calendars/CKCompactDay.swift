@@ -127,44 +127,56 @@ public struct CKCompactDay<Detail: View>: View {
     @ViewBuilder
     private func dayView(_ date: Date, _ width: CGFloat) -> some View {
 
-        ScrollView {
+        let eventData = CKUtils.generateEventViewData(
+            date: date,
+            events: events,
+            width: width - 65
+        )
 
-            ZStack(alignment: .topLeading) {
+        VStack(spacing: 0) {
 
-                CKTimeline()
+            CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
 
-                let eventData = CKUtils.generateEventViewData(
-                    date: date,
-                    events: events,
-                    width: width - 65
-                )
+            ScrollView {
 
-                ForEach(eventData, id: \.anyHashableID) { event in
-                    if calendar.isDate(event.event.startDate, inSameDayAs: date) {
-                        CKCompactEventView(
-                            event,
-                            detail: detail
-                        )
+                ZStack(alignment: .topLeading) {
+
+                    CKTimeline()
+
+                    CKCompactEventsView(date: date, eventData: eventData, detail: detail)
+
+                    if config.showTime {
+                        CKTimeIndicator(time: time)
+                            .offset(x: 0, y: timelinePosition)
                     }
                 }
-
-                if config.showTime {
-                    CKTimeIndicator(time: time)
-                        .offset(x: 0, y: timelinePosition)
+                .onReceive(timer) { _ in
+                    guard config.showTime else {
+                        return
+                    }
+                    if calendar.component(.second, from: Date()) == 0 {
+                        time = Date()
+                        timelinePosition = CKUtils.currentTimelinePosition()
+                    }
                 }
+                .padding(5)
             }
-            .onReceive(timer) { _ in
-                guard config.showTime else {
-                    return
-                }
-                if calendar.component(.second, from: Date()) == 0 {
-                    time = Date()
-                    timelinePosition = CKUtils.currentTimelinePosition()
-                }
-            }
-            .padding(5)
+            .defaultScrollAnchor(.center)
         }
-        .defaultScrollAnchor(.center)
+    }
+
+    @ViewBuilder
+    private func addAllDayEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
+        VStack(spacing: 0) {
+            ForEach(eventData, id: \.anyHashableID) { event in
+                if calendar.isDate(event.event.startDate, inSameDayAs: currentDate) && event.allDay {
+                    CKCompactDayEventView(
+                        event,
+                        detail: detail
+                    )
+                }
+            }
+        }
     }
 
     private func calcDaySliders(newDate: Date) {

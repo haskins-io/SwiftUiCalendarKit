@@ -65,29 +65,34 @@ public struct CKTimelineWeek: View {
     @ViewBuilder
     private func timeline(proxy: GeometryProxy) -> some View {
 
+        let eventData = CKUtils.generateEventViewData(
+            date: date,
+            events: events,
+            width: ((proxy.size.width - CGFloat(55)) / 7)
+        )
+
+        let width = (proxy.size.width - CGFloat(55)) / CGFloat(7)
+        addAllDayEvents(eventData: eventData, width: width)
+
         ScrollView {
 
             ZStack(alignment: .topLeading) {
 
                 CKTimeline()
 
-                let eventData = CKUtils.generateEventViewData(
-                    date: date,
-                    events: events,
-                    width: ((proxy.size.width - CGFloat(55)) / 7)
-                )
-
                 ForEach(eventData, id: \.anyHashableID) { event in
-                    CKEventView(
-                        event,
-                        observer: observer,
-                        weekView: true
-                    )
+                    if !event.allDay {
+                        CKEventView(
+                            event,
+                            observer: observer,
+                            weekView: true
+                        )
+                    }
                 }
 
                 ForEach(1..<7) { day in
 
-                    let offset: CGFloat = ((proxy.size.width - CGFloat(55)) / CGFloat(7)) * CGFloat(day)
+                    let offset: CGFloat = width * CGFloat(day)
 
                     Rectangle()
                         .fill(Color.gray)
@@ -114,6 +119,22 @@ public struct CKTimelineWeek: View {
             }
         }
         .defaultScrollAnchor(.center)
+    }
+
+    @ViewBuilder
+    private func addAllDayEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
+        VStack(spacing: 0) {
+            ForEach(eventData, id: \.anyHashableID) { event in
+                if event.allDay {
+                    CKDayEventView(
+                        event,
+                        observer: observer,
+                        weekView: true,
+                        width: width
+                    )
+                }
+            }
+        }
     }
 }
 

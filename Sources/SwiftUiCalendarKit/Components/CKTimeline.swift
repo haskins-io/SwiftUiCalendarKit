@@ -46,7 +46,6 @@ struct CKTimeline: View {
 
         return false
     }
-
 }
 
 #Preview {

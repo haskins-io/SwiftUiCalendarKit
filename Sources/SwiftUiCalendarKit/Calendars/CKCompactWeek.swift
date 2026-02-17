@@ -85,9 +85,17 @@ public struct CKCompactWeek<Detail: View>: View {
 
         GeometryReader { proxy in
 
+            let eventData = CKUtils.generateEventViewData(
+                date: date,
+                events: events,
+                width: proxy.size.width - 65
+            )
+
             VStack(alignment: .leading) {
 
                 Divider()
+
+                CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
 
                 ScrollView {
 
@@ -95,20 +103,7 @@ public struct CKCompactWeek<Detail: View>: View {
 
                         CKTimeline()
 
-                        let eventData = CKUtils.generateEventViewData(
-                            date: date,
-                            events: events,
-                            width: proxy.size.width - 65
-                        )
-
-                        ForEach(eventData, id: \.anyHashableID) { event in
-                            if calendar.isDate(event.event.startDate, inSameDayAs: date) {
-                                CKCompactEventView(
-                                    event,
-                                    detail: detail
-                                )
-                            }
-                        }
+                        CKCompactEventsView(date: date, eventData: eventData, detail: detail)
 
                         if config.showTime {
                             CKTimeIndicator(time: time)

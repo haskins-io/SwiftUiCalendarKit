@@ -108,19 +108,22 @@ public struct CKTimelineDay: View {
 
     @ViewBuilder
     private func addAllDayEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
-        ForEach(eventData, id: \.anyHashableID) { event in
-            if calendar.isDate(event.event.startDate, inSameDayAs: date) && event.allDay {
-                CKDayEventView(
-                    event,
-                    observer: observer
-                )
+        VStack(spacing: 0) {
+            ForEach(eventData, id: \.anyHashableID) { event in
+                if calendar.isDate(event.event.startDate, inSameDayAs: date) && event.allDay {
+                    CKDayEventView(
+                        event,
+                        observer: observer,
+                        weekView: false,
+                        width: 0
+                    )
+                }
             }
         }
     }
 
     @ViewBuilder
     private func addEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
-
         ForEach(eventData, id: \.anyHashableID) { event in
             if calendar.isDate(event.event.startDate, inSameDayAs: date) && !event.allDay {
                 CKEventView(

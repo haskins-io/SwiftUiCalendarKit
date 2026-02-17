@@ -106,7 +106,11 @@ struct CKMonthDayCell: View {
         ZStack {
 
             ForEach(0..<maxRows, id: \.self) { index in
-                eventView(event: events[index], yOffset: 15 + (20 * CGFloat(index)))
+                if events[index].isAllDay  {
+                    allDayEvent(event: events[index], yOffset: 15 + (20 * CGFloat(index)))
+                } else {
+                    eventView(event: events[index], yOffset: 15 + (20 * CGFloat(index)))
+                }
             }
 
             if events.count > maxRows {
@@ -146,6 +150,24 @@ struct CKMonthDayCell: View {
         .frame(maxWidth: cellWidth, alignment: .leading)
         .padding([.leading, .trailing], 5)
         .frame(height: 20, alignment: .center)
+        .offset(x: 0, y: yOffset)
+        .onTapGesture {
+            observer.eventSelected = true
+            observer.event = event
+        }
+    }
+
+    @ViewBuilder
+    private func allDayEvent(event: any CKEventSchema, yOffset: CGFloat) -> some View {
+        HStack {
+            Text(event.text)
+            Spacer()
+        }
+        .padding(3)
+        .background(event.backgroundAsColor())
+        .frame(maxWidth: cellWidth - 5, alignment: .leading)
+        .frame(height: 20, alignment: .center)
+        .font(.caption)
         .offset(x: 0, y: yOffset)
         .onTapGesture {
             observer.eventSelected = true
