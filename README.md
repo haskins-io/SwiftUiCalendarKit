@@ -17,6 +17,8 @@ All the calendars are written purely in SwiftUI.
 	- Xcode will prompt you to specify version rules for the package. "Up to Next Major Version" ensures compatibility with future updates that don't introduce breaking changes.
 	- Click **Add Package**
  
+ The Main Branch will always have the latest functionality. It should be stable and usable. Reference a release if you want to fix the code until, you have had a chance to test against the Main branch.
+ 
 
 ## Usage   
 ```
@@ -55,23 +57,32 @@ struct CalendarTest: View {
 
 ```
 
-## Configurations
-There are some view modifiers that can be used to configure the calendars. These are
+## Calendar Modifiers
+There are some modifiers that can be used to configure the calendars. These are:-
 
-#### currentDayColour
-Applying this will change the colour that is used to indicate the current date.
+### currentDayColour
+When set changes the background colour of the curent date
 
-#### showTime
-Applying this will show a line on a Timeline calendar that indicates the time.
+### showTime
+When set shows a red line on a timeline to indicate the time
 
-#### headingAlignment
+### timelineShows24hrClock
+When set the timeline timescale uses the 24hr clock 1 - 24. Default is 12hr clock 1pm, 2pm, etc
+
+### timelineShowsMinutes
+When set the timeline time scale shows minutes, when you are using the 24hrs clock
+
+### showWeekNumbers
+When set the shows the week number in the header
+
+### headingAlignment
 Applying this changes the position of the heading on the CKCompactWeek
 
-#### workingHours
+### workingHours
 Applying this sets the working hours of a Timeline calendar. This will change the colour of the non working hours to be light grey.
 
 
-## Available Calendars
+## Calendars
 
 | CKTimelineDay | CKTimelineWeek | CKMonth |
 |---------------|----------------|---------|
@@ -108,3 +119,10 @@ Same answer as above. The Protocol does force you to implement functions to retu
 ## Known Issues
 ### Overlapping events
 While the code can handle overlapping events, and display them correctly, there are some overlay scenarios which it doesn't handle very well.
+
+
+## Things that I would like to add in the future
+* MultiDay Events
+* Drag and drop events
+* More customisations / Themes
+* A year Calendar

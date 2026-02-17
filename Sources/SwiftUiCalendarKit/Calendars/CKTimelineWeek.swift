@@ -19,7 +19,8 @@ import SwiftUI
 ///
 public struct CKTimelineWeek: View {
 
-    @Environment(\.ckConfig) private var config
+    @Environment(\.ckConfig)
+    private var config
 
     @ObservedObject var observer: CKCalendarObserver
 

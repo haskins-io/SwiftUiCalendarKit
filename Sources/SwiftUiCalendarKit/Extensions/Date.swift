@@ -53,7 +53,7 @@ extension Date {
 
         let calendar = Calendar.current
 
-        let startOfWeek = calendar.dateInterval(of: .weekOfMonth, for: self)?.start ??  Date()
+        let startOfWeek = calendar.dateInterval(of: .weekOfMonth, for: self)?.start ?? Date()
         let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek) ?? Date()
 
         return startOfWeek...endOfWeek

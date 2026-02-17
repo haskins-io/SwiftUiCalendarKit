@@ -8,7 +8,8 @@ import SwiftUI
 
 struct CKDayHeader: View {
 
-    @Environment(\.ckConfig) private var config
+    @Environment(\.ckConfig)
+    private var config
 
     @Binding var currentDate: Date
 
@@ -49,7 +50,6 @@ struct CKDayHeader: View {
 
                             Text(weekDay.date.toString("dd"))
                                 .foregroundColor(status ? Color.white : .primary)
-
                         }
                     }
                 }

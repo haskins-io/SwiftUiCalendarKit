@@ -36,7 +36,8 @@ extension EnvironmentValues {
 
 struct CKModifier: ViewModifier {
 
-    @Environment(\.ckConfig) private var current
+    @Environment(\.ckConfig)
+    private var current
 
     let update: (inout CKConfig) -> Void
 
@@ -66,11 +67,11 @@ extension View {
     }
 
     /// When set the timeline time scale shows minutes, when you are using the 24hrs clock
-    public func showTimelineShowsMinutes(_ value: Bool) -> some View {
+    public func timelineShowsMinutes(_ value: Bool) -> some View {
         transformEnvironment(\.ckConfig) { $0.showMinutes = value }
     }
 
-    /// When set the shows the week number
+    /// When set the shows the week number in the header
     public func showWeekNumbers(_ value: Bool) -> some View {
         transformEnvironment(\.ckConfig) { $0.showWeekNumber = value }
     }

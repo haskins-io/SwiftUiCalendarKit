@@ -63,7 +63,8 @@ struct CKCompactEventView<Detail: View>: View {
                 .background(.thinMaterial)
                 .background(
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(event.backgroundAsColor()).opacity(0.5)
+                        .fill(event.backgroundAsColor())
+                        .opacity(0.5)
                         .shadow(radius: 5, x: 2, y: 5)
                 )
                 .overlay {
@@ -99,7 +100,8 @@ struct CKCompactEventView<Detail: View>: View {
                 .background(.thinMaterial)
                 .background(
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(event.backgroundAsColor()).opacity(0.5)
+                        .fill(event.backgroundAsColor())
+                        .opacity(0.5)
                         .shadow(radius: 5, x: 2, y: 5)
                 )
                 .overlay {

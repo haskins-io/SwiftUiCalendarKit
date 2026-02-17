@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CKWeekOfYear: View {
 
-    @Environment(\.ckConfig) private var config
+    @Environment(\.ckConfig)
+    private var config
 
     private let calendar = Calendar.current
 

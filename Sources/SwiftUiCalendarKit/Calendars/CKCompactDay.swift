@@ -20,11 +20,12 @@ import SwiftUI
 ///
 public struct CKCompactDay<Detail: View>: View {
 
-    @Environment(\.ckConfig) private var config
+    @Environment(\.ckConfig)
+    private var config
 
     @Binding private var currentDate: Date
 
-    @State private var headerDay: Date = Date()
+    @State private var headerDay = Date()
 
     @State private var daySlider: [Date] = []
     @State private var currentDayIndex: Int = 1
@@ -64,7 +65,6 @@ public struct CKCompactDay<Detail: View>: View {
                 Divider().padding([.leading, .trailing], 10)
 
                 timeline(width: proxy.size.width - 55)
-
             }
             .onAppear(perform: {
                 calcDaySliders(newDate: currentDate)

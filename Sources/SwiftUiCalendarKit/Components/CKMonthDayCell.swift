@@ -19,7 +19,8 @@ struct CKMonthDayCellModifier: ViewModifier {
 
 struct CKMonthDayCell: View {
 
-    @Environment(\.ckConfig) private var config
+    @Environment(\.ckConfig)
+    private var config
 
     @ObservedObject var observer: CKCalendarObserver
 

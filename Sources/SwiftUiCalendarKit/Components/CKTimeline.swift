@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CKTimeline: View {
 
-    @Environment(\.ckConfig) private var config
+    @Environment(\.ckConfig)
+    private var config
 
     static let hourHeight = 60.0
 
@@ -41,9 +42,9 @@ struct CKTimeline: View {
     private func timelineconfiguration(hour: Int) -> String {
         if config.timeFormat24hr {
             if config.showMinutes {
-                return String(format:"%02d:00", hour)
+                return String(format: "%02d:00", hour)
             } else {
-                return String(format:"%02d", hour)
+                return String(format: "%02d", hour)
             }
         } else {
             if hour < 13 {

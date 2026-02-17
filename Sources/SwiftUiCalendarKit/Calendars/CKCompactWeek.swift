@@ -19,11 +19,12 @@ import SwiftUI
 ///
 public struct CKCompactWeek<Detail: View>: View {
 
-    @Environment(\.ckConfig) private var config
+    @Environment(\.ckConfig)
+    private var config
 
     @Binding private var date: Date
 
-    @State private var headerMonth: Date = Date()
+    @State private var headerMonth = Date()
 
     @State private var weekSlider: [[Date.WeekDay]] = []
     @State private var currentWeekIndex: Int = 1
@@ -184,7 +185,6 @@ public struct CKCompactWeek<Detail: View>: View {
 
                         Text(day.date.toString("dd"))
                             .foregroundColor(status ? Color.white : .primary)
-
                     }
                 }
                 .hAlign(.center)

@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CKMonthComponent: View {
 
-    @Environment(\.ckConfig) private var config
+    @Environment(\.ckConfig)
+    private var config
 
     private let calendar: Calendar
     private let monthFormatter: DateFormatter
@@ -51,7 +52,6 @@ struct CKMonthComponent: View {
                                         .fill(config.currentDayColour)
                                         .frame(width: 27, height: 27)
                                         .offset(x: 1, y: 0)
-
                                 } else if calendar.isDate(date, inSameDayAs: selectedDate) {
 
                                     RoundedRectangle(cornerRadius: 5)
@@ -74,7 +74,6 @@ struct CKMonthComponent: View {
                                 .foregroundColor(Color.green)
                                 .offset(x: CGFloat(23),
                                         y: CGFloat(35))
-
                         }
                     }
                 },

@@ -19,8 +19,10 @@ extension CKCalendarMode {
         switch self {
         case .day:
             return "Day"
+
         case .week:
             return "Week"
+
         case .month:
             return "Month"
         }

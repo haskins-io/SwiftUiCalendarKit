@@ -54,7 +54,8 @@ struct CKDayEventView: View {
         .background(.thinMaterial)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .fill(event.backgroundAsColor()).opacity(0.5)
+                .fill(event.backgroundAsColor())
+                .opacity(0.5)
                 .shadow(radius: 5, x: 2, y: 5)
         )
         .offset(x: xOffset, y: 0)
