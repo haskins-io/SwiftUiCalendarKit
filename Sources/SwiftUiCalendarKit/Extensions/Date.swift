@@ -8,6 +8,11 @@ import Foundation
 
 extension Date {
 
+    var midnight: Date {
+        let cal = Calendar.current
+        return cal.startOfDay(for: self)
+    }
+
     /// - Used to Store Data of Each Week Day
     struct WeekDay: Identifiable {
         var id: UUID = .init()

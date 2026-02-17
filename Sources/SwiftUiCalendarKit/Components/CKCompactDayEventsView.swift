@@ -16,7 +16,7 @@ struct CKCompactDayEventsView<Detail: View>: View {
     var body: some View {
         VStack(spacing: 0) {
             ForEach(eventData, id: \.anyHashableID) { event in
-                if calendar.isDate(event.event.startDate, inSameDayAs: date) && event.allDay {
+                if event.allDay && CKUtils.doesEventOccurOnDate(event: event.event, date: date) {
                     CKCompactDayEventView(
                         event,
                         detail: detail

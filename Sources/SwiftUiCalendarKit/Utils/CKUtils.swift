@@ -16,6 +16,21 @@ enum CKUtils {
         return (Double(hour) * CKTimeline.hourHeight) + Double(minute) + 30.0
     }
 
+    static func doesEventOccurOnDate(event: any CKEventSchema, date: Date) -> Bool {
+
+        if let endDate = Calendar.current.date(byAdding: .day, value: 1, to: event.endDate) {
+            let startDay = event.startDate.midnight
+            let endDay = endDate.midnight
+
+            let range = startDay...endDay
+            if range.contains(date) {
+                return true
+            }
+        }
+
+        return false
+    }
+
     static func generateEventViewData(
         date: Date,
         events: [any CKEventSchema],
@@ -34,7 +49,13 @@ enum CKUtils {
         var positions: [[CKEventViewData]] = []
 
         for event in events {
-            guard weekRange.contains(event.startDate) else { continue }
+            guard weekRange.contains(event.startDate) else {
+                continue
+            }
+
+            guard event.endDate > event.startDate else {
+                continue
+            }
 
             let overlapCount = overlapCounts[event.anyHashableID] ?? 1
 
@@ -90,6 +111,10 @@ enum CKUtils {
     static func doEventsOverlap(_ event1: any CKEventSchema, _ event2: any CKEventSchema) -> Bool {
 
         if event1.isAllDay || event2.isAllDay {
+            return false
+        }
+
+        guard event2.endDate > event1.startDate, event1.endDate > event2.startDate else {
             return false
         }
 
