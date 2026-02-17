@@ -74,7 +74,7 @@ let testEvents: [any CKEventSchema] = [
     ),
     CKEvent(
         startDate: calendar.date(byAdding: .hour, value: 1, to: midEventStart) ??  Date(),
-        endDate:calendar.date(byAdding: .hour, value: 2, to: midEventStart) ??  Date(),
+        endDate: calendar.date(byAdding: .hour, value: 2, to: midEventStart) ??  Date(),
         isAllDay: false,
         text: "Event 7",
         backCol: "#E8D9E7"

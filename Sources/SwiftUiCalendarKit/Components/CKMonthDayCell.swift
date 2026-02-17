@@ -73,12 +73,16 @@ struct CKMonthDayCell: View {
                     if isFirstDayOfMonth() {
                         Text(formatDate())
                             .padding(.trailing, 55)
-                            .foregroundColor(calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray)
+                            .foregroundColor(
+                                calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray
+                            )
                             .offset(x: (cellWidth / 2) - 8, y: ((cellHeight / 2) - 15) * -1)
                     } else {
                         Text(formatDate())
                             .padding(.trailing, 25)
-                            .foregroundColor(calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray)
+                            .foregroundColor(
+                                calendar.isDateInToday(date) ? .white : thisMonth ? Color.primary : Color.gray
+                            )
                             .offset(x: (cellWidth / 2) - 8, y: ((cellHeight / 2) - 15) * -1)
                     }
                 }
@@ -106,7 +110,7 @@ struct CKMonthDayCell: View {
         ZStack {
 
             ForEach(0..<maxRows, id: \.self) { index in
-                if events[index].isAllDay  {
+                if events[index].isAllDay {
                     allDayEvent(event: events[index], yOffset: 15 + (20 * CGFloat(index)))
                 } else {
                     eventView(event: events[index], yOffset: 15 + (20 * CGFloat(index)))

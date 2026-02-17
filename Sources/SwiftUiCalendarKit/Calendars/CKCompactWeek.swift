@@ -98,29 +98,34 @@ public struct CKCompactWeek<Detail: View>: View {
                 CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
 
                 ScrollView {
-
-                    ZStack(alignment: .topLeading) {
-
-                        CKTimeline()
-
-                        CKCompactEventsView(date: date, eventData: eventData, detail: detail)
-
-                        if config.showTime {
-                            CKTimeIndicator(time: time)
-                                .offset(x: 0, y: timelinePosition)
-                        }
-                    }
-                    .onReceive(timer) { _ in
-                        guard config.showTime else {
-                            return
-                        }
-                        if calendar.component(.second, from: Date()) == 0 {
-                            time = Date()
-                            timelinePosition = CKUtils.currentTimelinePosition()
-                        }
-                    }
+                    timelineEvents(eventData: eventData)
                 }
                 .defaultScrollAnchor(.center)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func timelineEvents(eventData: [CKEventViewData]) -> some View {
+
+        ZStack(alignment: .topLeading) {
+
+            CKTimeline()
+
+            CKCompactEventsView(date: date, eventData: eventData, detail: detail)
+
+            if config.showTime {
+                CKTimeIndicator(time: time)
+                    .offset(x: 0, y: timelinePosition)
+            }
+        }
+        .onReceive(timer) { _ in
+            guard config.showTime else {
+                return
+            }
+            if calendar.component(.second, from: Date()) == 0 {
+                time = Date()
+                timelinePosition = CKUtils.currentTimelinePosition()
             }
         }
     }
@@ -148,9 +153,7 @@ public struct CKCompactWeek<Detail: View>: View {
                         .tag(index)
                 }
             }
-            #if !os(macOS)
             .tabViewStyle(.page(indexDisplayMode: .never))
-            #endif
             .frame(height: 70)
             .padding(5)
         }
