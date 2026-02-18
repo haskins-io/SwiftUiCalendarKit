@@ -47,24 +47,9 @@ struct CKTimeline: View {
             }
         }
     }
+}
 
-    private func timelineconfiguration(hour: Int) -> String {
-
-        if config.timeFormat24hr {
-            if config.showMinutes {
-                return String(format: "%02d:00", hour)
-            } else {
-                return String(format: "%02d", hour)
-            }
-        } else {
-            if hour < 13 {
-                return "\(hour)am"
-            } else {
-                let pmHour = hour - 12
-                return "\(pmHour)pm"
-            }
-        }
-    }
+extension CKTimeline {
 
     private func frameWidth() -> CGFloat {
         if config.timeFormat24hr {
@@ -85,6 +70,24 @@ struct CKTimeline: View {
         }
 
         return false
+    }
+
+    private func timelineconfiguration(hour: Int) -> String {
+
+        if config.timeFormat24hr {
+            if config.showMinutes {
+                return String(format: "%02d:00", hour)
+            } else {
+                return String(format: "%02d", hour)
+            }
+        } else {
+            if hour < 13 {
+                return "\(hour)am"
+            } else {
+                let pmHour = hour - 12
+                return "\(pmHour)pm"
+            }
+        }
     }
 }
 

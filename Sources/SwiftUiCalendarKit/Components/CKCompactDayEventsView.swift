@@ -24,6 +24,9 @@ struct CKCompactDayEventsView<Detail: View>: View {
             }
         }
     }
+}
+
+extension CKCompactDayEventsView {
 
     private func showEvent(event: CKEventSchema) -> Bool {
         if event.isAllDay && CKUtils.doesEventOccurOnDate(event: event, date: date) {

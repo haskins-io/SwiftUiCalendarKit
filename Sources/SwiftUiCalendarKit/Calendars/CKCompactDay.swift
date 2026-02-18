@@ -33,12 +33,13 @@ public struct CKCompactDay<Detail: View>: View {
 
     @State private var calendarWidth: CGFloat = .zero
 
+    @State private var timelinePosition = 0.0
+    @State private var time = Date()
+
     private let detail: (any CKEventSchema) -> Detail
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
 
-    @State private var timelinePosition = 0.0
-    @State private var time = Date()
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
     public init(
@@ -87,23 +88,7 @@ public struct CKCompactDay<Detail: View>: View {
                     calcDaySliders(newDate: currentDate)
                 }
                 .onChange(of: currentDayIndex, initial: false) {
-
-                    if currentDayIndex == 0 {
-                        if let firstDate = daySlider.first {
-                            daySlider.insert(firstDate.previousDate(), at: 0)
-                            daySlider.removeLast()
-                            currentDayIndex = 1
-                        }
-                    } else if currentDayIndex == daySlider.count - 1 {
-                        if let lastDate = daySlider.last {
-                            daySlider.append(lastDate.nextDate())
-                            daySlider.removeFirst()
-                            currentDayIndex = daySlider.count - 2
-                        }
-                    }
-
-                    headerDay = daySlider[currentDayIndex]
-                    currentDate = headerDay
+                    updateSliders()
                 }
             }
         }
@@ -196,6 +181,29 @@ public struct CKCompactDay<Detail: View>: View {
                 }
             }
         }
+    }
+
+}
+
+extension CKCompactDay {
+
+    private func updateSliders() {
+        if currentDayIndex == 0 {
+            if let firstDate = daySlider.first {
+                daySlider.insert(firstDate.previousDate(), at: 0)
+                daySlider.removeLast()
+                currentDayIndex = 1
+            }
+        } else if currentDayIndex == daySlider.count - 1 {
+            if let lastDate = daySlider.last {
+                daySlider.append(lastDate.nextDate())
+                daySlider.removeFirst()
+                currentDayIndex = daySlider.count - 2
+            }
+        }
+
+        headerDay = daySlider[currentDayIndex]
+        currentDate = headerDay
     }
 
     private func calcDaySliders(newDate: Date) {

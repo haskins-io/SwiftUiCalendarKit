@@ -22,6 +22,9 @@ public struct CKMonth: View {
 
     @Binding var calendarDate: Date
 
+    @State private var calendarWidth: CGFloat = .zero
+    @State private var calendarHeight: CGFloat = .zero
+
     private let calendar = Calendar.current
 
     private var events: [any CKEventSchema]
@@ -34,28 +37,41 @@ public struct CKMonth: View {
 
     public var body: some View {
 
-        GeometryReader { proxy in
+        GeometryReader { geometry in
 
-            VStack(alignment: .leading, spacing: 0) {
+            Color.clear
+                .onChange(of: geometry.size) { _, newSize in
+                    guard newSize.width > 0, newSize.height > 0 else {
+                        return
+                    }
 
-                CKCalendarHeader(currentDate: $calendarDate, addWeek: false)
-                    .padding(.bottom, 5)
+                    calendarWidth = newSize.width
+                    calendarHeight = newSize.height
+                }
 
-                CKDayHeader(currentDate: $calendarDate, width: proxy.size.width, showTime: false, showDate: false)
-                    .padding(.bottom, 5)
+            if calendarWidth != 0 {
+                VStack(alignment: .leading, spacing: 0) {
 
-                Divider()
+                    CKCalendarHeader(currentDate: $calendarDate, addWeek: false)
+                        .padding(.bottom, 5)
 
-                monthGrid(proxy: proxy)
+                    CKDayHeader(currentDate: $calendarDate, width: calendarWidth, showTime: false, showDate: false)
+                        .padding(.bottom, 5)
+
+                    Divider()
+
+                    monthGrid()
+                }
+                .padding(0)
             }
-            .padding(0)
         }
     }
 
-    private func monthGrid(proxy: GeometryProxy) -> some View {
+    @ViewBuilder
+    private func monthGrid() -> some View {
 
-        let cellWidth = proxy.size.width / 7
-        let cellHeight = ((proxy.size.height - 70) / 6) + 4
+        let cellWidth = calendarWidth / 7
+        let cellHeight = ((calendarHeight - 70) / 6) + 4
 
         let days = makeDays()
         let month = calendarDate.startOfMonth(using: calendar)
@@ -75,6 +91,9 @@ public struct CKMonth: View {
         }
         .padding(0)
     }
+}
+
+extension CKMonth {
 
     private func makeDays() -> [Date] {
         guard let monthInterval = calendar.dateInterval(of: .month, for: calendarDate),
@@ -92,9 +111,8 @@ public struct CKMonth: View {
 
         var dayEvents: [any CKEventSchema] = []
 
-        // This meeds to check if a multiday event falls on the date as well
         for event in events where calendar.isDate(event.startDate, inSameDayAs: day) ||
-            CKUtils.doesEventOccurOnDate(event: event, date: day) {
+        CKUtils.doesEventOccurOnDate(event: event, date: day) {
 
             dayEvents.append(event)
         }

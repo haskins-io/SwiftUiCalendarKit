@@ -7,13 +7,27 @@
 
 import SwiftUI
 
+///
+/// CKTimelineWeek
+///
+/// This Calendar type is used for showing a single week on a large screen size such as an iPad or Mac
+///
+/// - Paramters
+///   - observer: Listen to this to be notified when an event is tapped/clicked
+///   - events: an array of events that conform to CKEventSchema
+///   - date: The date for the calendar to show
+///
 public struct NewWeekView: View {
 
-    @ObservedObject var observer: CKCalendarObserver
-    var events: [any CKEventSchema]
-    @Binding var calendarDate: Date
+    @ObservedObject private var observer: CKCalendarObserver
+
+    @Binding private var calendarDate: Date
 
     @State private var calendarWidth: CGFloat = .zero
+
+    private var events: [any CKEventSchema]
+
+    private var calendar = Calendar.current
 
     public init(
         observer: CKCalendarObserver,
@@ -192,61 +206,6 @@ public struct NewWeekView: View {
         }
     }
 
-    private func doesDateHaveAnyAllDayEvents(eventData: [CKEventViewData], date: Date) -> Bool {
-
-        var hasEvents = false
-
-        for event in eventData where isSingleDayEvent(event: event.event, date: date) {
-            hasEvents = true
-            break
-        }
-
-        return hasEvents
-    }
-
-    private func doesDateHaveAnyMultiDayEvents(eventData: [CKEventViewData], date: Date) -> Bool {
-
-        var hasEvents = false
-
-        for event in eventData where (isMultiDayEvent(event: event.event) && CKUtils.doesEventOccurOnDate(event: event.event, date: date)) {
-            hasEvents = true
-            break
-        }
-
-        return hasEvents
-    }
-
-    private func isSingleDayEvent(event: any CKEventSchema, date: Date) -> Bool {
-
-        guard event.isAllDay else {
-            return false
-        }
-
-        guard calendar.isDate(event.startDate, inSameDayAs: date) else {
-            return false
-        }
-
-        guard !isMultiDayEvent(event: event) else {
-            return false
-        }
-
-        return true
-    }
-
-    private func isMultiDayEvent(event: any CKEventSchema) -> Bool {
-
-        guard event.isAllDay else {
-            return false
-        }
-
-        // is start and end in same day
-        guard !calendar.isDate(event.startDate, inSameDayAs: event.endDate) else {
-            return false
-        }
-
-        return true
-    }
-
     @ViewBuilder
     private func singleDayEventView(eventData: CKEventViewData, width: CGFloat) -> some View {
 
@@ -328,6 +287,63 @@ public struct NewWeekView: View {
                 )
             }
         }
+    }
+}
+
+extension NewWeekView {
+    private func doesDateHaveAnyMultiDayEvents(eventData: [CKEventViewData], date: Date) -> Bool {
+
+        var hasEvents = false
+
+        for event in eventData where (isMultiDayEvent(event: event.event) && CKUtils.doesEventOccurOnDate(event: event.event, date: date)) {
+            hasEvents = true
+            break
+        }
+
+        return hasEvents
+    }
+
+    private func isSingleDayEvent(event: any CKEventSchema, date: Date) -> Bool {
+
+        guard event.isAllDay else {
+            return false
+        }
+
+        guard calendar.isDate(event.startDate, inSameDayAs: date) else {
+            return false
+        }
+
+        guard !isMultiDayEvent(event: event) else {
+            return false
+        }
+
+        return true
+    }
+
+    private func isMultiDayEvent(event: any CKEventSchema) -> Bool {
+
+        guard event.isAllDay else {
+            return false
+        }
+
+        // is start and end in same day
+        guard !calendar.isDate(event.startDate, inSameDayAs: event.endDate) else {
+            return false
+        }
+
+        return true
+    }
+
+    private func doesDateHaveAnyAllDayEvents(eventData: [CKEventViewData], date: Date) -> Bool {
+
+        var hasEvents = false
+
+        for event in eventData where isSingleDayEvent(event: event.event, date: date) {
+            hasEvents = true
+            break
+        }
+
+        return hasEvents
     }
 }
 

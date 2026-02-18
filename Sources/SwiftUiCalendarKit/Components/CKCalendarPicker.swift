@@ -8,7 +8,7 @@ import SwiftUI
 
 public struct CKCalendarPicker: View {
 
-    @Binding public var mode: CKCalendarMode
+    @Binding private var mode: CKCalendarMode
 
     public init(mode: Binding<CKCalendarMode>) {
         self._mode = mode

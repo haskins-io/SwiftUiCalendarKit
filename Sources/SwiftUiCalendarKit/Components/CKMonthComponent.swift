@@ -14,7 +14,9 @@ struct CKMonthComponent: View {
 
     @Binding private var selectedDate: Date
 
-    var events: [any CKEventSchema] = []
+    private var events: [any CKEventSchema] = []
+
+    private var calendar = Calendar.current
 
     init(calendar: Calendar, date: Binding<Date>, events: [any CKEventSchema]) {
         self._selectedDate = date

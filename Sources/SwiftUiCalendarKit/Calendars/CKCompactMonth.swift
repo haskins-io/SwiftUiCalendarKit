@@ -21,7 +21,6 @@ public struct CKCompactMonth<Detail: View>: View {
     @Binding private var date: Date
 
     private let detail: (any CKEventSchema) -> Detail
-
     private var events: [any CKEventSchema]
 
     public init(

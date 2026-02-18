@@ -12,13 +12,19 @@ struct ContentView: View {
     @Environment(\.horizontalSizeClass)
     private var horizontalSizeClass
 
-    let calendar = Calendar.current
+    @State private var date = Date()
 
-    static let middleDateStart = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date()
-    static let middleDateEnd = Calendar.current.date(byAdding: .hour, value: 1, to: middleDateStart) ?? Date()
+    @State private var showNewEventSheet = false
 
-    static let midEventStart = Calendar.current.date(byAdding: .day, value: 1, to: middleDateStart) ?? Date()
-    static let midEventEnd = Calendar.current.date(byAdding: .day, value: 1, to: middleDateEnd) ?? Date()
+    @StateObject private var observer = CKCalendarObserver()
+
+    private let calendar = Calendar.current
+
+    private static let middleDateStart = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date()
+    private static let middleDateEnd = Calendar.current.date(byAdding: .hour, value: 1, to: middleDateStart) ?? Date()
+
+    private static let midEventStart = Calendar.current.date(byAdding: .day, value: 1, to: middleDateStart) ?? Date()
+    private static let midEventEnd = Calendar.current.date(byAdding: .day, value: 1, to: middleDateEnd) ?? Date()
 
     let testEvents: [any CKEventSchema] = [
         CKEvent(
@@ -121,12 +127,6 @@ struct ContentView: View {
         )
     ]
 
-    @State private var date = Date()
-
-    @State private var showNewEventSheet = false
-
-    @StateObject private var observer = CKCalendarObserver()
-
     private var day: some View {
         return CKTimelineDay(
             observer: observer,
@@ -183,7 +183,13 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
-            dayCompact
+            VStack {
+                month
+            }
+
+            if observer.eventSelected {
+                Text(observer.event.text)
+            }
         }
     }
 }

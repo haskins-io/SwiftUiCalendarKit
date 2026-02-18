@@ -11,7 +11,7 @@ struct CKCompactMonthEvents<Detail: View>: View {
 
     @Binding private var date: Date
 
-    let calendar = Calendar.current
+    private let calendar = Calendar.current
 
     private let detail: (any CKEventSchema) -> Detail
     private var events: [any CKEventSchema]
@@ -39,6 +39,9 @@ struct CKCompactMonthEvents<Detail: View>: View {
         }
         .listStyle(.plain)
     }
+}
+
+extension CKCompactMonthEvents {
 
     private func listEvent(event: any CKEventSchema) -> Bool {
         if calendar.isDate(event.startDate, inSameDayAs: date) ||

@@ -24,13 +24,13 @@ struct CKMonthDayCell: View {
 
     @ObservedObject var observer: CKCalendarObserver
 
-    let calendar = Calendar.current
+    private let calendar = Calendar.current
+
+    private var events: [any CKEventSchema]
 
     private var date: Date
     private var month: Date
     private var showTime: Bool
-
-    var events: [any CKEventSchema]
 
     private var cellWidth: CGFloat
     private var cellHeight: CGFloat
@@ -99,10 +99,6 @@ struct CKMonthDayCell: View {
         .background(calendar.isDateInWeekend(date) ? Color.gray.opacity(0.1) : Color.clear)
     }
 
-    private func isFirstDayOfMonth() -> Bool {
-        return calendar.component(.day, from: date) == 1
-    }
-
     @ViewBuilder
     private func addEvents() -> some View {
 
@@ -123,18 +119,6 @@ struct CKMonthDayCell: View {
         }
         .offset(x: 0, y: 35)
         .padding(0)
-    }
-
-    private func calcEventlistSize() -> Int {
-        let offset: CGFloat = 25 + 25
-
-        var maxRows = Int((cellHeight - offset) / 20)
-
-        if maxRows > events.count {
-            maxRows = events.count
-        }
-
-        return maxRows
     }
 
     @ViewBuilder
@@ -179,6 +163,9 @@ struct CKMonthDayCell: View {
             observer.event = event
         }
     }
+}
+
+extension CKMonthDayCell {
 
     private func formatDate() -> String {
 
@@ -187,6 +174,22 @@ struct CKMonthDayCell: View {
         } else {
             return date.toString("d")
         }
+    }
+
+    private func calcEventlistSize() -> Int {
+        let offset: CGFloat = 25 + 25
+
+        var maxRows = Int((cellHeight - offset) / 20)
+
+        if maxRows > events.count {
+            maxRows = events.count
+        }
+
+        return maxRows
+    }
+
+    private func isFirstDayOfMonth() -> Bool {
+        return calendar.component(.day, from: date) == 1
     }
 }
 

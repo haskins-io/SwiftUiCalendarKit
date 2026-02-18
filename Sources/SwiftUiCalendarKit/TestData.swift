@@ -7,13 +7,13 @@
 
 import Foundation
 
-let calendar = Calendar.current
+private let calendar = Calendar.current
 
-let middleDateStart = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date()
-let middleDateEnd = calendar.date(byAdding: .hour, value: 1, to: middleDateStart) ?? Date()
+private let middleDateStart = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date()
+private let middleDateEnd = calendar.date(byAdding: .hour, value: 1, to: middleDateStart) ?? Date()
 
-let midEventStart = calendar.date(byAdding: .day, value: 1, to: middleDateStart) ?? Date()
-let midEventEnd = calendar.date(byAdding: .day, value: 1, to: middleDateEnd) ?? Date()
+private let midEventStart = calendar.date(byAdding: .day, value: 1, to: middleDateStart) ?? Date()
+private let midEventEnd = calendar.date(byAdding: .day, value: 1, to: middleDateEnd) ?? Date()
 
 let testEvents: [any CKEventSchema] = [
     CKEvent(

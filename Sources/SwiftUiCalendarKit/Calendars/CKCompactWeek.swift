@@ -32,12 +32,13 @@ public struct CKCompactWeek<Detail: View>: View {
 
     @State private var calendarWidth: CGFloat = .zero
 
+    @State private var timelinePosition = 0.0
+    @State private var time = Date()
+
     private let detail: (any CKEventSchema) -> Detail
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
 
-    @State private var timelinePosition = 0.0
-    @State private var time = Date()
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
     public init(
@@ -225,6 +226,9 @@ public struct CKCompactWeek<Detail: View>: View {
             }
         }
     }
+}
+
+extension CKCompactWeek {
 
     private func paginateWeek() {
         if weekSlider.indices.contains(currentWeekIndex) {

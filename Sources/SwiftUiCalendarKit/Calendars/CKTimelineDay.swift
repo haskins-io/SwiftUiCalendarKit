@@ -26,14 +26,15 @@ public struct CKTimelineDay: View {
 
     @Binding private var date: Date
 
+    @State private var timelinePosition = 0.0
+    @State private var time = Date()
+
+    @State private var calendarWidth: CGFloat = .zero
+
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
 
-    @State private var timelinePosition = 0.0
-    @State private var time = Date()
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
-
-    @State private var calendarWidth: CGFloat = .zero
 
     public init(
         observer: CKCalendarObserver,
