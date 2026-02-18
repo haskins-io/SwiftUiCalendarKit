@@ -127,4 +127,4 @@ While the code can handle overlapping events, and display them correctly, there 
 * Drag and drop events
 * More customisations / Themes
 * A year Calendar
-* An Agenda calendar, that just shows the events for a day
+* An Agenda calendar, that just shows the events for a day / week

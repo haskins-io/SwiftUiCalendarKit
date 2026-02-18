@@ -117,8 +117,11 @@ enum CKUtils {
             return false
         }
 
-        let leftRange = event1.startDate ... event1.endDate
-        let rightRange = event2.startDate ... event2.endDate
+        let event1Add1Sec = Calendar.current.date(byAdding: .second, value: 1, to: event1.startDate) ?? event1.startDate
+        let event2Add1Sec = Calendar.current.date(byAdding: .second, value: 1, to: event2.startDate) ?? event2.startDate
+
+        let leftRange = event1Add1Sec ... event1.endDate
+        let rightRange = event2Add1Sec ... event2.endDate
 
         return leftRange.overlaps(rightRange)
     }

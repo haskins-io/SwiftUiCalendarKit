@@ -20,7 +20,7 @@ public struct CKMonth: View {
 
     @ObservedObject var observer: CKCalendarObserver
 
-    @Binding var date: Date
+    @Binding var calendarDate: Date
 
     private let calendar = Calendar.current
 
@@ -29,7 +29,7 @@ public struct CKMonth: View {
     public init(observer: CKCalendarObserver, events: [any CKEventSchema], date: Binding<Date>) {
         self._observer = .init(wrappedValue: observer)
         self.events = events
-        self._date = date
+        self._calendarDate = date
     }
 
     public var body: some View {
@@ -38,10 +38,10 @@ public struct CKMonth: View {
 
             VStack(alignment: .leading, spacing: 0) {
 
-                CKCalendarHeader(currentDate: $date, addWeek: false)
+                CKCalendarHeader(currentDate: $calendarDate, addWeek: false)
                     .padding(.bottom, 5)
 
-                CKDayHeader(currentDate: $date, width: proxy.size.width, showTime: false, showDate: false)
+                CKDayHeader(currentDate: $calendarDate, width: proxy.size.width, showTime: false, showDate: false)
                     .padding(.bottom, 5)
 
                 Divider()
@@ -58,7 +58,7 @@ public struct CKMonth: View {
         let cellHeight = ((proxy.size.height - 70) / 6) + 4
 
         let days = makeDays()
-        let month = date.startOfMonth(using: calendar)
+        let month = calendarDate.startOfMonth(using: calendar)
 
         return LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 0) {
 
@@ -77,7 +77,7 @@ public struct CKMonth: View {
     }
 
     private func makeDays() -> [Date] {
-        guard let monthInterval = calendar.dateInterval(of: .month, for: date),
+        guard let monthInterval = calendar.dateInterval(of: .month, for: calendarDate),
               let monthFirstWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.start),
               let monthLastWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.end - 1)
         else {
@@ -92,7 +92,10 @@ public struct CKMonth: View {
 
         var dayEvents: [any CKEventSchema] = []
 
-        for event in events where calendar.isDate(event.startDate, inSameDayAs: day) {
+        // This meeds to check if a multiday event falls on the date as well
+        for event in events where calendar.isDate(event.startDate, inSameDayAs: day) ||
+            CKUtils.doesEventOccurOnDate(event: event, date: day) {
+
             dayEvents.append(event)
         }
 
