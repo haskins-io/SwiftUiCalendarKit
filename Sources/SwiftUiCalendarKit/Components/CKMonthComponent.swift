@@ -76,15 +76,17 @@ struct CKMonthComponent: View {
                     HStack {
 
                         Button {
-                            guard let newDate = calendar.date(
-                                byAdding: .month,
-                                value: -1,
-                                to: selectedDate
-                            ) else {
-                                return
-                            }
+                            withAnimation {
+                                guard let newDate = calendar.date(
+                                    byAdding: .month,
+                                    value: -1,
+                                    to: selectedDate
+                                ) else {
+                                    return
+                                }
 
-                            selectedDate = newDate
+                                selectedDate = newDate
+                            }
                         } label: {
                             Label(
                                 title: { Text("Previous") },
@@ -100,7 +102,9 @@ struct CKMonthComponent: View {
                         Spacer()
 
                         Button {
-                            selectedDate = Date.now
+                            withAnimation {
+                                selectedDate = Date.now
+                            }
                         } label: {
                             Text(date.formatted(Date.FormatStyle().month(.wide).year(.defaultDigits)))
                                 .foregroundColor(.blue)
@@ -111,15 +115,17 @@ struct CKMonthComponent: View {
                         Spacer()
 
                         Button {
-                            guard let newDate = calendar.date(
-                                byAdding: .month,
-                                value: 1,
-                                to: selectedDate
-                            ) else {
-                                return
-                            }
+                            withAnimation {
+                                guard let newDate = calendar.date(
+                                    byAdding: .month,
+                                    value: 1,
+                                    to: selectedDate
+                                ) else {
+                                    return
+                                }
 
-                            selectedDate = newDate
+                                selectedDate = newDate
+                            }
                         } label: {
                             Label(
                                 title: { Text("Next") },
@@ -247,6 +253,7 @@ extension CalendarComponent {
         }
 
         let dateInterval = DateInterval(start: monthFirstWeek.start, end: monthLastWeek.end)
+
         return calendar.generateDays(for: dateInterval)
     }
 }

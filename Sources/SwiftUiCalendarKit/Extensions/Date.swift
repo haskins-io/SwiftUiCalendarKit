@@ -13,14 +13,6 @@ extension Date {
         return cal.startOfDay(for: self)
     }
 
-    /// - Used to Store Data of Each Week Day
-    struct WeekDay: Identifiable {
-        var id: UUID = .init()
-        var string: String
-        var date: Date
-        var isToday = false
-    }
-
     var isToday: Bool {
         return Calendar.current.isDateInToday(self)
     }

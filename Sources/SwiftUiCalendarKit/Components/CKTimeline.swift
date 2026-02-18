@@ -32,7 +32,6 @@ struct CKTimeline: View {
                         .frame(height: CKTimeline.hourHeight)
                         .offset(x: 0, y: 30)
 
-
                     HStack {
                         if showTime {
                             Text(timelineconfiguration(hour: hour))

@@ -52,9 +52,11 @@ public struct CKEvent: CKEventSchema {
 
     public func totalTime() -> String {
         let components = Calendar.current.dateComponents([.hour, .minute], from: startDate, to: endDate)
+
         if let hours = components.hour, let minutes = components.minute {
             return ("\(hours)h, \(minutes)m")
         }
+
         return ""
     }
 }

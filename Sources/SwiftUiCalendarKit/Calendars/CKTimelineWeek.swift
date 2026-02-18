@@ -33,6 +33,8 @@ public struct CKTimelineWeek: View {
     @State private var time = Date()
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
+    @State private var calendarWidth: CGFloat = .zero
+
     public init(
         observer: CKCalendarObserver,
         events: [any CKEventSchema],
@@ -48,35 +50,47 @@ public struct CKTimelineWeek: View {
 
     public var body: some View {
 
-        GeometryReader { proxy in
+        GeometryReader { geometry in
 
-            VStack(alignment: .leading) {
+            Color.clear
+                .onChange(of: geometry.size) { _, newSize in
+                    guard newSize.width > 0, newSize.height > 0 else {
+                        return
+                    }
 
-                CKCalendarHeader(currentDate: $date, addWeek: true)
+                    calendarWidth = newSize.width
+                }
 
-                CKWeekOfYear(date: date)
-                    .padding(.leading, 10)
+            if calendarWidth != .zero {
 
-                CKDayHeader(currentDate: $date, width: proxy.size.width, showTime: true, showDate: true)
+                VStack(alignment: .leading) {
 
-                Divider()
+                    CKCalendarHeader(currentDate: $date, addWeek: true)
 
-                timeline(proxy: proxy)
+                    CKWeekOfYear(date: date).padding(.leading, 10)
+
+                    CKDayHeader(currentDate: $date, width: calendarWidth, showTime: true, showDate: true)
+
+                    Divider()
+
+                    timeline()
+                }
             }
         }
     }
 
     @ViewBuilder
-    private func timeline(proxy: GeometryProxy) -> some View {
+    private func timeline() -> some View {
+
+        let colWidth = (calendarWidth - CGFloat(55)) / CGFloat(7)
 
         let eventData = CKUtils.generateEventViewData(
             date: date,
             events: events,
-            width: ((proxy.size.width - CGFloat(55)) / 7)
+            width: colWidth
         )
 
-        let width = (proxy.size.width - CGFloat(55)) / CGFloat(7)
-        addAllDayEvents(eventData: eventData, width: width)
+        addAllDayEvents(eventData: eventData, width: colWidth)
 
         ScrollView {
 
@@ -96,7 +110,7 @@ public struct CKTimelineWeek: View {
 
                 ForEach(1..<7) { day in
 
-                    let offset: CGFloat = width * CGFloat(day)
+                    let offset: CGFloat = colWidth * CGFloat(day)
 
                     Rectangle()
                         .fill(Color.gray)

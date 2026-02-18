@@ -145,7 +145,9 @@ struct CKMonthDayCell: View {
                     .fill(event.backgroundAsColor())
                     .frame(width: 10, height: 10)
             }
+
             Text(event.text)
+
             if showTime {
                 Spacer()
                 Text(event.startDate.formatted(.dateTime.hour().minute()))

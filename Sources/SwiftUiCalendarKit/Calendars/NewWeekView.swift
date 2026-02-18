@@ -13,6 +13,8 @@ public struct NewWeekView: View {
     var events: [any CKEventSchema]
     @Binding var calendarDate: Date
 
+    @State private var calendarWidth: CGFloat = .zero
+
     public init(
         observer: CKCalendarObserver,
         events: [any CKEventSchema],
@@ -24,109 +26,136 @@ public struct NewWeekView: View {
     }
 
     public var body: some View {
-        GeometryReader { proxy in
-            VStack {
-                CKCalendarHeader(currentDate: $calendarDate, addWeek: true)
 
-                CKWeekOfYear(date: calendarDate)
-                    .padding(.leading, 10)
+        let eventData = CKUtils.generateEventViewData(
+            date: calendarDate,
+            events: events,
+            width: (calendarWidth / 7) - 10
+        )
 
-                let eventData = CKUtils.generateEventViewData(
-                    date: calendarDate,
-                    events: events,
-                    width: (proxy.size.width / 7) - 10
-                )
+        let week = calendarDate.fetchWeek()
 
-                let week = calendarDate.fetchWeek()
+        GeometryReader { geometry in
 
-                Grid(horizontalSpacing: 0) {
-                    GridRow(alignment: .top) {
-                        Color.clear
-                            .gridCellUnsizedAxes([.horizontal, .vertical])
-                            .frame(width: 40)
+            Color.clear
+                .onChange(of: geometry.size) { _, newSize in
+                    guard newSize.width > 0, newSize.height > 0 else {
+                        return
+                    }
 
-                            ForEach(Array(week.enumerated()), id: \.offset) { index, weekDay in
+                    calendarWidth = newSize.width
+                }
 
-                                VStack(alignment: .center, spacing: 0) {
-                                    Text(weekDay.string.prefix(3))
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 5)
-                                            .fill(Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ? Color.blue.opacity(0.10) : Color.clear)
-                                            .frame(width: 27, height: 27)
+            if calendarWidth != .zero {
+                VStack {
 
-                                        Text(weekDay.date.toString("dd"))
-                                    }
+                    CKCalendarHeader(currentDate: $calendarDate, addWeek: true)
+
+                    CKWeekOfYear(date: calendarDate).padding(.leading, 10)
+
+                    Grid(horizontalSpacing: 0) {
+                        GridRow(alignment: .top) {
+                            calendarHeader(week: week)
+                        }
+                        GridRow(alignment: .top) {
+                            multiDays(eventData: eventData, week: week)
+                        }
+                        GridRow(alignment: .top) {
+                            allDay(eventData: eventData, week: week)
+                        }
+                    }
+
+                    ScrollView {
+                        Grid(horizontalSpacing: 1) {
+                            GridRow {
+                                showTimes()
+
+                                ForEach(week) { weekDay in
+                                    dayView(
+                                        events: eventData,
+                                        date: weekDay.date,
+                                        width: (calendarWidth - CGFloat(35)) / CGFloat(7)
+                                    )
                                 }
-                                .frame(width: (proxy.size.width / 7) - 10)
-                            }
-                    }
-                }
-
-                Grid(horizontalSpacing: 0) {
-                    GridRow(alignment: .top) {
-                        Color.clear
-                            .gridCellUnsizedAxes([.horizontal, .vertical])
-                            .frame(width: 40)
-                        ForEach(week) { weekDay in
-                            addMultiDayEvents(
-                                eventData: eventData,
-                                date: weekDay.date,
-                                width: (proxy.size.width / 7) - 10
-                            )
-                        }
-                    }
-                }
-
-                Grid(horizontalSpacing: 0) {
-                    GridRow(alignment: .top) {
-                        Color.clear
-                            .gridCellUnsizedAxes([.horizontal, .vertical])
-                            .frame(width: 40)
-                        ForEach(week) { weekDay in
-                            addAllDayEvents(
-                                eventData: eventData,
-                                date: weekDay.date,
-                                width: (proxy.size.width / 7) - 10
-                            )
-                        }
-                    }
-                }
-                .padding(.bottom, 1)
-
-                ScrollView {
-                    Grid(horizontalSpacing: 1) {
-                        GridRow {
-                            showTimes()
-                            ForEach(week) { weekDay in
-                                dayView(
-                                    events: eventData,
-                                    date: weekDay.date,
-                                    width: (proxy.size.width - CGFloat(35)) / CGFloat(7)
-                                )
                             }
                         }
                     }
+                    .defaultScrollAnchor(.center)
                 }
-                .defaultScrollAnchor(.center)
             }
         }
     }
 
     @ViewBuilder
+    private func calendarHeader(week: [WeekDay]) -> some View {
+
+        Color.clear
+            .gridCellUnsizedAxes([.horizontal, .vertical])
+            .frame(width: 40)
+
+        ForEach(week, id: \.id) { weekDay in
+
+            VStack(alignment: .center, spacing: 0) {
+                Text(weekDay.string.prefix(3))
+                ZStack {
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ? Color.blue.opacity(0.10) : Color.clear)
+                        .frame(width: 27, height: 27)
+
+                    Text(weekDay.date.toString("dd"))
+                }
+            }
+            .frame(width: (calendarWidth / 7) - 10)
+        }
+    }
+
+    @ViewBuilder
+    private func multiDays(eventData: [CKEventViewData], week: [WeekDay]) -> some View {
+
+        Color.clear
+            .gridCellUnsizedAxes([.horizontal, .vertical])
+            .frame(width: 40)
+
+        ForEach(week) { weekDay in
+            addMultiDayEvents(
+                eventData: eventData,
+                date: weekDay.date,
+                width: (calendarWidth / 7) - 10
+            )
+        }
+    }
+
+    @ViewBuilder
+    private func allDay(eventData: [CKEventViewData], week: [WeekDay]) -> some View {
+
+        Color.clear
+            .gridCellUnsizedAxes([.horizontal, .vertical])
+            .frame(width: 40)
+
+        ForEach(week) { weekDay in
+            addAllDayEvents(
+                eventData: eventData,
+                date: weekDay.date,
+                width: (calendarWidth / 7) - 10
+            )
+        }
+    }
+
+    @ViewBuilder
     private func addMultiDayEvents(eventData: [CKEventViewData], date: Date, width: CGFloat) -> some View {
+
         if doesDateHaveAnyMultiDayEvents(eventData: eventData, date: date) {
+
             VStack {
+
                 ForEach(eventData, id: \.anyHashableID) { eventData in
+
                     if isMultiDayEvent(event: eventData.event) {
+
                         if calendar.isDate(eventData.event.startDate, inSameDayAs: date) {
                             singleDayEventView(eventData: eventData, width: width)
                         } else {
-                            let start = calendar.date(byAdding: .day, value: 1, to: eventData.event.startDate)?.midnight ?? eventData.event.startDate.midnight
-                            let dayAfter = calendar.date(byAdding: .day, value: 1, to: eventData.event.endDate)?.midnight ?? eventData.event.endDate.midnight
-                            let end = calendar.date(byAdding: .minute, value: -1, to: dayAfter) ?? dayAfter
-
-                            let eventRange = start...end
-                            if eventRange.contains(date) {
+                            if CKUtils.doesEventOccurOnDate(event: eventData.event, date: date) {
                                 multiDayFillerView(eventData: eventData, width: width)
                             }
                         }
@@ -146,7 +175,9 @@ public struct NewWeekView: View {
 
         if doesDateHaveAnyAllDayEvents(eventData: eventData, date: date) {
             VStack(spacing: 0) {
+
                 ForEach(eventData, id: \.anyHashableID) { eventData in
+
                     if isSingleDayEvent(event: eventData.event, date: date) {
                         singleDayEventView(eventData: eventData, width: width)
                     }
@@ -164,11 +195,9 @@ public struct NewWeekView: View {
 
         var hasEvents = false
 
-        for event in eventData {
-            if isSingleDayEvent(event: event.event, date: date) {
-                hasEvents = true
-                break
-            }
+        for event in eventData where isSingleDayEvent(event: event.event, date: date) {
+            hasEvents = true
+            break
         }
 
         return hasEvents
@@ -178,25 +207,16 @@ public struct NewWeekView: View {
 
         var hasEvents = false
 
-        for event in eventData {
-            if isMultiDayEvent(event: event.event) {
-
-                let start = event.event.startDate.midnight
-                let dayAfter = calendar.date(byAdding: .day, value: 1, to: event.event.endDate)?.midnight ?? event.event.endDate.midnight
-                let end = calendar.date(byAdding: .minute, value: -1, to: dayAfter) ?? dayAfter
-
-                let eventRange = start...end
-                if eventRange.contains(date) {
-                    hasEvents = true
-                    break
-                }
-            }
+        for event in eventData where (isMultiDayEvent(event: event.event) && CKUtils.doesEventOccurOnDate(event: event.event, date: date)) {
+            hasEvents = true
+            break
         }
 
         return hasEvents
     }
 
     private func isSingleDayEvent(event: any CKEventSchema, date: Date) -> Bool {
+
         guard event.isAllDay else {
             return false
         }
@@ -213,6 +233,7 @@ public struct NewWeekView: View {
     }
 
     private func isMultiDayEvent(event: any CKEventSchema) -> Bool {
+
         guard event.isAllDay else {
             return false
         }
@@ -227,6 +248,7 @@ public struct NewWeekView: View {
 
     @ViewBuilder
     private func singleDayEventView(eventData: CKEventViewData, width: CGFloat) -> some View {
+
         VStack(alignment: .leading) {
             Text(eventData.event.text).bold().padding(.leading, 5)
         }
@@ -254,6 +276,7 @@ public struct NewWeekView: View {
 
     @ViewBuilder
     private func multiDayFillerView(eventData: CKEventViewData, width: CGFloat) -> some View {
+
         VStack(alignment: .leading) {
             Text("")
         }
@@ -270,6 +293,7 @@ public struct NewWeekView: View {
 
     @ViewBuilder
     private func showTimes() -> some View {
+
         VStack(alignment: .leading, spacing: 0) {
             ForEach(0..<24) { hour in
                 HStack {
@@ -294,6 +318,7 @@ public struct NewWeekView: View {
 
     @ViewBuilder
     private func addEvents(eventData: [CKEventViewData], date: Date) -> some View {
+
         ForEach(eventData, id: \.anyHashableID) { event in
             if calendar.isDate(event.event.startDate, inSameDayAs: date) && !event.allDay {
                 NewWeekEventView(
@@ -308,7 +333,7 @@ public struct NewWeekView: View {
 #Preview {
     NewWeekView(
         observer: CKCalendarObserver(),
-        events:testEvents,
+        events: testEvents,
         date: .constant(Date())
     )
     .workingHours(start: 9, end: 17)

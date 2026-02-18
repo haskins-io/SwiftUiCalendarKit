@@ -18,14 +18,13 @@ enum CKUtils {
 
     static func doesEventOccurOnDate(event: any CKEventSchema, date: Date) -> Bool {
 
-        if let endDate = Calendar.current.date(byAdding: .day, value: 1, to: event.endDate) {
-            let startDay = event.startDate.midnight
-            let endDay = endDate.midnight
+        let start = event.startDate.midnight
+        let dayAfter = calendar.date(byAdding: .day, value: 1, to: event.endDate)?.midnight ?? event.endDate.midnight
+        let end = calendar.date(byAdding: .minute, value: -1, to: dayAfter) ?? dayAfter
 
-            let range = startDay...endDay
-            if range.contains(date) {
-                return true
-            }
+        let eventRange = start...end
+        if eventRange.contains(date) {
+            return true
         }
 
         return false

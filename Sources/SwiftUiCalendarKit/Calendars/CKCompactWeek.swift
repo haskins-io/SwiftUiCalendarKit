@@ -26,9 +26,11 @@ public struct CKCompactWeek<Detail: View>: View {
 
     @State private var headerMonth = Date()
 
-    @State private var weekSlider: [[Date.WeekDay]] = []
+    @State private var weekSlider: [[WeekDay]] = []
     @State private var currentWeekIndex: Int = 1
     @State private var createWeek: Bool = false
+
+    @State private var calendarWidth: CGFloat = .zero
 
     private let detail: (any CKEventSchema) -> Detail
     private var events: [any CKEventSchema]
@@ -84,24 +86,35 @@ public struct CKCompactWeek<Detail: View>: View {
     @ViewBuilder
     private func timelineView() -> some View {
 
-        GeometryReader { proxy in
+        GeometryReader { geometry in
 
-            let eventData = CKUtils.generateEventViewData(
-                date: date,
-                events: events,
-                width: proxy.size.width - 65
-            )
+            Color.clear
+                .onChange(of: geometry.size) { _, newSize in
+                    guard newSize.width > 0, newSize.height > 0 else {
+                        return
+                    }
 
-            VStack(alignment: .leading, spacing: 0) {
-
-                Divider()
-
-                CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
-
-                ScrollView {
-                    timelineEvents(eventData: eventData)
+                    calendarWidth = newSize.width
                 }
-                .defaultScrollAnchor(.center)
+
+            if calendarWidth != .zero {
+                let eventData = CKUtils.generateEventViewData(
+                    date: date,
+                    events: events,
+                    width: calendarWidth - 50
+                )
+
+                VStack(alignment: .leading, spacing: 0) {
+
+                    Divider()
+
+                    CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
+
+                    ScrollView {
+                        timelineEvents(eventData: eventData)
+                    }
+                    .defaultScrollAnchor(.center)
+                }
             }
         }
     }
@@ -137,7 +150,6 @@ public struct CKCompactWeek<Detail: View>: View {
 
         VStack(alignment: config.headingAlignment) {
 
-            // Date headline
             HStack {
                 Text(headerMonth.formatted(.dateTime.month(.wide)))
                     .bold()
@@ -164,7 +176,7 @@ public struct CKCompactWeek<Detail: View>: View {
 
     /// - Week Row
     @ViewBuilder
-    private func weekRow(_ week: [Date.WeekDay]) -> some View {
+    private func weekRow(_ week: [WeekDay]) -> some View {
 
         HStack(spacing: 0) {
 
@@ -173,7 +185,9 @@ public struct CKCompactWeek<Detail: View>: View {
                 let status = calendar.isDate(day.date, inSameDayAs: Date())
 
                 VStack(spacing: 6) {
+
                     Text(day.string.prefix(3))
+
                     ZStack {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(

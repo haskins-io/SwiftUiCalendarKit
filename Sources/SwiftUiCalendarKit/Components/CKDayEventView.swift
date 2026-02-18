@@ -49,7 +49,7 @@ struct CKDayEventView: View {
         }
         .foregroundColor(.primary)
         .font(.caption)
-        .frame(maxWidth: width - 25, alignment: .leading)
+        .frame(maxWidth: width, alignment: .leading)
         .padding(6)
         .background(.thinMaterial)
         .background(

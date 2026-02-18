@@ -39,7 +39,9 @@ struct CKDayHeader: View {
                 let xOffset = (width * CGFloat(index)) + widthOfset
 
                 VStack(alignment: .center, spacing: 0) {
+
                     Text(weekDay.string.prefix(3))
+
                     if showDate {
                         ZStack {
                             RoundedRectangle(cornerRadius: 5)

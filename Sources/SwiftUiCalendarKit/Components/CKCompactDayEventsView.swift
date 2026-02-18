@@ -15,15 +15,22 @@ struct CKCompactDayEventsView<Detail: View>: View {
 
     var body: some View {
         VStack(spacing: 0) {
+
             ForEach(eventData, id: \.anyHashableID) { event in
-                if event.allDay && CKUtils.doesEventOccurOnDate(event: event.event, date: date) {
-                    CKCompactDayEventView(
-                        event,
-                        detail: detail
-                    )
+
+                if showEvent(event: event.event) {
+                    CKCompactDayEventView(event, detail: detail)
                 }
             }
         }
+    }
+
+    private func showEvent(event: CKEventSchema) -> Bool {
+        if event.isAllDay && CKUtils.doesEventOccurOnDate(event: event, date: date) {
+            return true
+        }
+
+        return false
     }
 }
 

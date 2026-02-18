@@ -16,8 +16,8 @@ struct CKCalendarHeader: View {
         HStack {
 
             HStack {
-                Text(currentDate.formatted(.dateTime.month(.wide)))
-                    .bold()
+                Text(currentDate.formatted(.dateTime.month(.wide))).bold()
+
                 Text(currentDate.formatted(.dateTime.year()))
             }
             .padding(.leading, 20)
@@ -29,33 +29,39 @@ struct CKCalendarHeader: View {
             HStack(spacing: 1) {
 
                 Button {
-                    guard let newDate = Calendar.current.date(
-                        byAdding: addWeek ? .weekOfYear : .month,
-                        value: -1,
-                        to: currentDate
-                    ) else {
-                        return
+                    withAnimation {
+                        guard let newDate = Calendar.current.date(
+                            byAdding: addWeek ? .weekOfYear : .month,
+                            value: -1,
+                            to: currentDate
+                        ) else {
+                            return
+                        }
+                        currentDate = newDate
                     }
-                    currentDate = newDate
                 } label: {
                     Image(systemName: "chevron.left")
                 }
 
                 Button {
-                    currentDate = Date.now
+                    withAnimation {
+                        currentDate = Date.now
+                    }
                 } label: {
                     Text("Today")
                 }
 
                 Button {
-                    guard let newDate = Calendar.current.date(
-                        byAdding: addWeek ? .weekOfYear : .month,
-                        value: 1,
-                        to: currentDate
-                    ) else {
-                        return
+                    withAnimation {
+                        guard let newDate = Calendar.current.date(
+                            byAdding: addWeek ? .weekOfYear : .month,
+                            value: 1,
+                            to: currentDate
+                        ) else {
+                            return
+                        }
+                        currentDate = newDate
                     }
-                    currentDate = newDate
                 } label: {
                     Image(systemName: "chevron.right")
                 }

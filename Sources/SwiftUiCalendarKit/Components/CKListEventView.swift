@@ -21,10 +21,10 @@ struct CKListEventView: View {
 
     @ViewBuilder
     private func allDayEvent() -> some View {
-            Text(event.text)
-                .bold()
-                .padding(.leading, 5)
-                .padding(.leading, 5)
+        Text(event.text)
+            .bold()
+            .padding(.leading, 5)
+            .padding(.leading, 5)
         .font(.caption)
         .overlay {
             HStack {
@@ -46,6 +46,7 @@ struct CKListEventView: View {
                 Text(event.endDate.formatted(.dateTime.hour().minute()))
             }
             .padding(.leading, 5)
+
             Text(event.text).bold().padding(.leading, 5).padding(.leading, 5)
         }
         .font(.caption)
@@ -55,6 +56,7 @@ struct CKListEventView: View {
                     .fill(event.backgroundAsColor())
                     .frame(maxHeight: .infinity, alignment: .leading)
                     .frame(width: 4)
+
                 Spacer()
             }
         }

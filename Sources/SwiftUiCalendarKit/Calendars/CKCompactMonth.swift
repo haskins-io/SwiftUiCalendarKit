@@ -37,7 +37,9 @@ public struct CKCompactMonth<Detail: View>: View {
     public var body: some View {
         VStack {
             CKMonthComponent(calendar: Calendar.current, date: $date, events: events)
+
             Divider()
+
             CKCompactMonthEvents(events: events, detail: detail, date: $date)
                 .listStyle(.plain)
         }

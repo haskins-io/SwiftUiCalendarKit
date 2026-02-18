@@ -31,6 +31,8 @@ public struct CKCompactDay<Detail: View>: View {
     @State private var currentDayIndex: Int = 1
     @State private var createDay: Bool = false
 
+    @State private var calendarWidth: CGFloat = .zero
+
     private let detail: (any CKEventSchema) -> Detail
     private var events: [any CKEventSchema]
     private let calendar = Calendar.current
@@ -56,42 +58,53 @@ public struct CKCompactDay<Detail: View>: View {
 
     public var body: some View {
 
-        GeometryReader { proxy in
+        GeometryReader { geometry in
 
-            VStack(alignment: .leading, spacing: 2) {
-
-                header()
-
-                Divider().padding([.leading, .trailing], 10)
-
-                timeline(width: proxy.size.width - 55)
-            }
-            .onAppear(perform: {
-                calcDaySliders(newDate: currentDate)
-            })
-            .onChange(of: currentDate, initial: false) {
-                headerDay = currentDate
-                daySlider.removeAll()
-                calcDaySliders(newDate: currentDate)
-            }
-            .onChange(of: currentDayIndex, initial: false) {
-
-                if currentDayIndex == 0 {
-                    if let firstDate = daySlider.first {
-                        daySlider.insert(firstDate.previousDate(), at: 0)
-                        daySlider.removeLast()
-                        currentDayIndex = 1
+            Color.clear
+                .onChange(of: geometry.size) { _, newSize in
+                    guard newSize.width > 0, newSize.height > 0 else {
+                        return
                     }
-                } else if currentDayIndex == daySlider.count - 1 {
-                    if let lastDate = daySlider.last {
-                        daySlider.append(lastDate.nextDate())
-                        daySlider.removeFirst()
-                        currentDayIndex = daySlider.count - 2
-                    }
+
+                    calendarWidth = newSize.width
                 }
 
-                headerDay = daySlider[currentDayIndex]
-                currentDate = headerDay
+            if calendarWidth != .zero {
+                VStack(alignment: .leading, spacing: 2) {
+
+                    header()
+
+                    Divider().padding([.leading, .trailing], 10)
+
+                    timeline(width: calendarWidth)
+                }
+                .onAppear(perform: {
+                    calcDaySliders(newDate: currentDate)
+                })
+                .onChange(of: currentDate, initial: false) {
+                    headerDay = currentDate
+                    daySlider.removeAll()
+                    calcDaySliders(newDate: currentDate)
+                }
+                .onChange(of: currentDayIndex, initial: false) {
+
+                    if currentDayIndex == 0 {
+                        if let firstDate = daySlider.first {
+                            daySlider.insert(firstDate.previousDate(), at: 0)
+                            daySlider.removeLast()
+                            currentDayIndex = 1
+                        }
+                    } else if currentDayIndex == daySlider.count - 1 {
+                        if let lastDate = daySlider.last {
+                            daySlider.append(lastDate.nextDate())
+                            daySlider.removeFirst()
+                            currentDayIndex = daySlider.count - 2
+                        }
+                    }
+
+                    headerDay = daySlider[currentDayIndex]
+                    currentDate = headerDay
+                }
             }
         }
     }
@@ -118,23 +131,23 @@ public struct CKCompactDay<Detail: View>: View {
 
     @ViewBuilder
     private func timeline(width: CGFloat) -> some View {
-
         TabView(selection: $currentDayIndex) {
             ForEach(daySlider.indices, id: \.self) { index in
                 let day = daySlider[index]
-                dayView(day, width)
+                dayView(day)
                     .tag(index)
             }
         }
+        .padding(0)
     }
 
     @ViewBuilder
-    private func dayView(_ date: Date, _ width: CGFloat) -> some View {
+    private func dayView(_ date: Date) -> some View {
 
         let eventData = CKUtils.generateEventViewData(
             date: date,
             events: events,
-            width: width - 10
+            width: calendarWidth - 50
         )
 
         VStack(spacing: 0) {
@@ -163,7 +176,6 @@ public struct CKCompactDay<Detail: View>: View {
                         timelinePosition = CKUtils.currentTimelinePosition()
                     }
                 }
-                .padding(5)
             }
             .defaultScrollAnchor(.center)
         }
@@ -184,7 +196,6 @@ public struct CKCompactDay<Detail: View>: View {
     }
 
     private func calcDaySliders(newDate: Date) {
-
         if daySlider.isEmpty {
             daySlider.append(newDate.previousDate())
             daySlider.append(newDate)

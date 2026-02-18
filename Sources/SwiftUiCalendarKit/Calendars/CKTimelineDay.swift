@@ -33,6 +33,8 @@ public struct CKTimelineDay: View {
     @State private var time = Date()
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
+    @State private var calendarWidth: CGFloat = .zero
+
     public init(
         observer: CKCalendarObserver,
         events: [any CKEventSchema],
@@ -48,42 +50,56 @@ public struct CKTimelineDay: View {
 
     public var body: some View {
 
-        GeometryReader { proxy in
+        GeometryReader { geometry in
 
-            VStack(alignment: .leading, spacing: 2) {
+            Color.clear
+                .onChange(of: geometry.size) { _, newSize in
+                    guard newSize.width > 0, newSize.height > 0 else {
+                        return
+                    }
 
-                HStack {
-                    Text(date.formatted(.dateTime.day().month(.wide)))
-                        .bold()
-                    Text(date.formatted(.dateTime.year()))
-                }
-                .padding(.leading, 10)
-                .padding(.top, 5)
-                .font(.title)
-
-                HStack {
-                    Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
-                    Spacer()
-                    CKWeekOfYear(date: date)
+                    calendarWidth = newSize.width
                 }
 
-                Divider().padding([.leading, .trailing], 10)
+            if calendarWidth != .zero {
 
-                dayView(width: proxy.size.width)
+                VStack(alignment: .leading, spacing: 2) {
+
+                    HStack {
+                        Text(date.formatted(.dateTime.day().month(.wide))).bold()
+
+                        Text(date.formatted(.dateTime.year()))
+                    }
+                    .padding(.leading, 10)
+                    .padding(.top, 5)
+                    .font(.title)
+
+                    HStack {
+                        Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+
+                        Spacer()
+
+                        CKWeekOfYear(date: date)
+                    }
+
+                    Divider().padding([.leading, .trailing], 10)
+
+                    dayView()
+                }
             }
         }
     }
 
     @ViewBuilder
-    private func dayView(width: CGFloat) -> some View {
+    private func dayView() -> some View {
 
         let eventData = CKUtils.generateEventViewData(
             date: date,
             events: events,
-            width: width - 55
+            width: calendarWidth - 55
         )
 
-        addAllDayEvents(eventData: eventData, width: width)
+        addAllDayEvents(eventData: eventData)
 
         ScrollView {
 
@@ -91,7 +107,7 @@ public struct CKTimelineDay: View {
 
                 CKTimeline()
 
-                addEvents(eventData: eventData, width: width)
+                addEvents(eventData: eventData)
 
                 if config.showTime {
                     CKTimeIndicator(time: time)
@@ -102,6 +118,7 @@ public struct CKTimelineDay: View {
                 guard config.showTime else {
                     return
                 }
+
                 if calendar.component(.second, from: Date()) == 0 {
                     time = Date()
                     timelinePosition = CKUtils.currentTimelinePosition()
@@ -112,7 +129,7 @@ public struct CKTimelineDay: View {
     }
 
     @ViewBuilder
-    private func addAllDayEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
+    private func addAllDayEvents(eventData: [CKEventViewData]) -> some View {
         VStack(spacing: 0) {
             ForEach(eventData, id: \.anyHashableID) { event in
                 if calendar.isDate(event.event.startDate, inSameDayAs: date) && event.allDay {
@@ -120,7 +137,7 @@ public struct CKTimelineDay: View {
                         event,
                         observer: observer,
                         weekView: false,
-                        width: 0
+                        width: calendarWidth
                     )
                 }
             }
@@ -128,7 +145,7 @@ public struct CKTimelineDay: View {
     }
 
     @ViewBuilder
-    private func addEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
+    private func addEvents(eventData: [CKEventViewData]) -> some View {
         ForEach(eventData, id: \.anyHashableID) { event in
             if calendar.isDate(event.event.startDate, inSameDayAs: date) && !event.allDay {
                 CKEventView(

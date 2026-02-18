@@ -41,15 +41,8 @@ struct CKCompactMonthEvents<Detail: View>: View {
     }
 
     private func listEvent(event: any CKEventSchema) -> Bool {
-
-        let start = event.startDate.midnight
-        let dayAfter = calendar.date(byAdding: .day, value: 1, to: event.endDate)?.midnight ?? event.endDate.midnight
-        let end = calendar.date(byAdding: .minute, value: -1, to: dayAfter) ?? dayAfter
-
-        let eventRange = start...end
-
         if calendar.isDate(event.startDate, inSameDayAs: date) ||
-            eventRange.contains(date) {
+            CKUtils.doesEventOccurOnDate(event: event, date: date) {
 
             return true
         }
