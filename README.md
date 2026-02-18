@@ -123,7 +123,7 @@ While the code can handle overlapping events, and display them correctly, there 
 
 
 ## Things that I would like to add in the future
-* MultiDay Events
+* MultiDay Events - **STATUS** : There is a rough cut of this in the Main branch. It looks to be working across all calendars, but needs more testing before a release will be cut with the logic.
 * Drag and drop events
 * More customisations / Themes
 * A year Calendar
