@@ -17,6 +17,13 @@ let midEventEnd = calendar.date(byAdding: .day, value: 1, to: middleDateEnd) ?? 
 
 let testEvents: [any CKEventSchema] = [
     CKEvent(
+        startDate: Calendar.current.date(byAdding: .day, value: -1, to: middleDateStart) ?? Date(),
+        endDate: Calendar.current.date(byAdding: .day, value: 2, to: middleDateEnd) ?? Date(),
+        isAllDay: true,
+        text: "Multi Day Event",
+        backCol: "#FCE2E3"
+    ),
+    CKEvent(
         startDate: calendar.date(byAdding: .day, value: -2, to: middleDateStart) ?? Date(),
         endDate: calendar.date(byAdding: .day, value: -2, to: middleDateEnd) ?? Date(),
         isAllDay: false,

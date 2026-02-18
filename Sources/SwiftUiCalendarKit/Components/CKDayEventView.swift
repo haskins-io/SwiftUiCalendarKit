@@ -49,7 +49,7 @@ struct CKDayEventView: View {
         }
         .foregroundColor(.primary)
         .font(.caption)
-        .frame(maxWidth: isWeekView ? width - 25 : .infinity, alignment: .leading)
+        .frame(maxWidth: width - 25, alignment: .leading)
         .padding(6)
         .background(.thinMaterial)
         .background(

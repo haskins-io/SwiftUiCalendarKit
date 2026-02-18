@@ -14,6 +14,8 @@ struct CKTimeline: View {
 
     static let hourHeight = 60.0
 
+    var showTime: Bool = true
+
     var body: some View {
 
         VStack(alignment: .leading, spacing: 0) {
@@ -27,9 +29,12 @@ struct CKTimeline: View {
                         .offset(x: 0, y: 30)
 
                     HStack {
-                        Text(timelineconfiguration(hour: hour))
-                            .font(.caption)
-                            .frame(width: frameWidth(), alignment: .trailing)
+                        if showTime {
+                            Text(timelineconfiguration(hour: hour))
+                                .font(.caption)
+                                .frame(width: frameWidth(), alignment: .trailing)
+                        }
+
                         Color.gray
                             .frame(height: 1)
                     }
