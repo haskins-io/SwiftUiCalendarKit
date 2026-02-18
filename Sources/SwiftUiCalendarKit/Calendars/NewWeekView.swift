@@ -41,7 +41,31 @@ public struct NewWeekView: View {
 
                 Grid(horizontalSpacing: 0) {
                     GridRow(alignment: .top) {
-                        Text("")
+                        Color.clear
+                            .gridCellUnsizedAxes([.horizontal, .vertical])
+                            .frame(width: 40)
+
+                            ForEach(Array(week.enumerated()), id: \.offset) { index, weekDay in
+
+                                VStack(alignment: .center, spacing: 0) {
+                                    Text(weekDay.string.prefix(3))
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 5)
+                                            .fill(Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ? Color.blue.opacity(0.10) : Color.clear)
+                                            .frame(width: 27, height: 27)
+
+                                        Text(weekDay.date.toString("dd"))
+                                    }
+                                }
+                                .frame(width: (proxy.size.width / 7) - 10)
+                            }
+                    }
+                }
+
+                Grid(horizontalSpacing: 0) {
+                    GridRow(alignment: .top) {
+                        Color.clear
+                            .gridCellUnsizedAxes([.horizontal, .vertical])
                             .frame(width: 40)
                         ForEach(week) { weekDay in
                             addMultiDayEvents(
@@ -52,9 +76,11 @@ public struct NewWeekView: View {
                         }
                     }
                 }
+
                 Grid(horizontalSpacing: 0) {
                     GridRow(alignment: .top) {
-                        Text("")
+                        Color.clear
+                            .gridCellUnsizedAxes([.horizontal, .vertical])
                             .frame(width: 40)
                         ForEach(week) { weekDay in
                             addAllDayEvents(
@@ -109,7 +135,8 @@ public struct NewWeekView: View {
             }
             .padding(0)
         } else {
-            Text("")
+            Color.clear
+                .gridCellUnsizedAxes([.horizontal, .vertical])
                 .frame(width: width)
         }
     }
@@ -127,7 +154,8 @@ public struct NewWeekView: View {
             }
             .padding(0)
         } else {
-            Text("")
+            Color.clear
+                .gridCellUnsizedAxes([.horizontal, .vertical])
                 .frame(width: width)
         }
     }

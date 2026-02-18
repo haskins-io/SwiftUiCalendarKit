@@ -25,8 +25,13 @@ struct CKTimeline: View {
                 ZStack {
                     Rectangle()
                         .fill(isOutOfHours(hour: hour) ? Color.gray.opacity(0.1) : Color.clear)
+                        .overlay(
+                            Rectangle()
+                                .frame(width: 1, height: nil, alignment: .trailing)
+                                .foregroundColor(Color.gray), alignment: .trailing)
                         .frame(height: CKTimeline.hourHeight)
                         .offset(x: 0, y: 30)
+
 
                     HStack {
                         if showTime {
