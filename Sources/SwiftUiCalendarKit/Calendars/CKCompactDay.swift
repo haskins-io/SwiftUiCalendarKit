@@ -111,6 +111,7 @@ public struct CKCompactDay<Detail: View>: View {
 
     @ViewBuilder
     private func header() -> some View {
+
         VStack(alignment: .leading) {
             HStack {
                 Text(headerDay.formatted(.dateTime.day().month(.wide)))
@@ -131,6 +132,7 @@ public struct CKCompactDay<Detail: View>: View {
 
     @ViewBuilder
     private func timeline(width: CGFloat) -> some View {
+
         TabView(selection: $currentDayIndex) {
             ForEach(daySlider.indices, id: \.self) { index in
                 let day = daySlider[index]
@@ -183,6 +185,7 @@ public struct CKCompactDay<Detail: View>: View {
 
     @ViewBuilder
     private func addAllDayEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
+
         VStack(spacing: 0) {
             ForEach(eventData, id: \.anyHashableID) { event in
                 if calendar.isDate(event.event.startDate, inSameDayAs: currentDate) && event.allDay {

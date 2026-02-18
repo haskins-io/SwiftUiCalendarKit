@@ -23,10 +23,9 @@ struct NewWeekEventView: View {
         self.event = eventData.event
 
         if eventData.position > 1 {
-            let edgeOfDayCell: CGFloat = 5
-            xOffset = (edgeOfDayCell + ((eventData.position - 1) * (eventData.eventWidth + 5)))
+            xOffset = (eventData.eventWidth * (eventData.position - 1)) + 7
         } else {
-            xOffset = 5
+            xOffset = 0
         }
     }
 
@@ -46,7 +45,7 @@ struct NewWeekEventView: View {
         }
         .foregroundColor(.primary)
         .font(.caption)
-        .frame(maxWidth: eventData.eventWidth, alignment: .leading)
+        .frame(maxWidth: eventData.eventWidth - 7, alignment: .leading)
         .padding(4)
         .frame(height: eventData.height, alignment: .top)
         .background(.thinMaterial)
@@ -65,7 +64,7 @@ struct NewWeekEventView: View {
                 Spacer()
             }
         }
-        .padding(.trailing, 30)
+        .padding(.trailing, 5)
         .offset(x: xOffset, y: eventData.yOffset + 30)
         .onTapGesture {
             observer.eventSelected = true
@@ -81,7 +80,7 @@ struct NewWeekEventView: View {
         }
         .foregroundColor(.primary)
         .font(.caption)
-        .frame(maxWidth: eventData.eventWidth - 5, alignment: .leading)
+        .frame(maxWidth: eventData.eventWidth - 7, alignment: .leading)
         .padding(4)
         .frame(height: eventData.height, alignment: .top)
         .background(.thinMaterial)
@@ -100,7 +99,7 @@ struct NewWeekEventView: View {
                 Spacer()
             }
         }
-        .padding(.trailing, 30)
+        .padding(.trailing, 5)
         .offset(x: xOffset, y: eventData.yOffset + 30)
         .onTapGesture {
             observer.eventSelected = true

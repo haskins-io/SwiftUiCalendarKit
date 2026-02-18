@@ -141,6 +141,7 @@ public struct CKTimelineWeek: View {
 
     @ViewBuilder
     private func addAllDayEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
+
         VStack(spacing: 0) {
             ForEach(eventData, id: \.anyHashableID) { event in
                 if event.allDay {

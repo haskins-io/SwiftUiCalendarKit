@@ -30,7 +30,7 @@ public struct NewWeekView: View {
         let eventData = CKUtils.generateEventViewData(
             date: calendarDate,
             events: events,
-            width: (calendarWidth / 7) - 10
+            width: (calendarWidth - 20) / 7
         )
 
         let week = calendarDate.fetchWeek()
@@ -47,13 +47,14 @@ public struct NewWeekView: View {
                 }
 
             if calendarWidth != .zero {
+
                 VStack {
 
                     CKCalendarHeader(currentDate: $calendarDate, addWeek: true)
 
                     CKWeekOfYear(date: calendarDate).padding(.leading, 10)
 
-                    Grid(horizontalSpacing: 0) {
+                    Grid(horizontalSpacing: 0, verticalSpacing: 0) {
                         GridRow(alignment: .top) {
                             calendarHeader(week: week)
                         }
@@ -63,6 +64,7 @@ public struct NewWeekView: View {
                         GridRow(alignment: .top) {
                             allDay(eventData: eventData, week: week)
                         }
+                        Divider()
                     }
 
                     ScrollView {
@@ -73,8 +75,7 @@ public struct NewWeekView: View {
                                 ForEach(week) { weekDay in
                                     dayView(
                                         events: eventData,
-                                        date: weekDay.date,
-                                        width: (calendarWidth - CGFloat(35)) / CGFloat(7)
+                                        date: weekDay.date
                                     )
                                 }
                             }
@@ -105,7 +106,6 @@ public struct NewWeekView: View {
                     Text(weekDay.date.toString("dd"))
                 }
             }
-            .frame(width: (calendarWidth / 7) - 10)
         }
     }
 
@@ -120,7 +120,7 @@ public struct NewWeekView: View {
             addMultiDayEvents(
                 eventData: eventData,
                 date: weekDay.date,
-                width: (calendarWidth / 7) - 10
+                width: (calendarWidth - 20) / 7
             )
         }
     }
@@ -136,7 +136,7 @@ public struct NewWeekView: View {
             addAllDayEvents(
                 eventData: eventData,
                 date: weekDay.date,
-                width: (calendarWidth / 7) - 10
+                width: (calendarWidth - 30) / 7
             )
         }
     }
@@ -174,6 +174,7 @@ public struct NewWeekView: View {
     private func addAllDayEvents(eventData: [CKEventViewData], date: Date, width: CGFloat) -> some View {
 
         if doesDateHaveAnyAllDayEvents(eventData: eventData, date: date) {
+
             VStack(spacing: 0) {
 
                 ForEach(eventData, id: \.anyHashableID) { eventData in
@@ -249,12 +250,12 @@ public struct NewWeekView: View {
     @ViewBuilder
     private func singleDayEventView(eventData: CKEventViewData, width: CGFloat) -> some View {
 
-        VStack(alignment: .leading) {
+        VStack(alignment: .center) {
             Text(eventData.event.text).bold().padding(.leading, 5)
         }
         .foregroundColor(.primary)
         .font(.caption)
-        .frame(maxWidth: width - 5, alignment: .leading)
+        .frame(width: width - 15, alignment: .leading)
         .padding(6)
         .background(.thinMaterial)
         .background(
@@ -280,7 +281,7 @@ public struct NewWeekView: View {
         VStack(alignment: .leading) {
             Text("")
         }
-        .frame(maxWidth: width - 5)
+        .frame(width: width - 15)
         .padding(6)
         .background(.thinMaterial)
         .background(
@@ -308,7 +309,7 @@ public struct NewWeekView: View {
     }
 
     @ViewBuilder
-    private func dayView(events: [CKEventViewData], date: Date, width: CGFloat) -> some View {
+    private func dayView(events: [CKEventViewData], date: Date) -> some View {
 
         ZStack(alignment: .topLeading) {
             CKTimeline(showTime: false)
