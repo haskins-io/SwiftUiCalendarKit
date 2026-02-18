@@ -29,10 +29,8 @@ struct CKCompactMonthEvents<Detail: View>: View {
     var body: some View {
 
         List {
-
             ForEach(events, id: \.anyHashableID) { event in
-
-                if calendar.isDate(event.startDate, inSameDayAs: date) {
+                if listEvent(event: event) {
                     NavigationLink(destination: detail(event)) {
                         CKListEventView(event: event)
                     }
@@ -40,6 +38,23 @@ struct CKCompactMonthEvents<Detail: View>: View {
             }
         }
         .listStyle(.plain)
+    }
+
+    private func listEvent(event: any CKEventSchema) -> Bool {
+
+        let start = event.startDate.midnight
+        let dayAfter = calendar.date(byAdding: .day, value: 1, to: event.endDate)?.midnight ?? event.endDate.midnight
+        let end = calendar.date(byAdding: .minute, value: -1, to: dayAfter) ?? dayAfter
+
+        let eventRange = start...end
+
+        if calendar.isDate(event.startDate, inSameDayAs: date) ||
+            eventRange.contains(date) {
+
+            return true
+        }
+
+        return false
     }
 }
 
