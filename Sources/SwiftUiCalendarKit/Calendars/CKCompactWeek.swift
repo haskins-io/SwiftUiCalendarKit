@@ -186,33 +186,7 @@ public struct CKCompactWeek<Detail: View>: View {
         HStack(spacing: 0) {
 
             ForEach(week) { day in
-
-                let status = calendar.isDate(day.date, inSameDayAs: Date())
-
-                VStack(spacing: 6) {
-
-                    Text(day.string.prefix(3))
-
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 5)
-                            .fill(
-                                calendar.isDate(day.date, inSameDayAs: Date()) ?
-                                config.currentDayColour : calendar.isDate(day.date, inSameDayAs: date) ? Color.blue.opacity(0.10) :
-                                        .clear
-                            )
-                            .frame(width: 27, height: 27)
-
-                        Text(day.date.toString("dd"))
-                            .foregroundColor(status ? Color.white : .primary)
-                    }
-                }
-                .hAlign(.center)
-                .contentShape(.rect)
-                .onTapGesture {
-                    withAnimation(.snappy) {
-                        date = day.date
-                    }
-                }
+                weekRowView(day: day)
             }
         }
         .background {
@@ -229,6 +203,41 @@ public struct CKCompactWeek<Detail: View>: View {
                     }
             }
         }
+    }
+
+    @ViewBuilder
+    private func weekRowView(day: WeekDay) -> some View {
+
+        let status = calendar.isDate(day.date, inSameDayAs: Date())
+
+        VStack(spacing: 6) {
+
+            Text(day.string.prefix(3))
+
+            ZStack {
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(cellColour(day: day))
+                    .frame(width: 27, height: 27)
+
+                Text(day.date.toString("dd"))
+                    .foregroundColor(status ? Color.white : .primary)
+            }
+        }
+        .hAlign(.center)
+        .contentShape(.rect)
+        .onTapGesture {
+            withAnimation(.snappy) {
+                date = day.date
+            }
+        }
+    }
+
+    func cellColour(day: WeekDay) -> Color {
+        return calendar.isDate(day.date, inSameDayAs: Date()) ?
+               config.currentDayColour :
+               calendar.isDate(day.date, inSameDayAs: date) ?
+                   Color.blue.opacity(0.10) :
+                   .clear
     }
 }
 

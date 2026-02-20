@@ -20,6 +20,9 @@ import SwiftUI
 
 public struct CKMonth: View {
 
+    @Environment(\.ckConfig)
+    private var config
+
     @ObservedObject var observer: CKCalendarObserver
 
     @Binding var calendarDate: Date
@@ -72,7 +75,9 @@ public struct CKMonth: View {
     @ViewBuilder
     private func monthGrid() -> some View {
 
-        let cellWidth = calendarWidth / 7
+        var widthAdjust: CGFloat = config.showWeekNumber ? 25 : 0
+
+        let cellWidth = (calendarWidth / 7) - widthAdjust
         let cellHeight = ((calendarHeight - 70) / 6) + 4
 
         let days = makeDays()
