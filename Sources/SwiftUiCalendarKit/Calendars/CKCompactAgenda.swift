@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+/// `CKCompactAgenda` can be used for showing an ordered list of events
+///
+///     CKCompactAgenda(
+///         detail: { event in EventDetail(event: event) },
+///         events: events
+///     )
+///
+/// - Parameter detail: The view that should be shown when an event in the Calendar is tapped.
+/// - Parameter events: an array of events that conform to ``CKEventSchema``.
+
 public struct CKCompactAgenda<Detail: View>: View {
 
     @Environment(\.ckConfig)
