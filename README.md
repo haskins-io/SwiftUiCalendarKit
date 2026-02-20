@@ -121,4 +121,3 @@ Same answer as above. The Protocol does force you to implement functions to retu
 * Drag and drop events
 * More customisations / Themes
 * A year Calendar
-* An Agenda calendar, that just shows the events for a day / week
