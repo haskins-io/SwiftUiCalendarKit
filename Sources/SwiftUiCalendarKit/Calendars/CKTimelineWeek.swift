@@ -339,7 +339,8 @@ extension CKTimelineWeek {
 
         var hasEvents = false
 
-        for event in eventData where (isMultiDayEvent(event: event.event) && CKUtils.doesEventOccurOnDate(event: event.event, date: date)) {
+        for event in eventData where (isMultiDayEvent(event: event.event) &&
+                                      CKUtils.doesEventOccurOnDate(event: event.event, date: date)) {
             hasEvents = true
             break
         }

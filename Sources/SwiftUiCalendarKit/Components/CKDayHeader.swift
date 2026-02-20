@@ -45,9 +45,7 @@ struct CKDayHeader: View {
                     if showDate {
                         ZStack {
                             RoundedRectangle(cornerRadius: 5)
-                                .fill(Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ?
-                                      config.currentDayColour : calendar.isDate(weekDay.date, inSameDayAs: currentDate) ? Color.blue.opacity(0.10) :
-                                        .clear)
+                                .fill(getColor(weekDay: weekDay))
                                 .frame(width: 27, height: 27)
 
                             Text(weekDay.date.toString("dd"))
@@ -60,6 +58,14 @@ struct CKDayHeader: View {
             }
         }
         .padding(.top, 2)
+    }
+
+    private func getColor(weekDay: WeekDay) -> Color {
+        return Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ?
+        config.currentDayColour :
+        calendar.isDate(weekDay.date, inSameDayAs: currentDate) ?
+        Color.blue.opacity(0.10) :
+            .clear
     }
 }
 

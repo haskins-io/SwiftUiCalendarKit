@@ -17,7 +17,7 @@ struct CKWeekOfYear: View {
     var date: Date
 
     var body: some View {
-        
+
         if config.showWeekNumber && calendar.weekOfYear(currentDate: date) != -1 {
 
             Text("Week \(calendar.weekOfYear(currentDate: date))")

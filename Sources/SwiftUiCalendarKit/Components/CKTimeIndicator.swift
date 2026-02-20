@@ -12,7 +12,6 @@ struct CKTimeIndicator: View {
     var time: Date
     var showTime: Bool = true
 
-
     var body: some View {
         HStack(spacing: 0) {
             if showTime {

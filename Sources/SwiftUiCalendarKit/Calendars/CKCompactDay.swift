@@ -184,7 +184,6 @@ public struct CKCompactDay<Detail: View>: View {
             }
         }
     }
-
 }
 
 extension CKCompactDay {

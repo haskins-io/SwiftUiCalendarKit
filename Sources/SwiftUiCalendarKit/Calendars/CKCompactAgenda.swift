@@ -28,7 +28,7 @@ public struct CKCompactAgenda<Detail: View>: View {
 
     public init(
         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
-         events: [any CKEventSchema]
+        events: [any CKEventSchema]
     ) {
         self.detail = detail
         self.events = events
@@ -86,7 +86,7 @@ public struct CKCompactAgenda<Detail: View>: View {
                 }
             }
             .frame(width: 50, alignment: .trailing)
-            
+
             // Event details
             VStack(alignment: .leading, spacing: 2) {
                 Text(event.text)
@@ -115,21 +115,21 @@ public struct CKCompactAgenda<Detail: View>: View {
 
 // MARK: - Data Grouping
 extension CKCompactAgenda {
-    
+
     private struct DayEvents: Identifiable {
         let id = UUID()
         let date: Date
         let events: [any CKEventSchema]
     }
-    
+
     private var groupedEvents: [DayEvents] {
         var eventsByDay: [Date: [any CKEventSchema]] = [:]
-        
+
         // Process each event and add it to all days it spans
         for event in events {
             let startDay = calendar.startOfDay(for: event.startDate)
             let endDay = calendar.startOfDay(for: event.endDate)
-            
+
             // For multi-day events, add to each day in the range
             var currentDay = startDay
             while currentDay <= endDay {
@@ -137,7 +137,7 @@ extension CKCompactAgenda {
                     eventsByDay[currentDay] = []
                 }
                 eventsByDay[currentDay]?.append(event)
-                
+
                 // Move to next day
                 guard let nextDay = calendar.date(byAdding: .day, value: 1, to: currentDay) else {
                     break
@@ -145,7 +145,7 @@ extension CKCompactAgenda {
                 currentDay = nextDay
             }
         }
-        
+
         // Convert to array and sort
         return eventsByDay.map { date, events in
             // Sort events: all-day first, then by start time
@@ -159,7 +159,7 @@ extension CKCompactAgenda {
                 // Within same type, sort by start time
                 return event1.startDate < event2.startDate
             }
-            
+
             return DayEvents(date: date, events: sortedEvents)
         }
         .sorted { $0.date < $1.date }
