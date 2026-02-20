@@ -24,6 +24,7 @@ public struct CKCompactAgenda<Detail: View>: View {
 
     private let detail: (any CKEventSchema) -> Detail
     private let events: [any CKEventSchema]
+
     private let calendar = Calendar.current
 
     public init(
