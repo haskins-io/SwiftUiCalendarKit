@@ -66,12 +66,6 @@ When set changes the background colour of the curent date
 ### showTime
 When set shows a red line on a timeline to indicate the time
 
-### timelineShows24hrClock
-When set the timeline timescale uses the 24hr clock 1 - 24. Default is 12hr clock 1pm, 2pm, etc
-
-### timelineShowsMinutes
-When set the timeline time scale shows minutes, when you are using the 24hrs clock
-
 ### showWeekNumbers
 When set the shows the week number in the header
 
