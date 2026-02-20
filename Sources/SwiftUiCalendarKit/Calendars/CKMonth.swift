@@ -6,16 +6,18 @@
 
 import SwiftUI
 
+/// `CKMonth` can be used for showing a single day calendar on a compact screen size such as an iPhone.
 ///
-/// CKCompactMonth
+///     CKMonth(
+///         observer: CKCalendarObserver(),
+///         events: events,
+///         date: $date
+///     )
 ///
-/// This Calendar type is used for showing a week on a large screen size such as an iPad or Mac
-///
-/// - Paramters
-///   - observer: Listen to this to be notified when an event is tapped/clicked
-///   - events: an array of events that conform to CKEventSchema
-///   - date: The date for the calendar to show
-///
+/// - Parameter observer: Listen to this to be notified when an event is tapped/clicked
+/// - Parameter events: an array of events that conform to ``CKEventSchema``.
+/// - Parameter date: The date for the calendar to show.
+
 public struct CKMonth: View {
 
     @ObservedObject var observer: CKCalendarObserver
@@ -76,7 +78,7 @@ public struct CKMonth: View {
         let days = makeDays()
         let month = calendarDate.startOfMonth(using: calendar)
 
-        return LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 0) {
+        LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 0) {
 
             ForEach(days, id: \.self) { day in
                 CKMonthDayCell(

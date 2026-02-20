@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NewWeekEventView: View {
+struct CKTimelineWeekEventView: View {
 
     @ObservedObject var observer: CKCalendarObserver
 
@@ -109,7 +109,7 @@ struct NewWeekEventView: View {
 }
 
 #Preview {
-    NewWeekEventView(
+    CKTimelineWeekEventView(
         CKEventViewData(
             event: CKEvent(
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),

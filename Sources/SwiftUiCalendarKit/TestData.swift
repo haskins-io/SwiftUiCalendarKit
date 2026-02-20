@@ -51,20 +51,20 @@ let testEvents: [any CKEventSchema] = [
         text: "All Day 2",
         backCol: "#E2ECE9"
     ),
-    CKEvent(
-        startDate: Calendar.current.date(byAdding: .minute, value: -240, to: midEventStart) ?? Date(),
-        endDate: Calendar.current.date(byAdding: .minute, value: -318, to: midEventStart) ?? Date(),
-        isAllDay: false,
-        text: "Event 4",
-        backCol: "#E2ECE9"
-    ),
-    CKEvent(
-        startDate: Calendar.current.date(byAdding: .minute, value: -120, to: midEventStart) ?? Date(),
-        endDate: Calendar.current.date(byAdding: .minute, value: -100, to: midEventStart) ?? Date(),
-        isAllDay: true,
-        text: "Event 5",
-        backCol: "#ACB2C1"
-    ),
+//    CKEvent(
+//        startDate: Calendar.current.date(bySettingHour: 10, minute: 0, second: 0, of: midEventStart) ?? Date(),
+//        endDate: Calendar.current.date(bySettingHour: 11, minute: 0, second: 0, of: midEventStart) ?? Date(),
+//        isAllDay: false,
+//        text: "Event 4",
+//        backCol: "#E2ECE9"
+//    ),
+//    CKEvent(
+//        startDate: Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: midEventStart) ?? Date(),
+//        endDate: Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: midEventStart) ?? Date(),
+//        isAllDay: true,
+//        text: "Event 5",
+//        backCol: "#ACB2C1"
+//    ),
     CKEvent(
         startDate: midEventStart,
         endDate: midEventEnd,
@@ -73,36 +73,36 @@ let testEvents: [any CKEventSchema] = [
         backCol: "#E5E4F2"
     ),
     CKEvent(
-        startDate: Calendar.current.date(byAdding: .minute, value: -120, to: midEventStart) ?? Date(),
-        endDate: Calendar.current.date(byAdding: .minute, value: -60, to: midEventStart) ?? Date(),
+        startDate: Calendar.current.date(bySettingHour: 10, minute: 0, second: 0, of: midEventStart) ?? Date(),
+        endDate: Calendar.current.date(bySettingHour: 11, minute: 0, second: 0, of: midEventStart) ?? Date(),
         isAllDay: false,
         text: "Event 7",
         backCol: "#E8D9E7"
     ),
     CKEvent(
-        startDate: Calendar.current.date(byAdding: .minute, value: -100, to: midEventStart) ?? Date(),
-        endDate: Calendar.current.date(byAdding: .minute, value: -40, to: midEventStart) ?? Date(),
+        startDate: Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: midEventStart) ?? Date(),
+        endDate: Calendar.current.date(bySettingHour: 11, minute: 30, second: 0, of: midEventStart) ?? Date(),
         isAllDay: false,
         text: "Event 8",
         backCol: "#998CA2"
     ),
     CKEvent(
-        startDate: Calendar.current.date(byAdding: .minute, value: -80, to: midEventStart) ?? Date(),
-        endDate: Calendar.current.date(byAdding: .minute, value: -20, to: midEventStart) ?? Date(),
+        startDate: Calendar.current.date(bySettingHour: 11, minute: 0, second: 0, of: midEventStart) ?? Date(),
+        endDate: Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: midEventStart) ?? Date(),
         isAllDay: false,
         text: "Event 12",
         backCol: "#998CA2"
     ),
     CKEvent(
-        startDate: Calendar.current.date(byAdding: .day, value: 2, to: middleDateStart) ?? Date(),
-        endDate: Calendar.current.date(byAdding: .day, value: 2, to: middleDateEnd) ?? Date(),
+        startDate: Calendar.current.date(bySettingHour: 11, minute: 0, second: 0, of: midEventStart) ?? Date(),
+        endDate: Calendar.current.date(bySettingHour: 11, minute: 30, second: 0, of: midEventStart) ?? Date(),
         isAllDay: false,
         text: "Event 9",
         backCol: "#A6C6DD"
     ),
     CKEvent(
-        startDate: Calendar.current.date(byAdding: .day, value: 3, to: middleDateStart) ?? Date(),
-        endDate: Calendar.current.date(byAdding: .day, value: 3, to: middleDateEnd) ?? Date(),
+        startDate: Calendar.current.date(bySettingHour: 15, minute: 15, second: 0, of: midEventStart) ?? Date(),
+        endDate: Calendar.current.date(bySettingHour: 16, minute: 15, second: 0, of: midEventStart) ?? Date(),
         isAllDay: false,
         text: "Event 10",
         backCol: "#93B3A7"

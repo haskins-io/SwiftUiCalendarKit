@@ -117,13 +117,7 @@ The simple answer is that I'm using this with SwiftData, and it doesn't support 
 Same answer as above. The Protocol does force you to implement functions to return Colors. How you implement them is up to you. The Color extension provides a function that converts a Hex string to a color. You might want to use this, or provide your own soluion.
 
 
-## Known Issues
-### Overlapping events
-While the code can handle overlapping events, and display them correctly, there are some overlay scenarios which it doesn't handle very well.
-
-
 ## Things that I would like to add in the future
-* MultiDay Events - **STATUS** : There is a rough cut of this in the Main branch. It looks to be working across all calendars, but needs more testing before a release will be cut with the logic.
 * Drag and drop events
 * More customisations / Themes
 * A year Calendar

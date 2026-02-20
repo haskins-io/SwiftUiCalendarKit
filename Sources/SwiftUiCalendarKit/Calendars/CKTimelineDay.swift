@@ -7,16 +7,18 @@
 import Combine
 import SwiftUI
 
+/// `CKTimelineDay` can be used for showing a single day calendar on a compact screen size such as an iPhone.
 ///
-/// CKTimelineDay
+///     CKTimelineDay(
+///         observer: CKCalendarObserver(),
+///         events: events,
+///         date: $date
+///     )
 ///
-/// This Calendar type is used for showing a single day on a large screen size such as an iPad or Mac
-///
-/// - Paramters
-///   - observer: Listen to this to be notified when an event is tapped/clicked
-///   - events: an array of events that conform to CKEventSchema
-///   - date: The date for the calendar to show
-///
+/// - Parameter observer: Listen to this to be notified when an event is tapped/clicked
+/// - Parameter events: an array of events that conform to ``CKEventSchema``.
+/// - Parameter date: The date for the calendar to show.
+
 public struct CKTimelineDay: View {
 
     @Environment(\.ckConfig)

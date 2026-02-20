@@ -24,7 +24,7 @@ struct CKTimeline: View {
 
                 ZStack {
                     Rectangle()
-                        .fill(isOutOfHours(hour: hour) ? Color.gray.opacity(0.1) : Color.clear)
+                        .fill(isOutOfHours(hour: hour) ? Color.gray.opacity(0.1) : Color(.systemBackground))
                         .overlay(
                             Rectangle()
                                 .frame(width: 1, height: nil, alignment: .trailing)
@@ -34,9 +34,9 @@ struct CKTimeline: View {
 
                     HStack {
                         if showTime {
-                            Text(timelineconfiguration(hour: hour))
+                            Text(String(format: "%02d:00", hour))
                                 .font(.caption)
-                                .frame(width: frameWidth(), alignment: .trailing)
+                                .frame(width: 35, alignment: .trailing)
                         }
 
                         Color.gray
@@ -51,43 +51,12 @@ struct CKTimeline: View {
 
 extension CKTimeline {
 
-    private func frameWidth() -> CGFloat {
-        if config.timeFormat24hr {
-            if config.showMinutes {
-                return 35
-            } else {
-                return 20
-            }
-        } else {
-            return 35
-        }
-    }
-
     private func isOutOfHours(hour: Int) -> Bool {
-
         if hour < config.dayStart || hour >= config.dayEnd {
             return true
         }
 
         return false
-    }
-
-    private func timelineconfiguration(hour: Int) -> String {
-
-        if config.timeFormat24hr {
-            if config.showMinutes {
-                return String(format: "%02d:00", hour)
-            } else {
-                return String(format: "%02d", hour)
-            }
-        } else {
-            if hour < 13 {
-                return "\(hour)am"
-            } else {
-                let pmHour = hour - 12
-                return "\(pmHour)pm"
-            }
-        }
     }
 }
 

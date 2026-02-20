@@ -6,16 +6,18 @@
 
 import SwiftUI
 
+/// `CKCompactMonth` can be used for showing a single day calendar on a compact screen size such as an iPhone.
 ///
-/// CKCompactMonth
+///     CKCompactMonth(
+///         detail: { event in EventDetail(event: event) },
+///         events: events,
+///         date: $date
+///     )
 ///
-/// This Calendar type is used for showing a month on a compact screen size such as an iPhone
-///
-/// - Paramters
-///   - detail: The view that should be shown when an event in the Calendar is tapped.
-///   - events: an array of events that conform to CKEventSchema
-///   - date: The date for the calendar to show
-///
+/// - Parameter detail: The view that should be shown when an event in the Calendar is tapped.
+/// - Parameter events: an array of events that conform to ``CKEventSchema``.
+/// - Parameter date: The date for the calendar to show.
+
 public struct CKCompactMonth<Detail: View>: View {
 
     @Binding private var date: Date
