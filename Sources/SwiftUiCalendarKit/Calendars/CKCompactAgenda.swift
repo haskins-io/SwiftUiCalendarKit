@@ -63,7 +63,6 @@ public struct CKCompactAgenda<Detail: View>: View {
                 Text(date.formatted(.dateTime.day().month(.abbreviated)))
             }
             .font(.subheadline)
-            .foregroundStyle(.blue)
             .textCase(nil)
         }
         .padding(.vertical, 4)
@@ -90,8 +89,22 @@ public struct CKCompactAgenda<Detail: View>: View {
 
             // Event details
             VStack(alignment: .leading, spacing: 2) {
-                Text(event.text)
-                    .font(.body)
+                HStack {
+
+                    if !event.sfImage.isEmpty{
+                        Image(systemName: event.sfImage)
+                    } else if !event.image.isEmpty {
+                        Image(event.image)
+                            .resizable()
+                            .frame(width: 25, height: 20)
+                    }
+
+                    Text(CKUtils.eventText(event: event))
+                        .padding(.leading, 5)
+
+                }
+                .font(.body)
+
             }
             .padding(.vertical, 8)
             .padding(.horizontal, 12)

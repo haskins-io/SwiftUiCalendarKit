@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+/// `CKAgenda` can be used for showing an ordered list of events
+///
+///     CKAgenda(
+///         observer: CKCalendarObserver(),
+///         events: events
+///     )
+///
+/// - Parameter observer: Listen to this to be notified when an event is tapped/clicked
+/// - Parameter events: an array of events that conform to ``CKEventSchema``.
+
+
 public struct CKAgenda: View {
 
     @Environment(\.ckConfig)
@@ -97,7 +108,7 @@ public struct CKAgenda: View {
 
             // Multi-day event banner
             VStack(alignment: .leading, spacing: 2) {
-                Text(event.text)
+                Text(CKUtils.eventText(event: event))
                     .font(.body)
             }
             .padding(.vertical, 8)
@@ -140,7 +151,7 @@ public struct CKAgenda: View {
 
             // Event indicator and title
             VStack(alignment: .leading, spacing: 2) {
-                Text(event.text)
+                Text(CKUtils.eventText(event: event))
                     .font(.body)
             }
             .padding(.vertical, 8)
@@ -182,8 +193,6 @@ extension CKAgenda {
         for event in events {
             let startDay = calendar.startOfDay(for: event.startDate)
             let endDay = calendar.startOfDay(for: event.endDate)
-            
-            let isMultiDay = startDay != endDay
 
             // For multi-day events, add to each day in the range
             var currentDay = startDay

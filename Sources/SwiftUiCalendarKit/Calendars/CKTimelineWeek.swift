@@ -28,7 +28,7 @@ public struct CKTimelineWeek: View {
 
     @Binding private var calendarDate: Date
 
-    @State private var calendarWidth: CGFloat = .zero
+    @State private var columnWidth: CGFloat = .zero
 
     @State private var timelinePosition = 0.0
     @State private var time = Date()
@@ -39,8 +39,7 @@ public struct CKTimelineWeek: View {
 
     private var calendar = Calendar.current
 
-    private var timebarWidth: CGFloat = 45
-
+    private var timebarWidth: CGFloat = 40
     public init(
         observer: CKCalendarObserver,
         events: [any CKEventSchema],
@@ -59,7 +58,7 @@ public struct CKTimelineWeek: View {
         let eventData = CKUtils.generateEventViewData(
             date: calendarDate,
             events: events,
-            width: (calendarWidth - timebarWidth) / 7
+            width: columnWidth
         )
 
         let week = calendarDate.fetchWeek()
@@ -72,18 +71,19 @@ public struct CKTimelineWeek: View {
                         return
                     }
 
-                    calendarWidth = newSize.width
+                    // Account for 6 gaps of 1pt between 7 columns
+                    columnWidth = (((geometry.size.width - timebarWidth) - 6) / 7)
                 }
 
-            if calendarWidth != .zero {
+            if columnWidth != .zero {
 
-                VStack {
+                VStack(spacing: 0) {
 
                     CKCalendarHeader(currentDate: $calendarDate, addWeek: true)
 
                     CKWeekOfYear(date: calendarDate).padding(.leading, 10)
 
-                    Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    Grid(horizontalSpacing: 1, verticalSpacing: 0) {
                         GridRow(alignment: .top) {
                             calendarHeader(week: week)
                         }
@@ -132,7 +132,7 @@ public struct CKTimelineWeek: View {
 
         Color.clear
             .gridCellUnsizedAxes([.horizontal, .vertical])
-            .frame(width: timebarWidth)
+            .frame(minWidth: timebarWidth + 5, idealWidth: timebarWidth + 5, maxWidth: timebarWidth + 5)
 
         ForEach(week, id: \.id) { weekDay in
 
@@ -146,7 +146,7 @@ public struct CKTimelineWeek: View {
                     Text(weekDay.date.toString("dd"))
                 }
             }
-            .frame(width: ((calendarWidth - timebarWidth) / 7))
+            .frame(minWidth: columnWidth, idealWidth: columnWidth, maxWidth: columnWidth)
             .modifier(GridOverlayModifier())
         }
     }
@@ -156,13 +156,12 @@ public struct CKTimelineWeek: View {
 
         Color.clear
             .gridCellUnsizedAxes([.horizontal, .vertical])
-            .frame(width: timebarWidth)
+            .frame(minWidth: timebarWidth, idealWidth: timebarWidth, maxWidth: timebarWidth)
 
         ForEach(week) { weekDay in
             addMultiDayEvents(
                 eventData: eventData,
-                date: weekDay.date,
-                width: (calendarWidth - timebarWidth) / 7
+                date: weekDay.date
             )
         }
     }
@@ -172,51 +171,50 @@ public struct CKTimelineWeek: View {
 
         Color.clear
             .gridCellUnsizedAxes([.horizontal, .vertical])
-            .frame(width: timebarWidth)
+            .frame(minWidth: timebarWidth, idealWidth: timebarWidth, maxWidth: timebarWidth)
 
         ForEach(week) { weekDay in
             addAllDayEvents(
                 eventData: eventData,
-                date: weekDay.date,
-                width: (calendarWidth - timebarWidth) / 7
+                date: weekDay.date
             )
         }
     }
 
     @ViewBuilder
-    private func addMultiDayEvents(eventData: [CKEventViewData], date: Date, width: CGFloat) -> some View {
+    private func addMultiDayEvents(eventData: [CKEventViewData], date: Date) -> some View {
 
         if doesDateHaveAnyMultiDayEvents(eventData: eventData, date: date) {
 
-            VStack {
+            VStack(spacing: 0) {
 
                 ForEach(eventData, id: \.anyHashableID) { eventData in
 
                     if isMultiDayEvent(event: eventData.event) {
 
                         if calendar.isDate(eventData.event.startDate, inSameDayAs: date) {
-                            singleDayEventView(eventData: eventData, width: width)
+                            singleDayEventView(eventData: eventData)
                         } else {
                             if CKUtils.doesEventOccurOnDate(event: eventData.event, date: date) {
-                                multiDayFillerView(eventData: eventData, width: width)
+                                multiDayFillerView(eventData: eventData)
                             }
                         }
                     }
                 }
             }
-            .frame(width: width)
+            .frame(minWidth: columnWidth, idealWidth: columnWidth, maxWidth: columnWidth)
             .modifier(GridOverlayModifier())
             .padding(.top, 5)
         } else {
             Color.clear
                 .gridCellUnsizedAxes([.horizontal, .vertical])
-                .frame(width: width)
+                .frame(minWidth: columnWidth, idealWidth: columnWidth, maxWidth: columnWidth)
                 .modifier(GridOverlayModifier())
         }
     }
 
     @ViewBuilder
-    private func addAllDayEvents(eventData: [CKEventViewData], date: Date, width: CGFloat) -> some View {
+    private func addAllDayEvents(eventData: [CKEventViewData], date: Date) -> some View {
 
         if doesDateHaveAnyAllDayEvents(eventData: eventData, date: date) {
 
@@ -225,11 +223,11 @@ public struct CKTimelineWeek: View {
                 ForEach(eventData, id: \.anyHashableID) { eventData in
 
                     if isSingleDayEvent(event: eventData.event, date: date) {
-                        singleDayEventView(eventData: eventData, width: width)
+                        singleDayEventView(eventData: eventData)
                     }
                 }
             }
-            .frame(width: width)
+            .frame(minWidth: columnWidth, idealWidth: columnWidth, maxWidth: columnWidth)
             .overlay(
                 Rectangle()
                     .frame(width: 1, height: nil, alignment: .trailing)
@@ -238,20 +236,20 @@ public struct CKTimelineWeek: View {
         } else {
             Color.clear
                 .gridCellUnsizedAxes([.horizontal, .vertical])
-                .frame(width: width)
+                .frame(minWidth: columnWidth, idealWidth: columnWidth, maxWidth: columnWidth)
                 .modifier(GridOverlayModifier())
         }
     }
 
     @ViewBuilder
-    private func singleDayEventView(eventData: CKEventViewData, width: CGFloat) -> some View {
+    private func singleDayEventView(eventData: CKEventViewData) -> some View {
 
         VStack(alignment: .center) {
-            Text(eventData.event.text).bold().padding(.leading, 5)
+            Text(CKUtils.eventText(event: eventData.event)).bold().padding(.leading, 5)
         }
         .foregroundColor(.primary)
         .font(.caption)
-        .frame(width: width - 15, alignment: .leading)
+        .frame(minWidth: columnWidth - 15, idealWidth: columnWidth - 15, maxWidth: columnWidth - 15)
         .padding(6)
         .background(.thinMaterial)
         .background(
@@ -272,12 +270,12 @@ public struct CKTimelineWeek: View {
     }
 
     @ViewBuilder
-    private func multiDayFillerView(eventData: CKEventViewData, width: CGFloat) -> some View {
+    private func multiDayFillerView(eventData: CKEventViewData) -> some View {
 
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             Text("")
         }
-        .frame(width: width - 15)
+        .frame(minWidth: columnWidth - 15, idealWidth: columnWidth - 15, maxWidth: columnWidth - 15)
         .padding(6)
         .background(.thinMaterial)
         .background(
@@ -310,6 +308,7 @@ public struct CKTimelineWeek: View {
 
         ZStack(alignment: .topLeading) {
             CKTimeline(showTime: false)
+                .frame(minWidth: columnWidth , idealWidth: columnWidth, maxWidth: columnWidth)
 
             if config.showTime {
                 CKTimeIndicator(date: date, time: time, showTime: false)

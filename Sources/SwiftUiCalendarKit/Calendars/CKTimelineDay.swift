@@ -135,7 +135,7 @@ public struct CKTimelineDay: View {
     private func addAllDayEvents(eventData: [CKEventViewData]) -> some View {
         VStack(spacing: 0) {
             ForEach(eventData, id: \.anyHashableID) { event in
-                if calendar.isDate(event.event.startDate, inSameDayAs: date) && event.allDay {
+                if event.event.isAllDay && CKUtils.doesEventOccurOnDate(event: event.event, date: date) {
                     CKDayEventView(
                         event,
                         observer: observer,

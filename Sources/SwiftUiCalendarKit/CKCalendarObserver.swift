@@ -13,7 +13,7 @@ public class CKCalendarObserver: ObservableObject {
         startDate: Date(),
         endDate: Date(),
         isAllDay: false,
-        text: ""
+        primaryText: ""
     )
 
     @Published public var eventSelected = false

@@ -119,7 +119,7 @@ struct CKMonthDayCell: View {
                     .frame(width: 10, height: 10)
             }
 
-            Text(event.text)
+            Text(CKUtils.eventText(event: event))
 
             if showTime {
                 Spacer()
@@ -139,7 +139,7 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func allDayEvent(event: any CKEventSchema, yOffset: CGFloat) -> some View {
         HStack {
-            Text(event.text)
+            Text(CKUtils.eventText(event: event))
             Spacer()
         }
         .padding(3)

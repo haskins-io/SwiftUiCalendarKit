@@ -41,7 +41,7 @@ struct CKTimelineWeekEventView: View {
     private func greaterThan30mins() -> some View {
         VStack(alignment: .leading) {
             Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
-            Text(event.text).bold().padding(.leading, 5)
+            Text(CKUtils.eventText(event: event)).bold().padding(.leading, 5)
         }
         .foregroundColor(.primary)
         .font(.caption)
@@ -76,7 +76,7 @@ struct CKTimelineWeekEventView: View {
     private func lessThan30mins() -> some View {
         HStack(alignment: .center) {
             Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
-            Text(event.text).bold()
+            Text(CKUtils.eventText(event: event)).bold()
         }
         .foregroundColor(.primary)
         .font(.caption)
@@ -115,7 +115,7 @@ struct CKTimelineWeekEventView: View {
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),
                 endDate: Date().dateFrom(13, 4, 2024, 2, 00),
                 isAllDay: false,
-                text: "Event 1",
+                primaryText: "Event 1",
                 backCol: "#D74D64"),
             overlapsWith: 1,
             position: 1,

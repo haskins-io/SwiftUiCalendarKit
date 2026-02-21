@@ -25,19 +25,29 @@ struct CKCompactDayEventView<Detail: View>: View {
         NavigationLink {
             detail(event)
         } label: {
-            VStack {
-                Text(event.text).bold().padding(.leading, 5)
+            HStack {
+
+                if !event.sfImage.isEmpty{
+                    Image(systemName: event.sfImage)
+                        .padding(.leading, 10)
+                } else if !event.image.isEmpty {
+                    Image(event.image)
+                        .resizable()
+                        .frame(width: 25, height: 20)
+                        .padding(.leading, 10)
+                }
+
+                Text(CKUtils.eventText(event: event))
+                    .padding(.leading, 5)
             }
+            .font(.body)
             .foregroundColor(.primary)
-            .font(.caption)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(6)
-            .background(.thinMaterial)
             .background(
                 RoundedRectangle(cornerRadius: 3)
                     .fill(event.backgroundAsColor())
                     .opacity(0.5)
-                    .shadow(radius: 5, x: 2, y: 5)
             )
             .overlay {
                 HStack {
@@ -59,7 +69,7 @@ struct CKCompactDayEventView<Detail: View>: View {
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),
                 endDate: Date().dateFrom(13, 4, 2024, 2, 00),
                 isAllDay: true,
-                text: "Event 1",
+                primaryText: "Event 1",
                 backCol: "#D74D64"),
             overlapsWith: 1,
             position: 1,

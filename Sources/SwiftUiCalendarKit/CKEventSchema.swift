@@ -11,15 +11,17 @@ import SwiftUI
 ///
 /// This protocol show be implemented by any class that you would want to represent on a calendar.
 ///
-/// - Paramters
-///   - startDate: The start of time of an event
-///   - endDate: The end time of an event
-///   - text: The text to show on the calendar
-///   - primaryText: a primary line of text that can be shown on a calendar event
-///   - secondaryText: a secondary line of text that can be shown on a calendar event
-///   - backgroundColor: The colour used to identify the event type
-///   - showTotalTime: When set will show the amount of time the event runs for
-///
+/// - Parameter startDate: The start of time of an event
+/// - Parameter endDate: The end time of an event
+/// - Parameter isAllDay: Is the event take up the whole day
+/// - Parameter text: The text to show on the calendar
+/// - Parameter primaryText: a primary line of text that can be shown on a calendar event
+/// - Parameter secondaryText: a secondary line of text that can be shown on a calendar event
+/// - Parameter backgroundColor: The colour used to identify the event type
+/// - Parameter showTotalTime: When set will show the amount of time the event runs for
+/// - Parameter sfImage: SF Image to show alongside the event primary description
+/// - Parameter image:Image to show alongside the event primary description
+
 public protocol CKEventSchema: Identifiable {
 
     var anyHashableID: AnyHashable { get }
@@ -28,11 +30,15 @@ public protocol CKEventSchema: Identifiable {
     var endDate: Date { get set }
     var isAllDay: Bool { get set }
 
+    @available(*, deprecated, message: "This now deprecated, use Primary text instead")
     var text: String { get set }
     var primaryText: String { get set }
     var secondaryText: String { get set }
 
     var backgroundColor: String { get set }
+
+    var sfImage: String { get set }
+    var image: String { get set }
 
     var showTotalTime: Bool { get set }
 

@@ -21,7 +21,7 @@ struct CKListEventView: View {
 
     @ViewBuilder
     private func allDayEvent() -> some View {
-        Text(event.text)
+        Text(CKUtils.eventText(event: event))
             .bold()
             .padding(.leading, 5)
             .padding(.leading, 5)
@@ -47,7 +47,7 @@ struct CKListEventView: View {
             }
             .padding(.leading, 5)
 
-            Text(event.text).bold().padding(.leading, 5).padding(.leading, 5)
+            Text(CKUtils.eventText(event: event)).bold().padding(.leading, 5).padding(.leading, 5)
         }
         .font(.caption)
         .overlay {
@@ -69,7 +69,7 @@ struct CKListEventView: View {
             startDate: Date().dateFrom(13, 4, 2024, 1, 00),
             endDate: Date().dateFrom(13, 4, 2024, 2, 00),
             isAllDay: false,
-            text: "Event 1",
+            primaryText: "Event 1",
             backCol: "#D74D64")
     )
 }

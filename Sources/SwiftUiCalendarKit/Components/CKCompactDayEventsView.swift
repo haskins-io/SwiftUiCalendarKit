@@ -45,7 +45,7 @@ extension CKCompactDayEventsView {
                 startDate: Date(),
                 endDate: Date(),
                 isAllDay: true,
-                text: "Event 1",
+                primaryText: "Event 1",
                 backCol: "#D74D64"),
             overlapsWith: 1,
             position: 1,

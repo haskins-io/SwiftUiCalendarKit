@@ -18,22 +18,27 @@ public struct CKEvent: CKEventSchema {
     public var endDate = Date()
     public var isAllDay = false
 
-    public var text = "Demo"
-    public var primaryText = "primary"
-    public var secondaryText = "secondary"
+    public var text = "Deprecated"
+    public var primaryText = ""
+    public var secondaryText = ""
 
-    public var backgroundColor = "#ffffff"
+    public var backgroundColor = ""
 
     public var showTotalTime = false
+
+    public var sfImage = ""
+    public var image = ""
 
     public init(
         startDate: Date,
         endDate: Date,
         isAllDay: Bool,
-        text: String,
+        text: String = "",
         primaryText: String = "",
         secondaryText: String = "",
-        backCol: String = "#ffffff"
+        backCol: String = "#ffffff",
+        sfImage: String = "",
+        image: String = ""
     ) {
         self.startDate = startDate
         self.endDate = endDate
@@ -44,6 +49,9 @@ public struct CKEvent: CKEventSchema {
         self.secondaryText = secondaryText
 
         self.backgroundColor = backCol
+
+        self.image = image
+        self.sfImage = sfImage
     }
 
     public func backgroundAsColor() -> Color {

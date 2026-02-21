@@ -75,7 +75,7 @@ public struct CKMonth: View {
     @ViewBuilder
     private func monthGrid() -> some View {
 
-        var widthAdjust: CGFloat = config.showWeekNumber ? 25 : 0
+        let widthAdjust: CGFloat = config.showWeekNumber ? 25 : 0
 
         let cellWidth = (calendarWidth / 7) - widthAdjust
         let cellHeight = ((calendarHeight - 70) / 6) + 4

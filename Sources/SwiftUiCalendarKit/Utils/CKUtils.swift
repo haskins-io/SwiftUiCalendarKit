@@ -9,6 +9,14 @@ import Foundation
 
 enum CKUtils {
 
+    static func eventText(event: any CKEventSchema) -> String {
+        if !event.text.isEmpty {
+            return event.text
+        }
+
+        return event.primaryText
+    }
+
     static func currentTimelinePosition(calendar: Calendar = .current) -> Double {
         let now = Date()
         let hour = calendar.component(.hour, from: now)

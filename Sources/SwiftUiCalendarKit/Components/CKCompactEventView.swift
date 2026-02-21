@@ -49,14 +49,25 @@ struct CKCompactEventView<Detail: View>: View {
                 VStack(alignment: .leading) {
                     Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
 
-                    Text(event.text).bold().padding(.leading, 5)
-
-                    if !event.primaryText.isEmpty {
-                        Text(event.primaryText).font(.caption).foregroundColor(.secondary)
+                    HStack {
+                        if !event.sfImage.isEmpty{
+                            Image(systemName: event.sfImage)
+                                .padding(.leading, 5)
+                        } else if !event.image.isEmpty {
+                            Image(event.image)
+                                .resizable()
+                                .frame(width: 20, height: 15)
+                                .padding(.leading, 5)
+                        }
+                        Text(CKUtils.eventText(event: event))
+                            .bold()
+                            .padding(.leading, 5)
                     }
 
                     if !event.secondaryText.isEmpty {
-                        Text(event.secondaryText).font(.caption).foregroundColor(.secondary)
+                        Text(event.secondaryText)
+                            .foregroundColor(.secondary)
+                            .padding(.leading, 5)
                     }
                 }
                 .foregroundColor(.primary)
@@ -64,7 +75,6 @@ struct CKCompactEventView<Detail: View>: View {
                 .frame(width: eventData.eventWidth, alignment: .leading)
                 .padding(4)
                 .frame(height: eventData.height, alignment: .top)
-                .background(.thinMaterial)
                 .background(
                     RoundedRectangle(cornerRadius: 5)
                         .fill(event.backgroundAsColor())
@@ -93,15 +103,29 @@ struct CKCompactEventView<Detail: View>: View {
                 detail(event)
             } label: {
                 HStack(alignment: .center) {
-                    Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
-                    Text(event.text).bold()
+
+                    HStack {
+                        Text(event.startDate.formatted(.dateTime.hour().minute()))
+                            .padding(.leading, 5)
+
+                        if !event.sfImage.isEmpty{
+                            Image(systemName: event.sfImage)
+                        } else if !event.image.isEmpty {
+                            Image(event.image)
+                                .resizable()
+                                .frame(width: 25, height: 20)
+                        }
+
+                        Text(CKUtils.eventText(event: event))
+                            .bold()
+                            .padding(.leading, 5)
+                    }
                 }
                 .foregroundColor(.primary)
                 .font(.caption)
                 .frame(width: eventData.eventWidth, alignment: .leading)
                 .padding(4)
                 .frame(height: eventData.height, alignment: .top)
-                .background(.thinMaterial)
                 .background(
                     RoundedRectangle(cornerRadius: 5)
                         .fill(event.backgroundAsColor())
@@ -131,7 +155,7 @@ struct CKCompactEventView<Detail: View>: View {
                 startDate: Date().dateFrom(13, 4, 2024, 1, 00),
                 endDate: Date().dateFrom(13, 4, 2024, 2, 20),
                 isAllDay: false,
-                text: "Event 1 Event 1 Event 1",
+                primaryText: "Event 1 Event 1 Event 1",
                 backCol: "#D74D64"),
             overlapsWith: 1,
             position: 1,
