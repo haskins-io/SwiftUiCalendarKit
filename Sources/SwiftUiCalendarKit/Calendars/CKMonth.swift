@@ -67,7 +67,6 @@ public struct CKMonth: View {
 
                     monthGrid()
                 }
-                .padding(0)
             }
         }
     }

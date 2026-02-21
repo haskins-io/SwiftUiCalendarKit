@@ -95,8 +95,9 @@ public struct CKTimelineWeek: View {
                         GridRow(alignment: .top) {
                             allDay(eventData: eventData, week: week)
                         }
-                        Divider()
                     }
+
+                    Divider().frame(height: 2).overlay(.black)
 
                     ScrollView {
                         Grid(horizontalSpacing: 1) {

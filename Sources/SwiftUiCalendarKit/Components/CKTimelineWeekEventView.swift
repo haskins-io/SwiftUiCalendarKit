@@ -41,7 +41,27 @@ struct CKTimelineWeekEventView: View {
     private func greaterThan30mins() -> some View {
         VStack(alignment: .leading) {
             Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
-            Text(CKUtils.eventText(event: event)).bold().padding(.leading, 5)
+            HStack {
+                if !event.sfImage.isEmpty{
+                    Image(systemName: event.sfImage)
+                        .padding(.leading, 5)
+                } else if !event.image.isEmpty {
+                    Image(event.image)
+                        .resizable()
+                        .frame(width: 20, height: 15)
+                        .padding(.leading, 5)
+                }
+
+                Text(CKUtils.eventText(event: event))
+                    .bold()
+                    .padding(.leading, 5)
+            }
+
+            if !event.secondaryText.isEmpty {
+                Text(event.secondaryText)
+                    .foregroundColor(.secondary)
+                    .padding(.leading, 5)
+            }
         }
         .foregroundColor(.primary)
         .font(.caption)
@@ -76,7 +96,18 @@ struct CKTimelineWeekEventView: View {
     private func lessThan30mins() -> some View {
         HStack(alignment: .center) {
             Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
-            Text(CKUtils.eventText(event: event)).bold()
+
+            if !event.sfImage.isEmpty{
+                Image(systemName: event.sfImage)
+                    .padding(.leading, 5)
+            } else if !event.image.isEmpty {
+                Image(event.image)
+                    .resizable()
+                    .frame(width: 20, height: 15)
+            }
+
+            Text(CKUtils.eventText(event: event))
+                .bold()
         }
         .foregroundColor(.primary)
         .font(.caption)

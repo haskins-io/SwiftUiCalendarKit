@@ -113,13 +113,20 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func eventView(event: any CKEventSchema, yOffset: CGFloat) -> some View {
         HStack {
-            if event.backgroundColor.count == 7 {
+            if !event.sfImage.isEmpty{
+                Image(systemName: event.sfImage)
+            } else if !event.image.isEmpty {
+                Image(event.image)
+                    .resizable()
+                    .frame(width: 15, height: 10)
+            } else {
                 Circle()
                     .fill(event.backgroundAsColor())
                     .frame(width: 10, height: 10)
             }
 
             Text(CKUtils.eventText(event: event))
+                .padding(.leading, 5)
 
             if showTime {
                 Spacer()
@@ -139,7 +146,18 @@ struct CKMonthDayCell: View {
     @ViewBuilder
     private func allDayEvent(event: any CKEventSchema, yOffset: CGFloat) -> some View {
         HStack {
+
+            if !event.sfImage.isEmpty{
+                Image(systemName: event.sfImage)
+            } else if !event.image.isEmpty {
+                Image(event.image)
+                    .resizable()
+                    .frame(width: 15, height: 10)
+            }
+
             Text(CKUtils.eventText(event: event))
+                .padding(.leading, 5)
+
             Spacer()
         }
         .padding(3)
