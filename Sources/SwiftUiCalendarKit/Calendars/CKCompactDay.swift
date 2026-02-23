@@ -72,26 +72,24 @@ public struct CKCompactDay<Detail: View>: View {
                     calendarWidth = newSize.width
                 }
 
-            if calendarWidth != .zero {
-                VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 2) {
 
-                    header()
+                header()
 
-                    Divider().padding([.leading, .trailing], 10)
+                Divider().padding([.leading, .trailing], 10)
 
-                    timeline(width: calendarWidth)
-                }
-                .onAppear(perform: {
-                    calcDaySliders(newDate: currentDate)
-                })
-                .onChange(of: currentDate, initial: false) {
-                    headerDay = currentDate
-                    daySlider.removeAll()
-                    calcDaySliders(newDate: currentDate)
-                }
-                .onChange(of: currentDayIndex, initial: false) {
-                    updateSliders()
-                }
+                timeline(width: calendarWidth)
+            }
+            .onAppear(perform: {
+                calcDaySliders(newDate: currentDate)
+            })
+            .onChange(of: currentDate, initial: false) {
+                headerDay = currentDate
+                daySlider.removeAll()
+                calcDaySliders(newDate: currentDate)
+            }
+            .onChange(of: currentDayIndex, initial: false) {
+                updateSliders()
             }
         }
     }

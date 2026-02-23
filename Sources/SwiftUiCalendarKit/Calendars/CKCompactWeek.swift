@@ -100,24 +100,22 @@ public struct CKCompactWeek<Detail: View>: View {
                     calendarWidth = newSize.width
                 }
 
-            if calendarWidth != .zero {
-                let eventData = CKUtils.generateEventViewData(
-                    date: date,
-                    events: events,
-                    width: calendarWidth - 50
-                )
+            let eventData = CKUtils.generateEventViewData(
+                date: date,
+                events: events,
+                width: calendarWidth - 50
+            )
 
-                VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
 
-                    Divider()
+                Divider()
 
-                    CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
+                CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
 
-                    ScrollView {
-                        timelineEvents(eventData: eventData)
-                    }
-                    .defaultScrollAnchor(.center)
+                ScrollView {
+                    timelineEvents(eventData: eventData)
                 }
+                .defaultScrollAnchor(.center)
             }
         }
     }

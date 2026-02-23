@@ -71,58 +71,54 @@ public struct CKTimelineWeek: View {
                         return
                     }
 
-                    // Account for 6 gaps of 1pt between 7 columns
                     columnWidth = (((geometry.size.width - timebarWidth) - 6) / 7)
                 }
 
-            if columnWidth != .zero {
+            VStack(spacing: 0) {
 
-                VStack(spacing: 0) {
+                CKCalendarHeader(currentDate: $calendarDate, addWeek: true)
 
-                    CKCalendarHeader(currentDate: $calendarDate, addWeek: true)
+                CKWeekOfYear(date: calendarDate).padding(.leading, 10)
 
-                    CKWeekOfYear(date: calendarDate).padding(.leading, 10)
-
-                    Grid(horizontalSpacing: 1, verticalSpacing: 0) {
-                        GridRow(alignment: .top) {
-                            calendarHeader(week: week)
-                        }
-                        Divider()
-                        GridRow(alignment: .top) {
-                            multiDays(eventData: eventData, week: week)
-                        }
-                        Divider()
-                        GridRow(alignment: .top) {
-                            allDay(eventData: eventData, week: week)
-                        }
+                Grid(horizontalSpacing: 1, verticalSpacing: 0) {
+                    GridRow(alignment: .top) {
+                        calendarHeader(week: week)
                     }
+                    Divider()
+                    GridRow(alignment: .top) {
+                        multiDays(eventData: eventData, week: week)
+                    }
+                    Divider()
+                    GridRow(alignment: .top) {
+                        allDay(eventData: eventData, week: week)
+                    }
+                }
 
-                    Divider().frame(height: 2).overlay(.black)
+                Divider().frame(height: 2).overlay(.black)
 
-                    ScrollView {
-                        Grid(horizontalSpacing: 1) {
-                            GridRow {
-                                showTimes()
+                ScrollView {
+                    Grid(horizontalSpacing: 1) {
+                        GridRow {
+                            showTimes()
 
-                                ForEach(week) { weekDay in
-                                    dayView(
-                                        events: eventData,
-                                        date: weekDay.date
-                                    )
-                                }
+                            ForEach(week) { weekDay in
+                                dayView(
+                                    events: eventData,
+                                    date: weekDay.date
+                                )
                             }
                         }
                     }
-                    .defaultScrollAnchor(.center)
                 }
-                .onReceive(timer) { _ in
-                    guard config.showTime else {
-                        return
-                    }
-                    if calendar.component(.second, from: Date()) == 0 {
-                        time = Date()
-                        timelinePosition = CKUtils.currentTimelinePosition()
-                    }
+                .defaultScrollAnchor(.center)
+            }
+            .onReceive(timer) { _ in
+                guard config.showTime else {
+                    return
+                }
+                if calendar.component(.second, from: Date()) == 0 {
+                    time = Date()
+                    timelinePosition = CKUtils.currentTimelinePosition()
                 }
             }
         }

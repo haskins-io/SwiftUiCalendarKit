@@ -64,31 +64,28 @@ public struct CKTimelineDay: View {
                     calendarWidth = newSize.width
                 }
 
-            if calendarWidth != .zero {
+            VStack(alignment: .leading, spacing: 2) {
 
-                VStack(alignment: .leading, spacing: 2) {
+                HStack {
+                    Text(date.formatted(.dateTime.day().month(.wide))).bold()
 
-                    HStack {
-                        Text(date.formatted(.dateTime.day().month(.wide))).bold()
-
-                        Text(date.formatted(.dateTime.year()))
-                    }
-                    .padding(.leading, 10)
-                    .padding(.top, 5)
-                    .font(.title)
-
-                    HStack {
-                        Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
-
-                        Spacer()
-
-                        CKWeekOfYear(date: date)
-                    }
-
-                    Divider().padding([.leading, .trailing], 10)
-
-                    dayView()
+                    Text(date.formatted(.dateTime.year()))
                 }
+                .padding(.leading, 10)
+                .padding(.top, 5)
+                .font(.title)
+
+                HStack {
+                    Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+
+                    Spacer()
+
+                    CKWeekOfYear(date: date)
+                }
+
+                Divider().padding([.leading, .trailing], 10)
+
+                dayView()
             }
         }
     }

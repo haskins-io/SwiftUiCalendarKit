@@ -54,19 +54,17 @@ public struct CKMonth: View {
                     calendarHeight = newSize.height
                 }
 
-            if calendarWidth != 0 {
-                VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
 
-                    CKCalendarHeader(currentDate: $calendarDate, addWeek: false)
-                        .padding(.bottom, 5)
+                CKCalendarHeader(currentDate: $calendarDate, addWeek: false)
+                    .padding(.bottom, 5)
 
-                    CKDayHeader(currentDate: $calendarDate, width: calendarWidth, showTime: false, showDate: false)
-                        .padding(.bottom, 5)
+                CKDayHeader(currentDate: $calendarDate, width: calendarWidth, showTime: false, showDate: false)
+                    .padding(.bottom, 5)
 
-                    Divider()
+                Divider()
 
-                    monthGrid()
-                }
+                monthGrid()
             }
         }
     }
