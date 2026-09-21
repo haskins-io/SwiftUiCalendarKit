@@ -10,6 +10,9 @@ import SwiftUI
 /// One event's geometry on the hour grid.
 nonisolated struct CKEventViewData: Identifiable, Sendable {
 
+    public typealias Id = UUID
+    public var id: Id = UUID()
+
     let event: CKEvent
 
     let start: Date
@@ -29,8 +32,6 @@ nonisolated struct CKEventViewData: Identifiable, Sendable {
     let eventWidth: CGFloat
 
     let yOffset: CGFloat
-
-    var id: CKEventID { self.event.id }
 
     init?(
         event: CKEvent,

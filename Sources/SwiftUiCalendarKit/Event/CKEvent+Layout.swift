@@ -83,11 +83,6 @@ nonisolated extension CKEvent.Kind {
 nonisolated extension CKEvent {
 
     /// When the event begins.
-    ///
-    /// Day-bucketing and sorting read this; nothing writes it. The old `CKEventSchema`
-    /// required `{ get set }` on every date, which was a demand on *storage* and the reason
-    /// several models could not conform without new stored properties (§3.3) — but no consumer
-    /// in this component ever set one.
     var startDate: Date { self.kind.start }
 
     /// When the event ends. See `Kind.end` for why a deadline's equals its start.

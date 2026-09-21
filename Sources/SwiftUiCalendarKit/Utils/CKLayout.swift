@@ -35,17 +35,6 @@ nonisolated struct CKLayout: Sendable {
 }
 
 /// Builds a `CKLayout` off the main actor.
-///
-/// The overlap scan in `CKUtils.generateEventViewData` is O(n²), and every timeline view was
-/// calling it from `body` — `CKCompactWeek` from inside a `GeometryReader`, so every size change
-/// re-ran it, and `CKCompactDay` once per page of its day slider. That is the shape CODE_AUDIT §7
-/// was almost entirely about ("ephemeris solves in a view body"), and §2.3 of `CALENDAR_DESIGN.md`
-/// warns about it for the month grid specifically.
-///
-/// This is the one thing the projection design bought that conforming the models could not: the
-/// input is `[CKEvent]`, a `Sendable` value, so the scan genuinely leaves the main actor. With
-/// `any CKEventSchema` over `@Model` types it could not have — the existential is main-actor
-/// bound and every property access can fault against the store (§3.5).
 nonisolated enum CKLayoutBuilder {
 
     /// The layout for the week containing `date`.

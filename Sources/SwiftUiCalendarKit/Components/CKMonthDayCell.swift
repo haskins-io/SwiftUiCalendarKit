@@ -20,15 +20,6 @@ struct CKMonthDayCell: View {
     private let events: [CKEvent]
 
     /// How many band rows to leave clear at the top — **this day's**, not the week's.
-    ///
-    /// The cell no longer draws the bands. `CKMonth` draws each one as a single view spanning
-    /// its whole run, because a title drawn inside the first cell is clipped to that cell however
-    /// far the wash extends — "CAA OA…" on a bar with six empty columns after it. All this cell
-    /// has to do is not put anything where those bars are going.
-    ///
-    /// Which is why it is per day: reserving the row's deepest lane in all seven cells held space
-    /// clear for bars that were never coming, and a Tuesday with three deadlines and no band
-    /// started two rows down because a trip ran across the weekend.
     private let reservedBandRows: Int
 
     /// Bands the row could not fit, so the cell's "+ N more" can account for them.
@@ -96,7 +87,6 @@ struct CKMonthDayCell: View {
 
                     Spacer()
                 }
-                .platformBackgroundColor()
             }
 
             Spacer(minLength: 0)
@@ -227,8 +217,7 @@ extension CKMonthDayCell {
 
     /// What is left of the cell once the date and the decoration have taken theirs.
     private var contentHeight: CGFloat {
-        max(0, cellHeight - CKMonthMetrics.headerHeight
-            - (decoration.notes.isEmpty ? 0 : CKMonthMetrics.notesHeight) - 6)
+        max(0, cellHeight - CKMonthMetrics.headerHeight)
     }
 
     private var hiddenCount: Int {

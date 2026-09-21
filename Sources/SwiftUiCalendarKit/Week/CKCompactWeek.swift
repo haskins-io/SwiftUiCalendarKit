@@ -48,20 +48,15 @@ public struct CKCompactWeek<Detail: View>: View {
     private var events: [CKEvent]
     private let calendar = Calendar.current
 
-    /// §2.3 — keyed on the day's midnight. Empty when the calendar has no anchor location.
-    private var decorations: [Date: CKDayDecoration]
-
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
     init(
         @ViewBuilder detail: @escaping (CKEvent) -> Detail,
         events: [CKEvent],
-        date: Binding<Date>,
-        decorations: [Date: CKDayDecoration] = [:]
+        date: Binding<Date>
     ) {
         self.detail = detail
         self.events = events
-        self.decorations = decorations
 
         self._date = date
         self._headerMonth = State(initialValue: date.wrappedValue)
@@ -113,8 +108,6 @@ public struct CKCompactWeek<Detail: View>: View {
         GeometryReader { geometry in
 
             VStack(alignment: .leading, spacing: 0) {
-
-                selectedDayDecoration
 
                 CKCompactDayEventsView(layout: layout, detail: detail)
 
@@ -199,18 +192,6 @@ public struct CKCompactWeek<Detail: View>: View {
         }
     }
 
-    /// The selected day's golden hour and low water, under the week row.
-    @ViewBuilder private var selectedDayDecoration: some View {
-
-        let decoration = decorations[date.midnight] ?? CKDayDecoration()
-
-        if !decoration.notes.isEmpty {
-            CKDecorationLine(decoration: decoration, font: .caption)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
-        }
-    }
-
     /// - Week Row
     @ViewBuilder
     private func weekRow(_ week: [WeekDay]) -> some View {
@@ -254,9 +235,6 @@ public struct CKCompactWeek<Detail: View>: View {
                 Text(day.date.formatted(.dateTime.day(.twoDigits)))
                     .foregroundColor(status ? Color.white : .primary)
             }
-
-            Text(decorations[day.date.midnight]?.glyph ?? "")
-                .font(.caption2)
         }
         .hAlign(.center)
         .contentShape(.rect)

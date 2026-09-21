@@ -49,21 +49,16 @@ public struct CKCompactDay<Detail: View>: View {
     private var events: [CKEvent]
     private let calendar = Calendar.current
 
-    /// §2.3 — keyed on the day's midnight. Empty when the calendar has no anchor location.
-    private var decorations: [Date: CKDayDecoration]
-
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
     init(
         @ViewBuilder detail: @escaping (CKEvent) -> Detail,
         events: [CKEvent],
-        date: Binding<Date>,
-        decorations: [Date: CKDayDecoration] = [:]
+        date: Binding<Date>
     ) {
         self.detail = detail
         self.events = events
         self._currentDate = date
-        self.decorations = decorations
 
         self._headerDay = State(initialValue: date.wrappedValue)
 
@@ -128,14 +123,6 @@ public struct CKCompactDay<Detail: View>: View {
 
             HStack(alignment: .center) {
                 Text(headerDay.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
-
-                // `headerDay`, not `currentDate`: the pager moves the header as it is swiped,
-                // and a decoration a day behind the date above it is worse than none.
-                CKDecorationLine(
-                    decoration: decorations[headerDay.midnight] ?? CKDayDecoration(),
-                    showsGlyph: true
-                )
-                .padding(.leading, 8)
 
                 Spacer()
                 CKWeekOfYear(date: currentDate)

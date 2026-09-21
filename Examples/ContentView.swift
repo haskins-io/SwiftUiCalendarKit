@@ -127,8 +127,26 @@ struct ContentView: View {
         )
     ]
 
+    private var agenda: some View {
+        CKAgenda(
+            observer: observer,
+            events: events,
+            from: date,
+            scrollRequest: scrollRequest
+        )
+    }
+
+    private var compactAgenda: some View {
+        CKCompactAgenda(
+            detail: { event in EventDetail(event: event) },
+            events: events,
+            from: date,
+            scrollRequest: scrollRequest
+        )
+    }
+
     private var day: some View {
-        return CKTimelineDay(
+        CKTimelineDay(
             observer: observer,
             events: events,
             date: $date
@@ -136,11 +154,11 @@ struct ContentView: View {
     }
 
     private var dayCompact: some View {
-        return CKCompactDay(
+        CKCompactDay(
             detail: { event in EventDetail(event: event) },
-            events: events, date: $date
+            events: events,
+            date: $date
         )
-        .showTime(true)
     }
 
     private var week: some View {
@@ -149,9 +167,6 @@ struct ContentView: View {
             events: events,
             date: $date
         )
-        .showTime(true)
-        .workingHours(start: 7, end: 19)
-        .currentDayColour(.blue)
     }
 
     private var weekCompact: some View {
@@ -160,7 +175,6 @@ struct ContentView: View {
             events: events,
             date: $date
         )
-        .currentDayColour(.blue)
     }
 
     private var month: some View {
@@ -169,16 +183,14 @@ struct ContentView: View {
             events: events,
             date: $date
         )
-        .currentDayColour(.blue)
     }
 
     private var monthCompact: some View {
         CKCompactMonth(
-            detail: { event in EventDetail(event: event) },
+            detail: { event in EventDetail(event: event) }
             events: events,
             date: $date
         )
-        .currentDayColour(.blue)
     }
 
     var body: some View {

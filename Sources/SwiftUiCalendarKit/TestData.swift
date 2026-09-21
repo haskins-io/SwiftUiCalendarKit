@@ -5,7 +5,6 @@
 //  Created by Mark Haskins on 16/02/2026.
 //
 
-#if DEBUG
 import SwiftUI
 
 private let calendar = Calendar.current
@@ -29,11 +28,10 @@ private func preview(
     _ title: String,
     _ kind: CKEvent.Kind,
     systemImage: String = "",
-    tint: Color = .ssAccentPrimary,
+    tint: Color = Color.green,
     tentative: Bool = false
 ) -> CKEvent {
     CKEvent(
-        id: CKEventID(recordID: UUID(), facet: .shoot),
         kind: kind,
         title: title,
         systemImage: systemImage,
@@ -71,4 +69,3 @@ private func preview(
     preview("Lens service due", .deadline(at(hour: 9, on: offset(days: 2, from: middleDateStart))),
             systemImage: "wrench.and.screwdriver")
 ]
-#endif

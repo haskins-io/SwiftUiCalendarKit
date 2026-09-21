@@ -5,7 +5,6 @@
 //  Created by Mark Haskins on 21/09/2026.
 //
 
-
 import SwiftUI
 
 /// Lays subviews out in a row, wrapping to the next line when they run out of width.
@@ -59,13 +58,6 @@ nonisolated struct CKFlowLayout: Layout {
     }
 
     /// A subview's size, **given the width actually available to it**.
-    ///
-    /// The first version of this measured everything with `.unspecified` and then placed it at
-    /// that ideal size. For a leaf chip that is fine — its ideal width *is* its width. For a
-    /// subview that can wrap internally it is not: the day footer's gated group is itself a
-    /// `CKFlowLayout`, and measured unspecified it reports the width of all its chips on one
-    /// line, is placed at that width, and runs off the edge. Three of six chips simply
-    /// disappeared off the right of an iPhone.
     ///
     /// Proposing the container width whenever the ideal exceeds it lets such a subview lay
     /// itself out properly, and changes nothing for the ones that cannot wrap.

@@ -148,7 +148,6 @@ public struct CKMonth: View {
                         events: eventsForDay(day: days[index]),
                         reservedBandRows: reserved[index],
                         hiddenBands: hidden[index],
-                        decoration: decorations[days[index].midnight] ?? CKDayDecoration(),
                         month: month,
                         width: cellWidth,
                         height: cellHeight

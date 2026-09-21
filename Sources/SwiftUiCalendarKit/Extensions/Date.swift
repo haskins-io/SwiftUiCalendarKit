@@ -8,6 +8,21 @@ import Foundation
 
 nonisolated extension Date {
 
+    var midnight: Date {
+        let cal = Calendar.current
+        return cal.startOfDay(for: self)
+    }
+
+    func fetchWeekRange() -> ClosedRange<Date> {
+
+        let calendar = Calendar.current
+
+        let startOfWeek = calendar.dateInterval(of: .weekOfMonth, for: self)?.start ?? Date()
+        let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek) ?? Date()
+
+        return startOfWeek...endOfWeek
+    }
+
     /// The last representable instant of this day.
     ///
     /// The counterpart to `midnight`, and the closing bound for anything that occupies whole
