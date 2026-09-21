@@ -5,7 +5,7 @@
 //  Created by Mark Haskins on 15/04/2024.
 //
 
-import Combine
+internal import Combine
 import SwiftUI
 
 /// `CKCompactDay` can be used for showing a single day calendar on a compact screen size such as an iPhone.
@@ -17,13 +17,16 @@ import SwiftUI
 ///     )
 ///
 /// - Parameter detail: The view that should be shown when an event in the Calendar is tapped.
-/// - Parameter events: an array of events that conform to ``CKEventSchema``.
+/// - Parameter events: an array of events that conform to ``CKEvent``.
 /// - Parameter date: The date for the calendar to show.
 
 public struct CKCompactDay<Detail: View>: View {
 
     @Environment(\.ckConfig)
     private var config
+
+    @Environment(\.colorScheme)
+    private var colorScheme
 
     @Binding private var currentDate: Date
 
@@ -35,23 +38,32 @@ public struct CKCompactDay<Detail: View>: View {
 
     @State private var calendarWidth: CGFloat = .zero
 
+    /// One layout per page of the day slider, so a swipe lands on a laid-out day rather than an
+    /// empty one. Computed off the main actor by `CKLayoutBuilder`, never in `body`.
+    @State private var layouts: [Date: CKLayout] = [:]
+
     @State private var timelinePosition = 0.0
     @State private var time = Date()
 
-    private let detail: (any CKEventSchema) -> Detail
-    private var events: [any CKEventSchema]
+    private let detail: (CKEvent) -> Detail
+    private var events: [CKEvent]
     private let calendar = Calendar.current
+
+    /// §2.3 — keyed on the day's midnight. Empty when the calendar has no anchor location.
+    private var decorations: [Date: CKDayDecoration]
 
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
-    public init(
-        @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
-        events: [any CKEventSchema],
-        date: Binding<Date>
+    init(
+        @ViewBuilder detail: @escaping (CKEvent) -> Detail,
+        events: [CKEvent],
+        date: Binding<Date>,
+        decorations: [Date: CKDayDecoration] = [:]
     ) {
         self.detail = detail
         self.events = events
         self._currentDate = date
+        self.decorations = decorations
 
         self._headerDay = State(initialValue: date.wrappedValue)
 
@@ -61,16 +73,12 @@ public struct CKCompactDay<Detail: View>: View {
 
     public var body: some View {
 
+        // A `GeometryReader`, not `.onGeometryChange` on the content — see the note in `CKMonth`
+        // for why measuring the view that sizes itself from the result locks up. `initial: true`
+        // is the part that was missing: `onChange` reports *changes*, and a size that is right
+        // from the first layout pass never changes, so the width stayed `.zero` and
+        // `CKLayoutBuilder` returned an empty layout for every event.
         GeometryReader { geometry in
-
-            Color.clear
-                .onChange(of: geometry.size) { _, newSize in
-                    guard newSize.width > 0, newSize.height > 0 else {
-                        return
-                    }
-
-                    calendarWidth = newSize.width
-                }
 
             VStack(alignment: .leading, spacing: 2) {
 
@@ -80,6 +88,7 @@ public struct CKCompactDay<Detail: View>: View {
 
                 timeline(width: calendarWidth)
             }
+            .background(colorScheme == .dark ? Color.black : Color.white)
             .onAppear(perform: {
                 calcDaySliders(newDate: currentDate)
             })
@@ -90,6 +99,16 @@ public struct CKCompactDay<Detail: View>: View {
             }
             .onChange(of: currentDayIndex, initial: false) {
                 updateSliders()
+            }
+            .task(id: CKLayoutRequest(dates: daySlider, events: events, width: calendarWidth - 50)) {
+                layouts = await CKLayoutBuilder.days(daySlider, events: events, width: calendarWidth - 50)
+            }
+            .onChange(of: geometry.size, initial: true) { _, newSize in
+                guard newSize.width > 0 else {
+                    return
+                }
+
+                calendarWidth = newSize.width
             }
         }
     }
@@ -109,8 +128,22 @@ public struct CKCompactDay<Detail: View>: View {
 
             HStack(alignment: .center) {
                 Text(headerDay.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+
+                // `headerDay`, not `currentDate`: the pager moves the header as it is swiped,
+                // and a decoration a day behind the date above it is worse than none.
+                CKDecorationLine(
+                    decoration: decorations[headerDay.midnight] ?? CKDayDecoration(),
+                    showsGlyph: true
+                )
+                .padding(.leading, 8)
+
                 Spacer()
                 CKWeekOfYear(date: currentDate)
+
+                // The same control the wide day view and both grids use. The swipe still works;
+                // this is what makes the three sizes navigate alike.
+                CKDateStepper(date: $currentDate, component: .day)
+                    .padding(.trailing, 10)
             }
         }
     }
@@ -125,21 +158,24 @@ public struct CKCompactDay<Detail: View>: View {
                     .tag(index)
             }
         }
+        // **This was missing entirely**, so the pager fell back to the platform default and drew
+        // a real tab bar across the bottom of the day — a stray control with one blank item per
+        // day, sitting under the app's own floating tab bar. `CKCompactWeek` beside it has always
+        // set this; the day view never did.
+#if !os(macOS)
+        .tabViewStyle(.page(indexDisplayMode: .never))
+#endif
         .padding(0)
     }
 
     @ViewBuilder
     private func dayView(_ date: Date) -> some View {
 
-        let eventData = CKUtils.generateEventViewData(
-            date: date,
-            events: events,
-            width: calendarWidth - 50
-        )
+        let layout = layouts[date.midnight] ?? CKLayout()
 
         VStack(spacing: 0) {
 
-            CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
+            CKCompactDayEventsView(layout: layout, detail: detail)
 
             ScrollView {
 
@@ -147,7 +183,7 @@ public struct CKCompactDay<Detail: View>: View {
 
                     CKTimeline()
 
-                    CKCompactEventsView(date: date, eventData: eventData, detail: detail)
+                    CKCompactEventsView(eventData: layout.grid, detail: detail)
 
                     if config.showTime {
                         CKTimeIndicator(time: time)
@@ -165,21 +201,6 @@ public struct CKCompactDay<Detail: View>: View {
                 }
             }
             .defaultScrollAnchor(.center)
-        }
-    }
-
-    @ViewBuilder
-    private func addAllDayEvents(eventData: [CKEventViewData], width: CGFloat) -> some View {
-
-        VStack(spacing: 0) {
-            ForEach(eventData, id: \.anyHashableID) { event in
-                if calendar.isDate(event.event.startDate, inSameDayAs: currentDate) && event.allDay {
-                    CKCompactDayEventView(
-                        event,
-                        detail: detail
-                    )
-                }
-            }
         }
     }
 }

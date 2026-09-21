@@ -13,12 +13,12 @@ struct CKCompactMonthEvents<Detail: View>: View {
 
     private let calendar = Calendar.current
 
-    private let detail: (any CKEventSchema) -> Detail
-    private var events: [any CKEventSchema]
+    private let detail: (CKEvent) -> Detail
+    private var events: [CKEvent]
 
     init(
-        events: [any CKEventSchema],
-        @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
+        events: [CKEvent],
+        @ViewBuilder detail: @escaping (CKEvent) -> Detail,
         date: Binding<Date>
     ) {
         self.detail = detail
@@ -29,28 +29,16 @@ struct CKCompactMonthEvents<Detail: View>: View {
     var body: some View {
 
         List {
-            ForEach(events, id: \.anyHashableID) { event in
-                if listEvent(event: event) {
-                    NavigationLink(destination: detail(event)) {
-                        CKListEventView(event: event)
-                    }
+            // Filtered before the `ForEach` rather than inside it: a `List` builds a row for
+            // every element it is handed, so hiding most of them behind an `if` still pays for
+            // them.
+            ForEach(events.filter { CKUtils.doesEventOccurOnDate(event: $0, date: date) }) { event in
+                NavigationLink(destination: detail(event)) {
+                    CKListEventView(event: event)
                 }
             }
         }
         .listStyle(.plain)
-    }
-}
-
-extension CKCompactMonthEvents {
-
-    private func listEvent(event: any CKEventSchema) -> Bool {
-        if calendar.isDate(event.startDate, inSameDayAs: date) ||
-            CKUtils.doesEventOccurOnDate(event: event, date: date) {
-
-            return true
-        }
-
-        return false
     }
 }
 

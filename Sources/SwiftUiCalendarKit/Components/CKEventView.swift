@@ -12,48 +12,21 @@ struct CKEventView: View {
     @Environment(\.ckConfig)
     private var config
 
-    @ObservedObject var observer: CKCalendarObserver
+    @State var observer: CKCalendarObserver
 
     private let eventData: CKEventViewData
     private let xOffset: CGFloat
-    private let event: any CKEventSchema
+    private let event: CKEvent
 
-    init(_ eventData: CKEventViewData,
-         observer: CKCalendarObserver,
-         weekView: Bool
-    ) {
+    /// A block on a single day's hour grid.
+    init(_ eventData: CKEventViewData, observer: CKCalendarObserver) {
         self.eventData = eventData
         self._observer = .init(wrappedValue: observer)
 
         self.event = eventData.event
-
-        var dayOfWeek = Date.dayOfWeek(event.startDate)
-        if dayOfWeek == 1 {
-            dayOfWeek = 8
-        }
-
-        if weekView {
-
-            // WeekTimeline
-            if eventData.position > 1 {
-                let edgeOfDayCell = 47 + (eventData.cellWidth * CGFloat(dayOfWeek - 2))
-                xOffset = (edgeOfDayCell + ((eventData.position - 1) * (eventData.eventWidth + 5)))
-            } else {
-                if dayOfWeek == 1 {
-                    xOffset = 47
-                } else {
-                    xOffset = 47 + (eventData.cellWidth * CGFloat(dayOfWeek - 2))
-                }
-            }
-        } else {
-
-            // Day Timeline
-            if eventData.position > 1 {
-                xOffset = 47 + (eventData.eventWidth + 5) * (eventData.position - 1)
-            } else {
-                xOffset = 47
-            }
-        }
+        self.xOffset = eventData.position > 1
+        ? 47 + (eventData.eventWidth + 5) * (eventData.position - 1)
+        : 47
     }
 
     var body: some View {
@@ -69,22 +42,18 @@ struct CKEventView: View {
         VStack(alignment: .leading) {
             Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
             HStack {
-                if !event.sfImage.isEmpty{
-                    Image(systemName: event.sfImage)
-                        .padding(.leading, 5)
-                } else if !event.image.isEmpty {
-                    Image(event.image)
-                        .resizable()
-                        .frame(width: 20, height: 15)
+                if !event.systemImage.isEmpty {
+                    Image(systemName: event.systemImage)
                         .padding(.leading, 5)
                 }
-                Text(CKUtils.eventText(event: event))
+
+                Text(event.title)
                     .bold()
                     .padding(.leading, 5)
             }
 
-            if !event.secondaryText.isEmpty {
-                Text(event.secondaryText)
+            if let subtitle = event.subtitle {
+                Text(subtitle)
                     .foregroundColor(.secondary)
                     .padding(.leading, 5)
             }
@@ -97,14 +66,14 @@ struct CKEventView: View {
         .background(.thinMaterial)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .fill(event.backgroundAsColor())
+                .fill(event.tint)
                 .opacity(0.5)
                 .shadow(radius: 5, x: 2, y: 5)
         )
         .overlay {
             HStack {
                 Rectangle()
-                    .fill(event.backgroundAsColor())
+                    .fill(event.tint)
                     .frame(maxHeight: .infinity, alignment: .leading)
                     .frame(width: 4)
                 Spacer()
@@ -113,7 +82,6 @@ struct CKEventView: View {
         .padding(.trailing, 30)
         .offset(x: xOffset, y: eventData.yOffset + 30)
         .onTapGesture {
-            observer.eventSelected = true
             observer.event = event
         }
     }
@@ -123,17 +91,12 @@ struct CKEventView: View {
         HStack(alignment: .center) {
             Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
 
-            if !event.sfImage.isEmpty{
-                Image(systemName: event.sfImage)
-                    .padding(.leading, 5)
-            } else if !event.image.isEmpty {
-                Image(event.image)
-                    .resizable()
-                    .frame(width: 20, height: 15)
+            if !event.systemImage.isEmpty {
+                Image(systemName: event.systemImage)
                     .padding(.leading, 5)
             }
 
-            Text(CKUtils.eventText(event: event))
+            Text(event.title)
                 .bold()
                 .padding(.leading, 5)
         }
@@ -144,14 +107,14 @@ struct CKEventView: View {
         .frame(height: eventData.height, alignment: .top)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .fill(event.backgroundAsColor())
+                .fill(event.tint)
                 .opacity(0.5)
                 .shadow(radius: 5, x: 2, y: 5)
         )
         .overlay {
             HStack {
                 Rectangle()
-                    .fill(event.backgroundAsColor())
+                    .fill(event.tint)
                     .frame(maxHeight: .infinity, alignment: .leading)
                     .frame(width: 4)
                 Spacer()
@@ -160,26 +123,7 @@ struct CKEventView: View {
         .padding(.trailing, 30)
         .offset(x: xOffset, y: eventData.yOffset + 30)
         .onTapGesture {
-            observer.eventSelected = true
             observer.event = event
         }
     }
-}
-
-#Preview {
-    CKEventView(
-        CKEventViewData(
-            event: CKEvent(
-                startDate: Date().dateFrom(13, 4, 2024, 1, 00),
-                endDate: Date().dateFrom(13, 4, 2024, 2, 00),
-                isAllDay: false,
-                primaryText: "Event 1",
-                backCol: "#D74D64"),
-            overlapsWith: 1,
-            position: 1,
-            width: 150
-        ),
-        observer: CKCalendarObserver(),
-        weekView: false
-    )
 }

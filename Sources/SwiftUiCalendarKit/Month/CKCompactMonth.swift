@@ -15,20 +15,23 @@ import SwiftUI
 ///     )
 ///
 /// - Parameter detail: The view that should be shown when an event in the Calendar is tapped.
-/// - Parameter events: an array of events that conform to ``CKEventSchema``.
+/// - Parameter events: an array of events that conform to ``CKEvent``.
 /// - Parameter date: The date for the calendar to show.
 
 public struct CKCompactMonth<Detail: View>: View {
 
+    @Environment(\.colorScheme)
+    private var colorScheme
+
     @Binding private var date: Date
 
-    private let detail: (any CKEventSchema) -> Detail
-    private var events: [any CKEventSchema]
+    private let detail: (CKEvent) -> Detail
+    private var events: [CKEvent]
 
-    public init(
-        @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
-        events: [any CKEventSchema],
-        date: Binding<Date>
+    init(
+        @ViewBuilder detail: @escaping (CKEvent) -> Detail,
+        events: [CKEvent],
+        date: Binding<Date>,
     ) {
         self.detail = detail
         self.events = events
@@ -39,11 +42,10 @@ public struct CKCompactMonth<Detail: View>: View {
         VStack {
             CKMonthComponent(calendar: Calendar.current, date: $date, events: events)
 
-            Divider()
-
             CKCompactMonthEvents(events: events, detail: detail, date: $date)
                 .listStyle(.plain)
         }
+        .background(colorScheme == .dark ? Color.black : Color.white)
     }
 }
 

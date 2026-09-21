@@ -48,7 +48,7 @@ struct CKDayHeader: View {
                                 .fill(getColor(weekDay: weekDay))
                                 .frame(width: 27, height: 27)
 
-                            Text(weekDay.date.toString("dd"))
+                            Text(weekDay.date.formatted(Date.FormatStyle().day(.twoDigits)))
                                 .foregroundColor(status ? Color.white : .primary)
                         }
                     }
@@ -69,11 +69,11 @@ struct CKDayHeader: View {
     }
 }
 
- #Preview {
-     CKDayHeader(
+#Preview {
+    CKDayHeader(
         currentDate: .constant(Date()),
         width: 1500,
         showTime: true,
         showDate: true
-     )
- }
+    )
+    }

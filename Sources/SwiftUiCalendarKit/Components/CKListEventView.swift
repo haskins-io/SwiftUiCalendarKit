@@ -7,69 +7,60 @@
 
 import SwiftUI
 
+/// One row in the compact month's list of the selected day.
 struct CKListEventView: View {
 
-    var event: any CKEventSchema
+    var event: CKEvent
 
     var body: some View {
-        if event.isAllDay {
-            allDayEvent()
-        } else {
-            timedEvent()
-        }
-    }
+        VStack(alignment: .leading, spacing: 2) {
 
-    @ViewBuilder
-    private func allDayEvent() -> some View {
-        Text(CKUtils.eventText(event: event))
-            .bold()
-            .padding(.leading, 5)
-            .padding(.leading, 5)
-        .font(.caption)
-        .overlay {
-            HStack {
-                Rectangle()
-                    .fill(event.backgroundAsColor())
-                    .frame(maxHeight: .infinity, alignment: .leading)
-                    .frame(width: 4)
-                Spacer()
-            }
-        }
-    }
+            when
+                .padding(.leading, 5)
 
-    @ViewBuilder
-    private func timedEvent() -> some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
-                Text("-")
-                Text(event.endDate.formatted(.dateTime.hour().minute()))
+            HStack(spacing: 5) {
+                if !event.systemImage.isEmpty {
+                    Image(systemName: event.systemImage)
+                }
+
+                Text(event.title)
+                    .bold()
             }
             .padding(.leading, 5)
 
-            Text(CKUtils.eventText(event: event)).bold().padding(.leading, 5).padding(.leading, 5)
+            if let subtitle = event.subtitle {
+                Text(subtitle)
+                    .foregroundStyle(.secondary)
+                    .padding(.leading, 5)
+            }
         }
         .font(.caption)
-        .overlay {
-            HStack {
-                Rectangle()
-                    .fill(event.backgroundAsColor())
-                    .frame(maxHeight: .infinity, alignment: .leading)
-                    .frame(width: 4)
-
-                Spacer()
-            }
+        .padding(.leading, 5)
+        .overlay(alignment: .leading) {
+            Rectangle()
+                .fill(event.tint)
+                .frame(width: 4)
         }
     }
-}
 
-#Preview {
-    CKListEventView(event:
-        CKEvent(
-            startDate: Date().dateFrom(13, 4, 2024, 1, 00),
-            endDate: Date().dateFrom(13, 4, 2024, 2, 00),
-            isAllDay: false,
-            primaryText: "Event 1",
-            backCol: "#D74D64")
-    )
+    @ViewBuilder private var when: some View {
+        switch event.kind {
+        case .timed(let start, let end):
+            Text("\(start.formatted(.dateTime.hour().minute())) – \(end.formatted(.dateTime.hour().minute()))")
+                .foregroundStyle(.secondary)
+
+        case .allDay:
+            Text("All day")
+                .foregroundStyle(.secondary)
+
+        case .deadline(let at):
+            Text("Due \(at.formatted(.dateTime.hour().minute()))")
+                .foregroundStyle(.secondary)
+
+        case .span(let from, let through):
+            Text("\(from.formatted(.dateTime.day().month(.abbreviated)))"
+                 + " – \(through.formatted(.dateTime.day().month(.abbreviated)))")
+            .foregroundStyle(.secondary)
+        }
+    }
 }

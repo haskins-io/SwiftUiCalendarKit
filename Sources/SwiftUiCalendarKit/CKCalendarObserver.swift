@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-public class CKCalendarObserver: ObservableObject {
+@Observable
+class CKCalendarObserver {
 
-    @Published public var event: any CKEventSchema = CKEvent(
-        startDate: Date(),
-        endDate: Date(),
-        isAllDay: false,
-        primaryText: ""
-    )
+    /// The event the reader last tapped, or `nil` for nothing selected.
+    ///
+    /// §3.6: this used to be non-optional and default to a dummy `CKEvent`, so "nothing
+    /// selected" was represented by a real-looking empty event and a second `eventSelected`
+    /// flag had to be kept in agreement with it. An optional says it once and cannot disagree
+    /// with itself.
+    var event: CKEvent?
+    var events: [CKEvent]?
 
-    @Published public var eventSelected = false
-
-    public init() {
-    }
+    init() { }
 }

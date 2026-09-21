@@ -9,16 +9,14 @@ import SwiftUI
 
 struct CKCompactDayEventView<Detail: View>: View {
 
-    private let detail: (any CKEventSchema) -> Detail
-    private let eventData: CKEventViewData
-    private let event: any CKEventSchema
+    private let detail: (CKEvent) -> Detail
+    private let event: CKEvent
 
-    init(_ eventData: CKEventViewData,
-         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail
+    init(_ event: CKEvent,
+         @ViewBuilder detail: @escaping (CKEvent) -> Detail
     ) {
         self.detail = detail
-        self.eventData = eventData
-        self.event = eventData.event
+        self.event = event
     }
 
     var body: some View {
@@ -27,17 +25,13 @@ struct CKCompactDayEventView<Detail: View>: View {
         } label: {
             HStack {
 
-                if !event.sfImage.isEmpty{
-                    Image(systemName: event.sfImage)
-                        .padding(.leading, 10)
-                } else if !event.image.isEmpty {
-                    Image(event.image)
-                        .resizable()
-                        .frame(width: 25, height: 20)
+                if !event.systemImage.isEmpty {
+                    Image(systemName: event.systemImage)
                         .padding(.leading, 10)
                 }
 
-                Text(CKUtils.eventText(event: event))
+                Text(event.title)
+                    .font(.subheadline)
                     .padding(.leading, 5)
             }
             .font(.body)
@@ -46,13 +40,13 @@ struct CKCompactDayEventView<Detail: View>: View {
             .padding(6)
             .background(
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(event.backgroundAsColor())
-                    .opacity(0.5)
+                    .fill(event.tint)
+                    .opacity(0.15)
             )
             .overlay {
                 HStack {
                     Rectangle()
-                        .fill(event.backgroundAsColor())
+                        .fill(event.tint)
                         .frame(maxHeight: .infinity, alignment: .leading)
                         .frame(width: 4)
                     Spacer()
@@ -60,21 +54,4 @@ struct CKCompactDayEventView<Detail: View>: View {
             }
         }
     }
-}
-
-#Preview {
-    CKCompactDayEventView(
-        CKEventViewData(
-            event: CKEvent(
-                startDate: Date().dateFrom(13, 4, 2024, 1, 00),
-                endDate: Date().dateFrom(13, 4, 2024, 2, 00),
-                isAllDay: true,
-                primaryText: "Event 1",
-                backCol: "#D74D64"),
-            overlapsWith: 1,
-            position: 1,
-            width: 150
-        ),
-        detail: { _ in EmptyView() }
-    )
 }

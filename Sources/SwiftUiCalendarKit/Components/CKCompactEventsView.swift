@@ -9,22 +9,18 @@ import SwiftUI
 
 struct CKCompactEventsView<Detail: View>: View {
 
-    var date: Date
     var eventData: [CKEventViewData]
-    var detail: (any CKEventSchema) -> Detail
+    var detail: (CKEvent) -> Detail
 
     var body: some View {
-        ForEach(eventData, id: \.anyHashableID) { event in
-            if Calendar.current.isDate(event.event.startDate, inSameDayAs: date) && !event.allDay {
-                CKCompactEventView(event, detail: detail)
-            }
+        ForEach(eventData) { event in
+            CKCompactEventView(event, detail: detail)
         }
     }
 }
 
 #Preview {
     CKCompactEventsView(
-        date: Date(),
         eventData: [],
         detail: { _ in EmptyView() }
     )

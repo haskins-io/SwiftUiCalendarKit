@@ -1,7 +1,8 @@
 //
-//  CKCalendarModifiers.swift
+//  File.swift
+//  SwiftUiCalendarKit
 //
-//  Created by Mark Haskins on 14/02/2026.
+//  Created by Mark Haskins on 21/09/2026.
 //
 
 import SwiftUI

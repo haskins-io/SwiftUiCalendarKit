@@ -7,15 +7,7 @@
 
 import Foundation
 
-enum CKUtils {
-
-    static func eventText(event: any CKEventSchema) -> String {
-        if !event.text.isEmpty {
-            return event.text
-        }
-
-        return event.primaryText
-    }
+nonisolated enum CKUtils {
 
     static func currentTimelinePosition(calendar: Calendar = .current) -> Double {
         let now = Date()
@@ -24,7 +16,7 @@ enum CKUtils {
         return (Double(hour) * CKTimeline.hourHeight) + Double(minute) + 30.0
     }
 
-    static func doesEventOccurOnDate(event: any CKEventSchema, date: Date) -> Bool {
+    static func doesEventOccurOnDate(event: CKEvent, date: Date) -> Bool {
 
         let calendar = Calendar.current
 
@@ -41,26 +33,26 @@ enum CKUtils {
     }
 
     private static func buildOverlapGroups(
-        _ filteredEvents: [any CKEventSchema],
-        _ processedEvents: inout Set<AnyHashable>,
-        _ eventGroups: inout [[any CKEventSchema]]
+        _ filteredEvents: [CKEvent],
+        _ processedEvents: inout Set<CKEventID>,
+        _ eventGroups: inout [[CKEvent]]
     ) {
         for event in filteredEvents {
-            if processedEvents.contains(event.anyHashableID) {
+            if processedEvents.contains(event.id) {
                 continue
             }
 
             // Start a new group with this event
-            var group: [any CKEventSchema] = [event]
-            var toProcess: [any CKEventSchema] = [event]
-            processedEvents.insert(event.anyHashableID)
+            var group: [CKEvent] = [event]
+            var toProcess: [CKEvent] = [event]
+            processedEvents.insert(event.id)
 
             // Find all events that overlap with any event in the group
             while !toProcess.isEmpty {
                 let currentEvent = toProcess.removeFirst()
 
                 for otherEvent in filteredEvents {
-                    if processedEvents.contains(otherEvent.anyHashableID) {
+                    if processedEvents.contains(otherEvent.id) {
                         continue
                     }
 
@@ -68,7 +60,7 @@ enum CKUtils {
                     if doEventsConflictForPlacement(currentEvent, otherEvent) {
                         group.append(otherEvent)
                         toProcess.append(otherEvent)
-                        processedEvents.insert(otherEvent.anyHashableID)
+                        processedEvents.insert(otherEvent.id)
                     }
                 }
             }
@@ -78,9 +70,9 @@ enum CKUtils {
     }
 
     private static func assignColumns(
-        _ eventGroups: [[any CKEventSchema]],
-        _ eventColumns: inout [AnyHashable: Int],
-        _ groupMaxColumns: inout [AnyHashable: Int]
+        _ eventGroups: [[CKEvent]],
+        _ eventColumns: inout [CKEventID: Int],
+        _ groupMaxColumns: inout [CKEventID: Int]
     ) {
 
         for group in eventGroups {
@@ -97,12 +89,12 @@ enum CKUtils {
                 // Find the first column that's free (ends at or before this event's start)
                 if let columnIndex = columnEndTimes.firstIndex(where: { $0 <= event.startDate }) {
                     // Reuse this column
-                    eventColumns[event.anyHashableID] = columnIndex
+                    eventColumns[event.id] = columnIndex
                     columnEndTimes[columnIndex] = event.endDate
                 } else {
                     // Need a new column
                     let newColumnIndex = columnEndTimes.count
-                    eventColumns[event.anyHashableID] = newColumnIndex
+                    eventColumns[event.id] = newColumnIndex
                     columnEndTimes.append(event.endDate)
                 }
             }
@@ -110,55 +102,60 @@ enum CKUtils {
             // The max column count for this group
             let maxColumnsForGroup = columnEndTimes.count
             for event in group {
-                groupMaxColumns[event.anyHashableID] = maxColumnsForGroup
+                groupMaxColumns[event.id] = maxColumnsForGroup
             }
         }
     }
 
     private static func createViewData(
-        _ filteredEvents: [any CKEventSchema],
-        _ eventColumns: inout [AnyHashable: Int],
-        _ groupMaxColumns: inout [AnyHashable: Int],
+        _ filteredEvents: [CKEvent],
+        _ eventColumns: inout [CKEventID: Int],
+        _ groupMaxColumns: inout [CKEventID: Int],
         _ eventViewDataArray: inout [CKEventViewData],
         _ width: CGFloat
     ) {
         for event in filteredEvents {
-            guard let column = eventColumns[event.anyHashableID],
-                  let maxColumns = groupMaxColumns[event.anyHashableID] else { continue }
+            guard let column = eventColumns[event.id],
+                  let maxColumns = groupMaxColumns[event.id] else { continue }
 
-            eventViewDataArray.append(
-                CKEventViewData(
-                    event: event,
-                    overlapsWith: CGFloat(maxColumns),
-                    position: CGFloat(column + 1),
-                    width: width
-                )
-            )
+            guard let viewData = CKEventViewData(
+                event: event,
+                overlapsWith: CGFloat(maxColumns),
+                position: CGFloat(column + 1),
+                width: width
+            ) else { continue }
+
+            eventViewDataArray.append(viewData)
         }
     }
 
+    /// Lays out the events that belong on the hour grid for the week containing `date`.
+    ///
+    /// Only `.timed` events reach here. The other three kinds are not dropped, as they
+    /// effectively were before — they belong to the band and marker lanes and are selected with
+    /// ``bandEvents(in:events:)`` and ``markerEvents(in:events:)``.
     static func generateEventViewData(
         date: Date,
-        events: [any CKEventSchema],
+        events: [CKEvent],
         width: CGFloat
     ) -> [CKEventViewData] {
 
         let weekRange = date.fetchWeekRange()
 
-        // Filter and sort events by start time, then by end time
-        let filteredEvents = events.filter { event in
-            weekRange.contains(event.startDate) && event.endDate > event.startDate
-        }.sorted { $0.startDate < $1.startDate || ($0.startDate == $1.startDate && $0.endDate < $1.endDate) }
+        // Filter to the grid lane and sort by start time, then by end time
+        let filteredEvents = events
+            .filter { $0.kind.lane == .grid && weekRange.contains($0.startDate) }
+            .sorted { $0.startDate < $1.startDate || ($0.startDate == $1.startDate && $0.endDate < $1.endDate) }
 
         // Step 1: Build overlap groups - events that overlap with each other form a group
-        var eventGroups: [[any CKEventSchema]] = []
-        var processedEvents: Set<AnyHashable> = []
+        var eventGroups: [[CKEvent]] = []
+        var processedEvents: Set<CKEventID> = []
 
         buildOverlapGroups(filteredEvents, &processedEvents, &eventGroups)
 
         // Step 2: For each group, assign columns independently
-        var eventColumns: [AnyHashable: Int] = [:]
-        var groupMaxColumns: [AnyHashable: Int] = [:]
+        var eventColumns: [CKEventID: Int] = [:]
+        var groupMaxColumns: [CKEventID: Int] = [:]
 
         assignColumns(eventGroups, &eventColumns, &groupMaxColumns)
 
@@ -170,12 +167,25 @@ enum CKUtils {
         return eventViewDataArray
     }
 
-    // Events that touch at boundaries CAN share a bucket, but overlapping events cannot
-    static private func doEventsConflictForPlacement(_ event1: any CKEventSchema, _ event2: any CKEventSchema) -> Bool {
+    /// The all-day and multi-day events overlapping `interval`, for the band above the grid.
+    ///
+    /// Intersection rather than the grid lane's start-date containment: a trip that began
+    /// before the visible week still belongs on it.
+    static func bandEvents(in interval: DateInterval, events: [CKEvent]) -> [CKEvent] {
+        events
+            .filter { $0.kind.lane == .band && $0.intersects(interval) }
+            .sorted { $0.startDate < $1.startDate || ($0.startDate == $1.startDate && $0.endDate > $1.endDate) }
+    }
 
-        if event1.isAllDay || event2.isAllDay {
-            return false
-        }
+    /// The deadlines falling inside `interval`, for the day-header markers.
+    static func markerEvents(in interval: DateInterval, events: [CKEvent]) -> [CKEvent] {
+        events
+            .filter { $0.kind.lane == .marker && interval.contains($0.startDate) }
+            .sorted { $0.startDate < $1.startDate }
+    }
+
+    // Events that touch at boundaries CAN share a bucket, but overlapping events cannot
+    static private func doEventsConflictForPlacement(_ event1: CKEvent, _ event2: CKEvent) -> Bool {
 
         // Two events conflict for placement only if their time ranges truly overlap
         // Events that merely touch at a boundary (one ends when another starts) can share a bucket

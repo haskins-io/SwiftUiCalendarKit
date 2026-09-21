@@ -4,7 +4,7 @@
 //  Created by Mark Haskins on 09/04/2024.
 //
 
-import Combine
+internal import Combine
 import SwiftUI
 
 /// `CKCompactWeek` can be used for showing a single day calendar on a compact screen size such as an iPhone.
@@ -16,13 +16,16 @@ import SwiftUI
 ///     )
 ///
 /// - Parameter detail: The view that should be shown when an event in the Calendar is tapped.
-/// - Parameter events: an array of events that conform to ``CKEventSchema``.
+/// - Parameter events: an array of events that conform to ``CKEvent``.
 /// - Parameter date: The date for the calendar to show.
 
 public struct CKCompactWeek<Detail: View>: View {
 
     @Environment(\.ckConfig)
     private var config
+
+    @Environment(\.colorScheme)
+    private var colorScheme
 
     @Binding private var date: Date
 
@@ -34,22 +37,31 @@ public struct CKCompactWeek<Detail: View>: View {
 
     @State private var calendarWidth: CGFloat = .zero
 
+    /// Computed off the main actor by `CKLayoutBuilder`. This used to be built in `body` inside
+    /// a `GeometryReader`, so every size change re-ran an O(n²) overlap scan on the main actor.
+    @State private var layout = CKLayout()
+
     @State private var timelinePosition = 0.0
     @State private var time = Date()
 
-    private let detail: (any CKEventSchema) -> Detail
-    private var events: [any CKEventSchema]
+    private let detail: (CKEvent) -> Detail
+    private var events: [CKEvent]
     private let calendar = Calendar.current
+
+    /// §2.3 — keyed on the day's midnight. Empty when the calendar has no anchor location.
+    private var decorations: [Date: CKDayDecoration]
 
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
-    public init(
-        @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail,
-        events: [any CKEventSchema],
-        date: Binding<Date>
+    init(
+        @ViewBuilder detail: @escaping (CKEvent) -> Detail,
+        events: [CKEvent],
+        date: Binding<Date>,
+        decorations: [Date: CKDayDecoration] = [:]
     ) {
         self.detail = detail
         self.events = events
+        self.decorations = decorations
 
         self._date = date
         self._headerMonth = State(initialValue: date.wrappedValue)
@@ -65,6 +77,7 @@ public struct CKCompactWeek<Detail: View>: View {
                     headerView()
                 }
         }
+        .background(colorScheme == .dark ? Color.black : Color.white)
         .onAppear(perform: {
             calcWeekSliders(currentDate: date)
         })
@@ -72,6 +85,9 @@ public struct CKCompactWeek<Detail: View>: View {
             headerMonth = date
             weekSlider.removeAll()
             calcWeekSliders(currentDate: date)
+        }
+        .task(id: CKLayoutRequest(dates: [date], events: events, width: calendarWidth - 50)) {
+            layout = await CKLayoutBuilder.day(date: date, events: events, width: calendarWidth - 50)
         }
         .onChange(of: currentWeekIndex, initial: false) {
             // do we need to create a new Week Row
@@ -89,45 +105,42 @@ public struct CKCompactWeek<Detail: View>: View {
     @ViewBuilder
     private func timelineView() -> some View {
 
+        // A `GeometryReader`, not `.onGeometryChange` on the content — see the note in `CKMonth`
+        // for why measuring the view that sizes itself from the result locks up. `initial: true`
+        // is the part that was missing: `onChange` reports *changes*, and a size that is right
+        // from the first layout pass never changes, so the width stayed `.zero` and
+        // `CKLayoutBuilder` returned an empty layout for every event.
         GeometryReader { geometry in
-
-            Color.clear
-                .onChange(of: geometry.size) { _, newSize in
-                    guard newSize.width > 0, newSize.height > 0 else {
-                        return
-                    }
-
-                    calendarWidth = newSize.width
-                }
-
-            let eventData = CKUtils.generateEventViewData(
-                date: date,
-                events: events,
-                width: calendarWidth - 50
-            )
 
             VStack(alignment: .leading, spacing: 0) {
 
-                Divider()
+                selectedDayDecoration
 
-                CKCompactDayEventsView(date: date, eventData: eventData, detail: detail)
+                CKCompactDayEventsView(layout: layout, detail: detail)
 
                 ScrollView {
-                    timelineEvents(eventData: eventData)
+                    timelineEvents()
                 }
                 .defaultScrollAnchor(.center)
+            }
+            .onChange(of: geometry.size, initial: true) { _, newSize in
+                guard newSize.width > 0 else {
+                    return
+                }
+
+                calendarWidth = newSize.width
             }
         }
     }
 
     @ViewBuilder
-    private func timelineEvents(eventData: [CKEventViewData]) -> some View {
+    private func timelineEvents() -> some View {
 
         ZStack(alignment: .topLeading) {
 
             CKTimeline()
 
-            CKCompactEventsView(date: date, eventData: eventData, detail: detail)
+            CKCompactEventsView(eventData: layout.grid, detail: detail)
 
             if config.showTime {
                 CKTimeIndicator(time: time)
@@ -155,6 +168,13 @@ public struct CKCompactWeek<Detail: View>: View {
                 Text(headerMonth.formatted(.dateTime.month(.wide)))
                     .bold()
                 Text(headerMonth.formatted(.dateTime.year()))
+
+                Spacer()
+
+                // Navigated by swiping the week row, which is fine until you are months out and
+                // want to come back. Compact Month has always had its own way home; this did not.
+                CKDateStepper(date: $date, component: .weekOfYear)
+                    .padding(.trailing, 10)
             }
             .padding(.leading, 10)
             .padding(.top, 5)
@@ -169,11 +189,25 @@ public struct CKCompactWeek<Detail: View>: View {
                         .tag(index)
                 }
             }
-            #if !os(macOS)
+#if !os(macOS)
             .tabViewStyle(.page(indexDisplayMode: .never))
-            #endif
-            .frame(height: 70)
+#endif
+            // 82 rather than 70: the moon glyph added a row to each column, and a `TabView`
+            // with a fixed height clips what it cannot fit rather than growing.
+            .frame(height: 82)
             .padding(5)
+        }
+    }
+
+    /// The selected day's golden hour and low water, under the week row.
+    @ViewBuilder private var selectedDayDecoration: some View {
+
+        let decoration = decorations[date.midnight] ?? CKDayDecoration()
+
+        if !decoration.notes.isEmpty {
+            CKDecorationLine(decoration: decoration, font: .caption)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
         }
     }
 
@@ -208,7 +242,7 @@ public struct CKCompactWeek<Detail: View>: View {
 
         let status = calendar.isDate(day.date, inSameDayAs: Date())
 
-        VStack(spacing: 6) {
+        VStack(spacing: 4) {
 
             Text(day.string.prefix(3))
 
@@ -217,9 +251,12 @@ public struct CKCompactWeek<Detail: View>: View {
                     .fill(cellColour(day: day))
                     .frame(width: 27, height: 27)
 
-                Text(day.date.toString("dd"))
+                Text(day.date.formatted(.dateTime.day(.twoDigits)))
                     .foregroundColor(status ? Color.white : .primary)
             }
+
+            Text(decorations[day.date.midnight]?.glyph ?? "")
+                .font(.caption2)
         }
         .hAlign(.center)
         .contentShape(.rect)
@@ -232,10 +269,10 @@ public struct CKCompactWeek<Detail: View>: View {
 
     func cellColour(day: WeekDay) -> Color {
         return calendar.isDate(day.date, inSameDayAs: Date()) ?
-               config.currentDayColour :
-               calendar.isDate(day.date, inSameDayAs: date) ?
-                   Color.blue.opacity(0.10) :
-                   .clear
+        config.currentDayColour :
+        calendar.isDate(day.date, inSameDayAs: date) ?
+        Color.blue.opacity(0.10) :
+            .clear
     }
 }
 

@@ -14,13 +14,14 @@ struct CKMonthComponent: View {
 
     @Binding private var selectedDate: Date
 
-    private var events: [any CKEventSchema] = []
+    private var events: [CKEvent] = []
 
     private var calendar = Calendar.current
 
-    init(calendar: Calendar, date: Binding<Date>, events: [any CKEventSchema]) {
+    init(calendar: Calendar, date: Binding<Date>, events: [CKEvent]) {
         self._selectedDate = date
         self.events = events
+        self.calendar = calendar
     }
 
     var body: some View {
@@ -93,7 +94,7 @@ struct CKMonthComponent: View {
                             Label(
                                 title: { Text("Previous") },
                                 icon: {
-                                    Image(systemName: "chevron.left")
+                                    Image(systemName: "chevron.left.circle")
                                         .font(.title2)
                                 }
                             )
@@ -132,7 +133,7 @@ struct CKMonthComponent: View {
                             Label(
                                 title: { Text("Next") },
                                 icon: {
-                                    Image(systemName: "chevron.right")
+                                    Image(systemName: "chevron.right.circle")
                                         .font(.title2)
                                 }
                             )
@@ -140,21 +141,11 @@ struct CKMonthComponent: View {
                             .padding(.horizontal)
                         }
                     }
+                    .font(.title)
                 }
             )
             .equatable()
         }
-    }
-
-    private func dateHasEvents(date: Date) -> Bool {
-
-        for event in events {
-            if calendar.isDate(date, inSameDayAs: event.startDate) {
-                return true
-            }
-        }
-
-        return false
     }
 
     private func numberOfEventsInDate(date: Date) -> Int {
@@ -169,7 +160,7 @@ struct CKMonthComponent: View {
 private struct CalendarComponent<Day: View, Header: View, Title: View, Trailing: View>: View {
 
     @Environment(\.colorScheme)
-    var colorScheme
+    private var colorScheme
 
     @Binding private var date: Date
 
@@ -203,8 +194,15 @@ private struct CalendarComponent<Day: View, Header: View, Title: View, Trailing:
 
     public var body: some View {
 
-        let month = date.startOfMonth(using: calendar)
+        let month = date.startOfMonth
         let days = makeDays()
+
+        // Height follows the rows the month actually has. It was a flat 300 — six rows' worth —
+        // for every month, so a five-week month drew an empty sixth row's space above the event
+        // list. 45 for the weekday header and divider, 42.5 a week row, which is what the 300
+        // worked out to.
+        let weekRows = max(1, Int(ceil(Double(days.count) / Double(daysInWeek))))
+        let gridHeight = 45 + CGFloat(weekRows) * 42.5
 
         VStack {
 
@@ -228,7 +226,7 @@ private struct CalendarComponent<Day: View, Header: View, Title: View, Trailing:
                     }
                 }
             }
-            .frame(height: days.count == 42 ? 300 : 270)
+            .frame(height: gridHeight)
             .background(colorScheme == .dark ? Color.black : Color.white)
         }
     }
@@ -247,16 +245,7 @@ extension CalendarComponent: Equatable {
 
 extension CalendarComponent {
     func makeDays() -> [Date] {
-        guard let monthInterval = calendar.dateInterval(of: .month, for: date),
-              let monthFirstWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.start),
-              let monthLastWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.end - 1)
-        else {
-            return []
-        }
-
-        let dateInterval = DateInterval(start: monthFirstWeek.start, end: monthLastWeek.end)
-
-        return calendar.generateDays(for: dateInterval)
+        calendar.monthGridDays(for: date)
     }
 }
 
