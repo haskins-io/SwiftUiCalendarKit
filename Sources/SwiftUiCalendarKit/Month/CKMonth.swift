@@ -37,7 +37,7 @@ public struct CKMonth: View {
 
     private var events: [CKEvent]
 
-    init(
+    public init(
         observer: CKCalendarObserver,
         events: [CKEvent],
         date: Binding<Date>,

@@ -28,7 +28,7 @@ public struct CKCompactMonth<Detail: View>: View {
     private let detail: (CKEvent) -> Detail
     private var events: [CKEvent]
 
-    init(
+    public init(
         @ViewBuilder detail: @escaping (CKEvent) -> Detail,
         events: [CKEvent],
         date: Binding<Date>,

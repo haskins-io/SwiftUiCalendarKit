@@ -60,7 +60,8 @@ public struct CKTimelineWeek: View {
     /// The gap between stacked bands. Named because `bandRow` uses it in two places — the row's
     /// own height and each lane's offset — and they cannot be allowed to drift apart.
     let bandSpacing: CGFloat = 2
-    init(
+
+    public init(
         observer: CKCalendarObserver,
         events: [CKEvent],
         date: Binding<Date>

@@ -40,7 +40,7 @@ public struct CKCompactAgenda<Detail: View>: View {
     /// Bumped by the toolbar's Today button — see `CKAgenda`.
     @State private var scrollRequest = 0
 
-    init(
+    public init(
         @ViewBuilder detail: @escaping (CKEvent) -> Detail,
         events: [CKEvent],
         from: Date? = nil,

@@ -32,6 +32,6 @@ nonisolated struct CKBandRun: Identifiable, Sendable {
     let length: Int
 
     var id: String {
-        "\(self.event.id.recordID)-\(self.event.id.facet.rawValue)-\(self.lane)-\(self.startIndex)"
+        "\(self.event.id.recordID)-\(self.lane)-\(self.startIndex)"
     }
 }

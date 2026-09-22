@@ -28,11 +28,9 @@ struct CKBandLaneTests {
 
     private func band(_ title: String, from: Date, through: Date, tint: Color = .green) -> CKEvent {
         CKEvent(
-            id: CKEventID(recordID: UUID(), facet: .trip),
             kind: .span(from: from, through: through),
             title: title,
-            tint: tint,
-            source: .trip(UUID())
+            tint: tint
         )
     }
 
@@ -40,11 +38,9 @@ struct CKBandLaneTests {
         let start = self.calendar.date(bySettingHour: 10, minute: 0, second: 0, of: date) ?? date
 
         return CKEvent(
-            id: CKEventID(recordID: UUID(), facet: .shoot),
             kind: .timed(start: start, end: start.addingTimeInterval(3_600)),
             title: title,
-            tint: .blue,
-            source: .booking(UUID())
+            tint: .blue
         )
     }
 
@@ -164,11 +160,9 @@ struct CKBandRunTests {
 
     private func band(_ title: String, from: Date, through: Date) -> CKEvent {
         CKEvent(
-            id: CKEventID(recordID: UUID(), facet: .trip),
             kind: .span(from: from, through: through),
             title: title,
-            tint: .green,
-            source: .trip(UUID())
+            tint: .green
         )
     }
 
@@ -268,11 +262,9 @@ struct CKBandReservationTests {
 
     private func band(_ title: String, from: Date, through: Date) -> CKEvent {
         CKEvent(
-            id: CKEventID(recordID: UUID(), facet: .trip),
             kind: .span(from: from, through: through),
             title: title,
-            tint: .green,
-            source: .trip(UUID())
+            tint: .green
         )
     }
 

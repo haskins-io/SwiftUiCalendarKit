@@ -44,7 +44,7 @@ public struct CKTimelineDay: View {
 
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
-    init(
+    public init(
         observer: CKCalendarObserver,
         events: [CKEvent],
         date: Binding<Date>

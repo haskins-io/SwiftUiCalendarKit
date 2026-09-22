@@ -36,7 +36,6 @@ private func preview(
         title: title,
         systemImage: systemImage,
         tint: tint,
-        source: .booking(UUID()),
         isTentative: tentative
     )
 }

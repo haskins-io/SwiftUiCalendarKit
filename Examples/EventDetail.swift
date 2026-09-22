@@ -10,10 +10,10 @@ import SwiftUiCalendarKit
 
 struct EventDetail: View {
 
-    var event: any CKEventSchema
+    var event: any CKEvent
 
     var body: some View {
-        Text(event.text)
+        Text(event.title)
     }
 }
 

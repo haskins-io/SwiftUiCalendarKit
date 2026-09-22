@@ -8,13 +8,10 @@
 import SwiftUI
 
 /// What the calendar consumes. Never a `@Model`.
-nonisolated struct CKEvent: Identifiable, Hashable, Sendable {
-
-    public typealias Id = UUID
-    public var id: Id = UUID()
+public nonisolated struct CKEvent: Identifiable, Hashable, Sendable {
 
     /// What sort of thing this is, which decides how it is drawn.
-    enum Kind: Hashable, Sendable {
+    public enum Kind: Hashable, Sendable {
 
         /// Occupies real time and can collide — draw on the hour grid.
         case timed(start: Date, end: Date)
@@ -29,25 +26,25 @@ nonisolated struct CKEvent: Identifiable, Hashable, Sendable {
         case span(from: Date, through: Date)
     }
 
-    let kind: Kind
-    let title: String
-    let subtitle: String?
-    let systemImage: String
+    public let id = CKEventID()
+    public let kind: Kind
+    public let title: String
+    public let subtitle: String?
 
-    let tint: Color
+    /// Derived at projection time, never stored on a model.
+    public let systemImage: String
 
-    /// Where tapping the event goes back to.
-    let source: CKEventSource
+    public let tint: Color
 
-    let isTentative: Bool
+    /// e.g. an unconfirmed booking — draw hatched.
+    public let isTentative: Bool
 
-    init(
+    public init(
         kind: Kind,
         title: String,
         subtitle: String? = nil,
         systemImage: String = "",
         tint: Color,
-        source: CKEventSource,
         isTentative: Bool = false
     ) {
         self.kind = kind
@@ -55,7 +52,10 @@ nonisolated struct CKEvent: Identifiable, Hashable, Sendable {
         self.subtitle = subtitle
         self.systemImage = systemImage
         self.tint = tint
-        self.source = source
         self.isTentative = isTentative
     }
+}
+
+public nonisolated struct CKEventID: Hashable, Sendable {
+    let recordID = UUID()
 }

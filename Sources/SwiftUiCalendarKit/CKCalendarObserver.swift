@@ -8,11 +8,11 @@
 import SwiftUI
 
 @Observable
-class CKCalendarObserver {
+public class CKCalendarObserver {
 
     /// The event the reader last tapped, or `nil` for nothing selected.
-    var event: CKEvent?
-    var events: [CKEvent]?
+    public var event: CKEvent?
+    public var events: [CKEvent]?
 
-    init() { }
+    public init() { }
 }

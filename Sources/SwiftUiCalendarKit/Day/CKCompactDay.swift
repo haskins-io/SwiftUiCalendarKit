@@ -51,7 +51,7 @@ public struct CKCompactDay<Detail: View>: View {
 
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
-    init(
+    public init(
         @ViewBuilder detail: @escaping (CKEvent) -> Detail,
         events: [CKEvent],
         date: Binding<Date>

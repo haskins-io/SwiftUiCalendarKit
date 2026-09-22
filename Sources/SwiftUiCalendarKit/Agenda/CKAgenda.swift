@@ -40,7 +40,7 @@ public struct CKAgenda: View {
     /// Bumped by the toolbar's Today button.
     @State private var scrollRequest = 0
 
-    init(
+    public init(
         observer: CKCalendarObserver,
         events: [CKEvent],
         from: Date? = nil,

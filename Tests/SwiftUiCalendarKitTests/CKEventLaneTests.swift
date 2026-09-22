@@ -21,13 +21,11 @@ struct CKEventLaneTests {
         ) ?? self.day(dayOffset)
     }
 
-    private func event(_ kind: CKEvent.Kind, facet: CKEventID.Facet = .shoot) -> CKEvent {
+    private func event(_ kind: CKEvent.Kind) -> CKEvent {
         CKEvent(
-            id: CKEventID(recordID: UUID(), facet: facet),
             kind: kind,
             title: "Event",
-            tint: .blue,
-            source: .booking(UUID())
+            tint: .blue
         )
     }
 
@@ -136,7 +134,7 @@ struct CKEventLaneTests {
 
     @Test("Deadlines reach the marker lane instead of being dropped")
     func deadlinesSurviveSelection() {
-        let due = self.event(.deadline(self.at(9)), facet: .due)
+        let due = self.event(.deadline(self.at(9)))
         let shoot = self.event(.timed(start: self.at(10), end: self.at(11)))
         let interval = DateInterval(start: self.day(), end: self.day(1))
 
@@ -157,7 +155,7 @@ struct CKEventLaneTests {
     func gridLayoutTakesTimedEventsOnly() {
         let events = [
             self.event(.timed(start: self.at(10), end: self.at(11))),
-            self.event(.deadline(self.at(9)), facet: .due),
+            self.event(.deadline(self.at(9))),
             self.event(.allDay(self.day()))
         ]
 
@@ -199,8 +197,8 @@ struct CKEventLaneTests {
     @Test("One record yields distinct events per facet")
     func facetSeparatesEventsFromOneRecord() {
         let record = UUID()
-        let due = CKEventID(recordID: record, facet: .due)
-        let overdue = CKEventID(recordID: record, facet: .overdue)
+        let due = CKEventID()
+        let overdue = CKEventID()
 
         #expect(due != overdue)
         #expect(Set([due, overdue]).count == 2)
