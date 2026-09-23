@@ -20,10 +20,15 @@ struct EventDetail: View {
 #Preview {
     EventDetail(
         event: CKEvent(
-            startDate: Date().dateFrom(13, 4, 2024, 12, 15),
-            endDate: Date().dateFrom(13, 4, 2024, 13, 15),
-            text: "Fixed all the bugs",
-            backCol: "#3E56C2"
+            kind: .timed(
+                start:  Calendar.current.date(bySettingHour: 9, minute: 25, second: 0, of: Date()) ?? Date(),
+                end: Calendar.current.date(bySettingHour: 9, minute: 00, second: 0, of: Date()) ?? Date()
+            ),
+            title: "Title",
+            subtitle: "subtitle",
+            systemImage: "star",
+            tint: Color.secondary,
+            isTentative: false
         )
     )
 }

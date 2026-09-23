@@ -196,7 +196,6 @@ struct CKEventLaneTests {
 
     @Test("One record yields distinct events per facet")
     func facetSeparatesEventsFromOneRecord() {
-        let record = UUID()
         let due = CKEventID()
         let overdue = CKEventID()
 

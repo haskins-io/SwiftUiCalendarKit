@@ -14,117 +14,69 @@ struct ContentView: View {
 
     @State private var date = Date()
 
+    @State private var mode: CKCalendarMode = .day
     @State private var showNewEventSheet = false
 
-    @StateObject private var observer = CKCalendarObserver()
+    @State private var observer = CKCalendarObserver()
 
-    private let calendar = Calendar.current
+    @State private var scrollRequest = 0
 
-    private static let middleDateStart = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date()
-    private static let middleDateEnd = Calendar.current.date(byAdding: .hour, value: 1, to: middleDateStart) ?? Date()
+    private static let middleDateStart = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date()
+    private static let middleDateEnd = calendar.date(byAdding: .hour, value: 1, to: middleDateStart) ?? Date()
 
-    private static let midEventStart = Calendar.current.date(byAdding: .day, value: 1, to: middleDateStart) ?? Date()
-    private static let midEventEnd = Calendar.current.date(byAdding: .day, value: 1, to: middleDateEnd) ?? Date()
+    private static let midEventStart = calendar.date(byAdding: .day, value: 1, to: middleDateStart) ?? Date()
+    private static let midEventEnd = calendar.date(byAdding: .day, value: 1, to: middleDateEnd) ?? Date()
 
-    let testEvents: [any CKEventSchema] = [
+    private static let calendar = Calendar.current
+
+    private static func at(hour: Int, minute: Int = 0, on day: Date = midEventStart) -> Date {
+        calendar.date(bySettingHour: hour, minute: minute, second: 0, of: day) ?? day
+    }
+
+    private static func offset(days: Int, from date: Date) -> Date {
+        calendar.date(byAdding: .day, value: days, to: date) ?? date
+    }
+
+    private static func preview(
+        _ title: String,
+        _ kind: CKEvent.Kind,
+        systemImage: String = "",
+        tint: Color = Color.green,
+        tentative: Bool = false
+    ) -> CKEvent {
         CKEvent(
-            startDate: Calendar.current.date(byAdding: .day, value: -4, to: middleDateStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .day, value: -2, to: middleDateEnd) ?? Date(),
-            isAllDay: true,
-            primaryText: "Multi Day Event",
-            backCol: "#FCE2E3"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .day, value: -1, to: middleDateStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .day, value: -1, to: middleDateEnd) ?? Date(),
-            isAllDay: false,
-            primaryText: "Event 2",
-            backCol: "#FBF4D8"
-        ),
-        CKEvent(
-            startDate: middleDateStart,
-            endDate: middleDateEnd,
-            isAllDay: false,
-            primaryText: "Event 3",
-            backCol: "#CFD4C5"
-        ),
-        CKEvent(
-            startDate: middleDateStart,
-            endDate: middleDateEnd,
-            isAllDay: true,
-            primaryText: "All Day 1",
-            backCol: "#998CA2"
-        ),
-        CKEvent(
-            startDate: middleDateStart,
-            endDate: middleDateEnd,
-            isAllDay: true,
-            primaryText: "All Day 2",
-            backCol: "#E2ECE9"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .minute, value: -240, to: midEventStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .minute, value: -318, to: midEventStart) ?? Date(),
-            isAllDay: false,
-            primaryText: "Event 4",
-            backCol: "#E2ECE9"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .minute, value: -120, to: midEventStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .minute, value: -100, to: midEventStart) ?? Date(),
-            isAllDay: true,
-            primaryText: "Event 5",
-            backCol: "#ACB2C1"
-        ),
-        CKEvent(
-            startDate: midEventStart,
-            endDate: midEventEnd,
-            isAllDay: false,
-            primaryText: "Event 6",
-            backCol: "#E5E4F2"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .minute, value: -120, to: midEventStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .minute, value: -60, to: midEventStart) ?? Date(),
-            isAllDay: false,
-            primaryText: "Event 7",
-            backCol: "#E8D9E7"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .minute, value: -100, to: midEventStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .minute, value: -40, to: midEventStart) ?? Date(),
-            isAllDay: false,
-            primaryText: "Event 8",
-            backCol: "#998CA2"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .minute, value: -80, to: midEventStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .minute, value: -20, to: midEventStart) ?? Date(),
-            isAllDay: false,
-            primaryText: "Event 12",
-            backCol: "#998CA2"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .day, value: 2, to: middleDateStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .day, value: 2, to: middleDateEnd) ?? Date(),
-            isAllDay: false,
-            primaryText: "Event 9",
-            backCol: "#A6C6DD"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .day, value: 3, to: middleDateStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .day, value: 3, to: middleDateEnd) ?? Date(),
-            isAllDay: false,
-            primaryText: "Event 10",
-            backCol: "#93B3A7"
-        ),
-        CKEvent(
-            startDate: Calendar.current.date(byAdding: .day, value: 4, to: middleDateStart) ?? Date(),
-            endDate: Calendar.current.date(byAdding: .day, value: 4, to: middleDateEnd) ?? Date(),
-            isAllDay: false,
-            primaryText: "Event 11",
-            backCol: "#FFC699"
+            kind: kind,
+            title: title,
+            systemImage: systemImage,
+            tint: tint,
+            isTentative: tentative
         )
+    }
+
+    let events: [CKEvent] = [
+        // Bands
+        preview("Multi Day Event", .span(from: offset(days: -1, from: middleDateStart),
+                                         through: offset(days: 2, from: middleDateEnd))),
+        
+        preview("All Day 1", .allDay(middleDateStart)),
+        preview("All Day 2", .allDay(middleDateStart)),
+
+        // Grid — including the overlapping cluster the column algorithm exists for
+        preview("Event 2", .timed(start: offset(days: -1, from: middleDateStart),
+                                  end: offset(days: -1, from: middleDateEnd))),
+        preview("Event 3", .timed(start: middleDateStart, end: middleDateEnd)),
+        preview("Event 6", .timed(start: midEventStart, end: midEventEnd), tentative: true),
+        preview("Event 7", .timed(start: at(hour: 10), end: at(hour: 11))),
+        preview("Event 8", .timed(start: at(hour: 10, minute: 30), end: at(hour: 11, minute: 30))),
+        preview("Event 12", .timed(start: at(hour: 11), end: at(hour: 12))),
+        preview("Event 9", .timed(start: at(hour: 11), end: at(hour: 11, minute: 30))),
+        preview("Event 10", .timed(start: at(hour: 15, minute: 15), end: at(hour: 16, minute: 15))),
+        preview("Event 11", .timed(start: offset(days: 4, from: middleDateStart),
+                                   end: offset(days: 4, from: middleDateEnd))),
+
+        preview("Invoice INV-014 due", .deadline(at(hour: 9)), systemImage: "paperplane"),
+        preview("Lens service due", .deadline(at(hour: 9, on: offset(days: 2, from: middleDateStart))),
+                systemImage: "wrench.and.screwdriver")
     ]
 
     private var agenda: some View {
@@ -187,7 +139,7 @@ struct ContentView: View {
 
     private var monthCompact: some View {
         CKCompactMonth(
-            detail: { event in EventDetail(event: event) }
+            detail: { event in EventDetail(event: event) },
             events: events,
             date: $date
         )
@@ -196,16 +148,19 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                month
+                monthCompact
             }
 
-            if observer.eventSelected {
-                Text(observer.event.text)
+            if let event = observer.event {
+                Text(event.title)
             }
         }
     }
 }
 
 #Preview {
-    ContentView()
+    NavigationStack {
+        ContentView()
+    }
 }
+
