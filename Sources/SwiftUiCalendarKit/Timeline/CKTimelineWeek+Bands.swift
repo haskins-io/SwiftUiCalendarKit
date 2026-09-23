@@ -9,15 +9,6 @@ import SwiftUI
 
 /// The all-day strip above the week's hour grid: multi-day bands, and each day's own whole-day
 /// chips beneath them.
-///
-/// Split from `CKTimelineWeek` because it is the one part of that view that does not use the
-/// `Grid`: a band spans several columns, and a `GridRow` can only give it one cell — which is
-/// what clipped "CAA OA — Commercial Drone Operations" down to "CAA OA…" while its wash ran the
-/// full width of the week.
-///
-/// The chips joined it on 2026-09-02. They had been a `GridRow` of their own below the bands,
-/// which is exactly the arrangement that made every column start below the deepest band in the
-/// week rather than below its own.
 extension CKTimelineWeek {
 
     /// The whole strip above the hour grid: multi-day bands, and each day's own chips beneath
@@ -154,9 +145,6 @@ extension CKTimelineWeek {
             RoundedRectangle(cornerRadius: 4)
                 .fill(event.tint.opacity(0.35))
         )
-        // Reporting the tap is the whole reason a chip is a chip rather than a label. Neither
-        // this nor the fillers it replaced ever told the observer anything, so every bar in the
-        // strip above the grid was inert.
         .contentShape(.rect)
         .onTapGesture {
             observer.event = event

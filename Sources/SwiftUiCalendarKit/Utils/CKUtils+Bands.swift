@@ -234,4 +234,3 @@ extension CKUtils {
         return column[lane]
     }
 }
-

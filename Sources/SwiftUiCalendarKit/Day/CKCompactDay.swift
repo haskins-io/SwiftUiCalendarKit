@@ -145,10 +145,6 @@ public struct CKCompactDay<Detail: View>: View {
                     .tag(index)
             }
         }
-        // **This was missing entirely**, so the pager fell back to the platform default and drew
-        // a real tab bar across the bottom of the day — a stray control with one blank item per
-        // day, sitting under the app's own floating tab bar. `CKCompactWeek` beside it has always
-        // set this; the day view never did.
 #if !os(macOS)
         .tabViewStyle(.page(indexDisplayMode: .never))
 #endif

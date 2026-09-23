@@ -36,7 +36,7 @@ public nonisolated struct CKEvent: Identifiable, Hashable, Sendable {
 
     public let tint: Color
 
-    /// e.g. an unconfirmed booking — draw hatched.
+    /// e.g. an unconfirmed event — draw hatched.
     public let isTentative: Bool
 
     public init(

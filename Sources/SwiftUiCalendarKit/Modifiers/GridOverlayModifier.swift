@@ -16,4 +16,3 @@ struct GridOverlayModifier: ViewModifier {
                     .foregroundColor(Color.gray), alignment: .trailing)
     }
 }
-

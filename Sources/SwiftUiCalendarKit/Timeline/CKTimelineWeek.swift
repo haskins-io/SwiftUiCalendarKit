@@ -31,9 +31,6 @@ public struct CKTimelineWeek: View {
 
     @Binding private var calendarDate: Date
 
-    // Internal rather than `private` so `CKTimelineWeek+Bands` can reach them — an extension in
-    // another file cannot see `private`, the same reason `DashboardView+Sections` reads the way
-    // it does.
     @State var columnWidth: CGFloat = .zero
 
     /// Computed off the main actor by `CKLayoutBuilder`, never in `body`.

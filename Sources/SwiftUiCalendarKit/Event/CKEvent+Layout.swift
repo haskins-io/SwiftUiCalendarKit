@@ -107,11 +107,6 @@ nonisolated extension CKEvent {
     }
 
     /// Whether any part of the event falls inside `interval`.
-    ///
-    /// Range *intersection*, not start-date containment. A trip that began before the visible
-    /// week still belongs on it, and `CKUtils.generateEventViewData`'s
-    /// `weekRange.contains(startDate)` test would drop it — which is fine for the hour grid,
-    /// where nothing runs past midnight, and wrong for the band lane.
     func intersects(_ interval: DateInterval) -> Bool {
         self.startDate <= interval.end && self.endDate >= interval.start
     }

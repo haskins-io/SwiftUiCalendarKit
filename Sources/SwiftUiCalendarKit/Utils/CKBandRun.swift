@@ -8,12 +8,6 @@
 import Foundation
 
 /// An unbroken stretch of one band inside a single week row.
-///
-/// The month grid can draw a band cell by cell, because each cell only has to agree with its
-/// neighbours about *height*. A week row cannot: the bar is wide enough to hold a title, and a
-/// title drawn inside the first cell is clipped to that cell however far the wash extends —
-/// "CAA OA…" on a bar with six empty columns after it.
-///
 /// A run is therefore the unit the week draws: one view, `length` columns wide, with the whole
 /// run's width to put its title in.
 nonisolated struct CKBandRun: Identifiable, Sendable {

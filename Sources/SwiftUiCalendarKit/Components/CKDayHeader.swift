@@ -76,4 +76,4 @@ struct CKDayHeader: View {
         showTime: true,
         showDate: true
     )
-    }
+}

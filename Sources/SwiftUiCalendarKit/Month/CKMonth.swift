@@ -112,12 +112,6 @@ public struct CKMonth: View {
     }
 
     /// One week of the grid: seven cells, with the week's bands drawn **over** them.
-    ///
-    /// A `LazyVGrid` of forty-two cells cannot do this. A band spans several columns and a cell
-    /// can only clip its title to one, which is how "CAA OA — Commercial Drone Operations" came
-    /// to read as "CAA OA…" on a bar six columns wide. Drawing the row as a `ZStack` gives each
-    /// run one view the width of the run, and the cells below simply hold the space clear —
-    /// `CKMonthMetrics` is where the two sides agree on how much.
     private func weekRow(
         _ days: [Date],
         month: Date,

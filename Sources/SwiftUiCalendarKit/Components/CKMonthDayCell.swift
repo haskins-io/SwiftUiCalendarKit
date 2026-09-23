@@ -102,10 +102,6 @@ struct CKMonthDayCell: View {
 // MARK: - Pieces
 extension CKMonthDayCell {
 
-    /// The moon on the left, the date on the right.
-    ///
-    /// The today marker is a `Circle` behind the number's own padding rather than a fixed
-    /// 25×25 rectangle at a computed offset, so it fits whatever the number is.
     private var header: some View {
         HStack(spacing: 2) {
 

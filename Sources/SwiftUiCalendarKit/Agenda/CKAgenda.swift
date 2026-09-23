@@ -17,7 +17,6 @@ import SwiftUI
 /// - Parameter observer: Listen to this to be notified when an event is tapped/clicked
 /// - Parameter events: the projected ``CKEvent``s to show. Every kind is drawn .
 
-
 public struct CKAgenda: View {
 
     @Environment(\.ckConfig)

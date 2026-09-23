@@ -223,12 +223,6 @@ extension CKCompactAgenda {
     }
 
     /// Which day an event is listed under.
-    ///
-    /// **Once each.** These used to be inserted into every day between start and end, which is
-    /// right for a grid — a band has to be drawn in each column it crosses — and catastrophic
-    /// for a list: a permit valid for nine months produced a section for every one of those
-    /// days, each holding the same row. The date range is already on the row, so the day it
-    /// begins is where it belongs.
     private func bucket(for event: CKEvent) -> Date {
         guard let from else {
             return self.calendar.startOfDay(for: event.startDate)
