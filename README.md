@@ -17,7 +17,7 @@ All the calendars are written purely in SwiftUI.
  The Main Branch will always have the latest functionality. It should be stable and usable. Reference a release if you want to pin the code until you have had a chance to test against the Main branch. 
 
 # Release v2.0
-Version 2 is a breaking change: **the `CKEventSchema` protocol has been removed**. See [Upgrading from v1](#upgrading-from-v1).
+Version 2 is a breaking change: **the `CKEventSchema` protocol has been removed**. See [Upgrading from v1](#upgrading-from-v1). Make sure you are pointing at the v1.0.1 release if you don't want to update your code.
 
 ## Requirements
 - iOS 17+ / macOS 14+
