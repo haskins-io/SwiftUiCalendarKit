@@ -86,10 +86,7 @@ public struct CKTimelineWeek: View {
         // The day's own whole-day items — a one-day all-day event, or a deadline. Bucketed per
         // column here so the all-day area can stack each column's chips under whatever bands
         // actually reach that column.
-        let singleDay = layout.singleDayBands(in: calendar) + layout.markers
-        let chips = week.map { day in
-            singleDay.filter { calendar.isDate($0.startDate, inSameDayAs: day.date) }
-        }
+        let chips = layout.chips(for: week.map(\.date), in: calendar)
 
         // A `GeometryReader`, not `.onGeometryChange` on the content — see the note in `CKMonth`.
         // The columns are sized *from* `columnWidth`, so measuring the view that holds them feeds

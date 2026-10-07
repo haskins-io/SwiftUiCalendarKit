@@ -169,22 +169,6 @@ extension CKMonthDayCell {
         return isThisMonth ? .primary : .secondary
     }
 
-    /// The day's own events: what is happening, before what is merely due.
-    ///
-    /// Multi-day bands are not here — they are laid out for the whole week row and drawn above
-    /// this, which is what lets a bar keep its height across cells.
-    private var ranked: [CKEvent] {
-        events.sorted { lhs, rhs in
-            Self.rank(lhs, in: calendar) == Self.rank(rhs, in: calendar)
-            ? lhs.startDate < rhs.startDate
-            : Self.rank(lhs, in: calendar) < Self.rank(rhs, in: calendar)
-        }
-    }
-
-    private static func rank(_ event: CKEvent, in calendar: Calendar) -> Int {
-        event.kind.lane == .marker ? 1 : 0
-    }
-
     /// Exactly what the row asked for.
     ///
     /// The cell does **not** second-guess this. `CKMonth` has already capped it with
@@ -195,29 +179,22 @@ extension CKMonthDayCell {
         reservedBandRows
     }
 
-    /// As many of the day's own events as the cell is tall enough to show, keeping a row back
-    /// for "+ N more" when there is going to be one — otherwise the count itself pushes the last
-    /// event out.
-    private var visibleEvents: [CKEvent] {
-
-        let used = CKMonthMetrics.bandsHeight(visibleBandRows)
-
-        var capacity = max(0, Int((contentHeight - used) / rowHeight))
-
-        if ranked.count > capacity, capacity > 0 {
-            capacity -= 1
-        }
-
-        return Array(ranked.prefix(capacity))
+    /// Which events fit and how many do not — see `CKMonthCellLayout`.
+    private var layout: CKMonthCellLayout {
+        CKMonthCellLayout(
+            events: events,
+            reservedBandRows: visibleBandRows,
+            hiddenBands: hiddenBands,
+            cellHeight: cellHeight
+        )
     }
 
-    /// What is left of the cell once the date and the decoration have taken theirs.
-    private var contentHeight: CGFloat {
-        max(0, cellHeight - CKMonthMetrics.headerHeight)
+    private var visibleEvents: [CKEvent] {
+        layout.visible
     }
 
     private var hiddenCount: Int {
-        max(0, events.count - visibleEvents.count) + hiddenBands
+        layout.hiddenCount
     }
 }
 

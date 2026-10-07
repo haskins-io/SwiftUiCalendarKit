@@ -191,18 +191,18 @@ public struct CKCompactDay<Detail: View>: View {
 extension CKCompactDay {
 
     private func updateSliders() {
-        if currentDayIndex == 0 {
-            if let firstDate = daySlider.first {
-                daySlider.insert(firstDate.previousDate(), at: 0)
-                daySlider.removeLast()
-                currentDayIndex = 1
-            }
-        } else if currentDayIndex == daySlider.count - 1 {
-            if let lastDate = daySlider.last {
-                daySlider.append(lastDate.nextDate())
-                daySlider.removeFirst()
-                currentDayIndex = daySlider.count - 2
-            }
+        let slid = CKPager.recentre(
+            daySlider,
+            at: currentDayIndex,
+            previous: { $0.previousDate() },
+            next: { $0.nextDate() }
+        )
+
+        daySlider = slid.pages
+        currentDayIndex = slid.index
+
+        guard daySlider.indices.contains(currentDayIndex) else {
+            return
         }
 
         headerDay = daySlider[currentDayIndex]
@@ -211,9 +211,11 @@ extension CKCompactDay {
 
     private func calcDaySliders(newDate: Date) {
         if daySlider.isEmpty {
-            daySlider.append(newDate.previousDate())
-            daySlider.append(newDate)
-            daySlider.append(newDate.nextDate())
+            daySlider = CKPager.window(
+                around: newDate,
+                previous: { $0.previousDate() },
+                next: { $0.nextDate() }
+            )
         }
     }
 }

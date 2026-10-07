@@ -66,11 +66,12 @@ public struct CKCompactWeek<Detail: View>: View {
     }
     public var body: some View {
 
-        VStack {
+        // Stacked, not `.safeAreaInset`: an inset only moves the safe area, and on a day with no
+        // all-day rows the timeline's `ScrollView` is the top view, so it extended up under the
+        // header and the hour grid was drawn behind it.
+        VStack(spacing: 0) {
+            headerView()
             timelineView()
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    headerView()
-                }
         }
         .background(colorScheme == .dark ? Color.black : Color.white)
         .onAppear(perform: {
@@ -257,35 +258,24 @@ public struct CKCompactWeek<Detail: View>: View {
 extension CKCompactWeek {
 
     private func paginateWeek() {
-        if weekSlider.indices.contains(currentWeekIndex) {
-            if let firstDate = weekSlider[currentWeekIndex].first?.date, currentWeekIndex == 0 {
-                weekSlider.insert(firstDate.createPreviousWeek(), at: 0)
-                weekSlider.removeLast()
-                currentWeekIndex = 1
-            }
+        let slid = CKPager.recentre(
+            weekSlider,
+            at: currentWeekIndex,
+            previous: { $0.first?.date.createPreviousWeek() },
+            next: { $0.last?.date.createNextWeek() }
+        )
 
-            if let lastDate = weekSlider[currentWeekIndex].last?.date, currentWeekIndex == (weekSlider.count - 1) {
-                weekSlider.append(lastDate.createNextWeek())
-                weekSlider.removeFirst()
-                currentWeekIndex = weekSlider.count - 2
-            }
-        }
+        weekSlider = slid.pages
+        currentWeekIndex = slid.index
     }
 
     private func calcWeekSliders(currentDate: Date) {
-
         if weekSlider.isEmpty {
-            let currentWeek = currentDate.fetchWeek()
-
-            if let firstDate = currentWeek.first?.date {
-                weekSlider.append(firstDate.createPreviousWeek())
-            }
-
-            weekSlider.append(currentWeek)
-
-            if let lastDate = currentWeek.last?.date {
-                weekSlider.append(lastDate.createNextWeek())
-            }
+            weekSlider = CKPager.window(
+                around: currentDate.fetchWeek(),
+                previous: { $0.first?.date.createPreviousWeek() },
+                next: { $0.last?.date.createNextWeek() }
+            )
         }
     }
 }

@@ -45,17 +45,21 @@ struct CKDateStepper: View {
 
     private func step(_ value: Int) {
         withAnimation {
-            guard let moved = Calendar.current.date(
-                byAdding: self.component, value: value, to: self.date
-            ) else {
-                return
-            }
-
-            self.date = moved
+            self.date = Self.stepped(self.date, by: value, component: self.component)
         }
     }
 
-    private static func previousLabel(for component: Calendar.Component) -> String {
+    /// `date` moved by `value` units of `component`, or `date` itself if it cannot be moved.
+    static func stepped(
+        _ date: Date,
+        by value: Int,
+        component: Calendar.Component,
+        calendar: Calendar = .current
+    ) -> Date {
+        calendar.date(byAdding: component, value: value, to: date) ?? date
+    }
+
+    static func previousLabel(for component: Calendar.Component) -> String {
         switch component {
         case .day:
             "Previous day"
@@ -68,7 +72,7 @@ struct CKDateStepper: View {
         }
     }
 
-    private static func nextLabel(for component: Calendar.Component) -> String {
+    static func nextLabel(for component: Calendar.Component) -> String {
         switch component {
         case .day:
             "Next day"

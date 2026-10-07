@@ -69,9 +69,7 @@ public struct CKCompactAgenda<Detail: View>: View {
 
     /// The first section on or after today — where "Today" lands even when today holds nothing.
     private var todaysSection: Date? {
-        let today = Date().midnight
-
-        return self.groupedEvents.first { $0.date >= today }?.id
+        CKAgendaSections.todaysSection(in: self.groupedEvents)
     }
 
     @ViewBuilder private var list: some View {
@@ -199,52 +197,8 @@ public struct CKCompactAgenda<Detail: View>: View {
 // MARK: - Data Grouping
 extension CKCompactAgenda {
 
-    private struct DayEvents: Identifiable {
-        let id: Date
-        var date: Date { self.id }
-        let events: [CKEvent]
-    }
-
-    private var groupedEvents: [DayEvents] {
-
-        let grouped = Dictionary(grouping: self.events) { self.bucket(for: $0) }
-
-        return grouped
-            .map { date, events in
-                DayEvents(id: date, events: events.sorted(by: CKCompactAgenda.byLaneThenStart))
-            }
-            .sorted { $0.date < $1.date }
-    }
-
-    /// Which day an event is listed under.
-    private func bucket(for event: CKEvent) -> Date {
-        guard let from else {
-            return self.calendar.startOfDay(for: event.startDate)
-        }
-
-        return max(self.calendar.startOfDay(for: event.startDate), self.calendar.startOfDay(for: from))
-    }
-
-    /// All-day and spanning events first, then the timed ones in order, then the deadlines.
-    private static func byLaneThenStart(_ lhs: CKEvent, _ rhs: CKEvent) -> Bool {
-        func rank(_ event: CKEvent) -> Int {
-            switch event.kind {
-            case .allDay, .span:
-                0
-
-            case .timed:
-                1
-
-            case .deadline:
-                2
-            }
-        }
-
-        if rank(lhs) != rank(rhs) {
-            return rank(lhs) < rank(rhs)
-        }
-
-        return lhs.startDate < rhs.startDate
+    private var groupedEvents: [CKAgendaDay] {
+        CKAgendaSections.days(events: self.events, from: self.from, calendar: self.calendar)
     }
 }
 

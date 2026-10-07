@@ -26,6 +26,8 @@ swift test --filter CKBandLaneTests          # one suite
 
 Or open `Package.swift` in Xcode. There is no app target — use the `#Preview`s (driven by `TestData.swift`) to see views. For manual end-to-end testing the user has a separate app, `../CalendarDev` (sibling directory), that references this package as a local package (`XCLocalSwiftPackageReference "../SwiftUiCalendarKit"`). Public API changes may break it; check `../CalendarDev/CalendarDev/ContentView.swift` when changing initializers.
 
+Keep logic out of view bodies: put it in a `nonisolated` type in `Utils/` (see `CKMonthCellLayout`, `CKAgendaSections`, `CKPager`) and have the view call it, so it can be unit tested. Tests use `Fixture` dates anchored on a fixed mid-month day (Wed 14 Oct 2026); don't build tests on `Date()`. `CKEvent` gets a fresh `id` on every init, so build fixtures once (a `let`, not a computed property) when comparing IDs.
+
 `.swiftlint.yml` is present (notably `force_unwrapping`, `explicit_self` analyzer rule, `sorted_imports`, `switch_case_on_newline`). Code uses explicit `self.` widely.
 
 ## Layout
@@ -37,11 +39,12 @@ Sources/SwiftUiCalendarKit/
   Day/ Week/ Month/ Agenda/   the public calendar views
   Components/   internal building blocks (event views, headers, day cells, pickers…)
   Modifiers/    CKConfig environment + public view modifiers
-  Utils/        layout maths: overlap columns, band lanes, month metrics
+  Utils/        layout maths and view logic pulled out of views for testing: overlap columns,
+                band lanes, month metrics/cell/row layout, agenda sections, day/week pager
   Extensions/   Date / Calendar / View helpers
   CKCalendarObserver.swift   @Observable selection state for the large calendars
   TestData.swift             sample events for #Previews
-Tests/SwiftUiCalendarKitTests/   lane routing, band lanes, month grid
+Tests/SwiftUiCalendarKitTests/   one suite per logic type; `Fixture.swift` holds shared date/event builders
 Examples/       sample consumer code — NOT a package target, not compiled
 ```
 
@@ -50,7 +53,7 @@ Examples/       sample consumer code — NOT a package target, not compiled
 - **Calendars:** `CKTimelineDay`, `CKTimelineWeek`, `CKMonth`, `CKAgenda` (large, iPad/macOS — selection reported via `CKCalendarObserver`), and `CKCompactDay`, `CKCompactWeek`, `CKCompactMonth`, `CKCompactAgenda` (iPhone — generic over a `Detail` view used as a `NavigationLink` destination).
 - **Model:** `CKEvent`, `CKEvent.Kind`, `CKEventID`, and `CKEventProviding` (optional helper for mapping/aggregating consumer models; never mandatory).
 - **Misc:** `CKCalendarMode`, `CKCalendarPicker`, `CKCalendarObserver`.
-- **Modifiers** (`Modifiers/CKCalendarModifiers.swift`): `currentDayColour`, `showTime`, `showWeekNumbers`, `headingAlignment`, `workingHours(start:end:)`. They all write into a single `CKConfig` value in the environment (`\.ckConfig`); add new options there rather than new environment keys.
+- **Modifiers** (`Modifiers/CKCalendarModifiers.swift`): `currentDayColour`, `showTime`, `showWeekNumbers`, `headingAlignment`, `workingHours(start:end:)`. They all write into a single `CKConfig` value in the environment (`\.ckConfig`); add new options there rather than new environment keys. **On the `v2.0` branch these options are not fully implemented yet** (e.g. `showTime`). The user plans to do this later, so don't treat a `CKConfig` option misbehaving as a regression, and don't start implementing them unless asked.
 
 ## Event model (v2)
 

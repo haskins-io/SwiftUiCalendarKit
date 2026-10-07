@@ -31,7 +31,7 @@ struct CKTimeline: View {
 
                 ZStack {
                     Rectangle()
-                        .fill(isOutOfHours(hour: hour) ? Color.gray.opacity(0.1) : normalColour)
+                        .fill(config.isOutOfHours(hour) ? Color.gray.opacity(0.1) : normalColour)
                         .overlay(
                             Rectangle()
                                 .frame(width: 1, height: nil, alignment: .trailing)
@@ -60,17 +60,6 @@ struct CKTimeline: View {
                 }
             }
         }
-    }
-}
-
-extension CKTimeline {
-
-    private func isOutOfHours(hour: Int) -> Bool {
-        if hour < config.dayStart || hour >= config.dayEnd {
-            return true
-        }
-
-        return false
     }
 }
 

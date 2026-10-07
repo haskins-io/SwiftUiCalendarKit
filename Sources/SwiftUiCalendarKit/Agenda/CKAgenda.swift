@@ -86,13 +86,11 @@ public struct CKAgenda: View {
     /// The first section on or after today — which is where "Today" should land even when today
     /// itself holds nothing.
     private var todaysSection: Date? {
-        let today = Date().midnight
-
-        return self.groupedEvents.first { $0.date >= today }?.id
+        CKAgendaSections.todaysSection(in: self.groupedEvents)
     }
 
     @ViewBuilder
-    private func agendaDaySection(dayEvents: DayEvents) -> some View {
+    private func agendaDaySection(dayEvents: CKAgendaDay) -> some View {
 
         HStack(alignment: .top, spacing: 16) {
             // Left side: Day number and name
@@ -117,11 +115,11 @@ public struct CKAgenda: View {
             // Right side: Events
             VStack(alignment: .leading, spacing: 12) {
                 // Bands first — they set the context the rest of the day sits inside
-                ForEach(dayEvents.multiDayEvents) { event in
+                ForEach(dayEvents.multiDayEvents(in: self.calendar)) { event in
                     self.multiDayEventView(event: event)
                 }
 
-                ForEach(dayEvents.singleDayEvents) { event in
+                ForEach(dayEvents.singleDayEvents(in: self.calendar)) { event in
                     self.singleDayEventView(event: event)
                 }
             }
@@ -225,65 +223,8 @@ public struct CKAgenda: View {
 // MARK: - Data Grouping
 extension CKAgenda {
 
-    private struct DayEvents: Identifiable {
-        let id: Date
-        var date: Date { self.id }
-        let multiDayEvents: [CKEvent]
-        let singleDayEvents: [CKEvent]
-    }
-
-    private var groupedEvents: [DayEvents] {
-
-        let grouped = Dictionary(grouping: self.events) { self.bucket(for: $0) }
-
-        return grouped
-            .map { date, events in
-                let bands = events.filter { $0.isMultiDay(in: self.calendar) }
-                let rest = events.filter { !$0.isMultiDay(in: self.calendar) }
-
-                return DayEvents(
-                    id: date,
-                    multiDayEvents: bands.sorted { $0.startDate < $1.startDate },
-                    singleDayEvents: rest.sorted(by: CKAgenda.byLaneThenStart)
-                )
-            }
-            .sorted { $0.date < $1.date }
-    }
-
-    /// Which day an event is listed under — once each, on the day it begins. See the note on
-    /// `CKCompactAgenda.bucket(for:)` for why listing a band on every day it covers is wrong in
-    /// a list even though it is right in a grid.
-    private func bucket(for event: CKEvent) -> Date {
-        guard let from else {
-            return self.calendar.startOfDay(for: event.startDate)
-        }
-
-        return max(self.calendar.startOfDay(for: event.startDate), self.calendar.startOfDay(for: from))
-    }
-
-    /// All-day first, then the timed events in order, then the day's deadlines.
-    ///
-    /// A deadline sorts last rather than by its time of day on purpose: it is not a slot in the
-    /// day's schedule, it is something the day is carrying.
-    private static func byLaneThenStart(_ lhs: CKEvent, _ rhs: CKEvent) -> Bool {
-        func rank(_ event: CKEvent) -> Int {
-            switch event.kind {
-            case .allDay:
-                0
-
-            case .timed, .span:
-                1
-
-            case .deadline:
-                2
-            }
-        }
-
-        if rank(lhs) != rank(rhs) {
-            return rank(lhs) < rank(rhs)
-        }
-
-        return lhs.startDate < rhs.startDate
+    private var groupedEvents: [CKAgendaDay] {
+        CKAgendaSections.days(events: self.events, from: self.from, calendar: self.calendar)
     }
 }
 

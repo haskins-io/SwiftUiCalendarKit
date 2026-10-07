@@ -119,18 +119,7 @@ public struct CKMonth: View {
         cellHeight: CGFloat
     ) -> some View {
 
-        let runs = CKUtils.bandRuns(week: days, events: events, calendar: calendar)
-
-        // Capped here, once, and handed to the cells — see `CKMonthMetrics.maxBandRows`.
-        let totalLanes = (runs.map(\.lane).max() ?? -1) + 1
-        let laneCount = min(totalLanes, CKMonthMetrics.maxBandRows(cellHeight: cellHeight))
-        let drawn = runs.filter { $0.lane < laneCount }
-
-        // Per day, not per row. A cell with no bar over it reserves nothing and starts its own
-        // events at the top; the day under a bar still reserves every lane above it, holes
-        // included, or the bars stop being level. See `CKUtils.bandRowCounts`.
-        let reserved = CKUtils.bandRowCounts(runs: drawn, columns: days.count)
-        let hidden = CKUtils.bandCounts(runs: runs.filter { $0.lane >= laneCount }, columns: days.count)
+        let row = CKMonthRowLayout(days: days, events: events, cellHeight: cellHeight, calendar: calendar)
 
         return ZStack(alignment: .topLeading) {
 
@@ -140,8 +129,8 @@ public struct CKMonth: View {
                         date: days[index],
                         observer: observer,
                         events: eventsForDay(day: days[index]),
-                        reservedBandRows: reserved[index],
-                        hiddenBands: hidden[index],
+                        reservedBandRows: row.reservedBandRows[index],
+                        hiddenBands: row.hiddenBands[index],
                         month: month,
                         width: cellWidth,
                         height: cellHeight
@@ -149,7 +138,7 @@ public struct CKMonth: View {
                 }
             }
 
-            ForEach(drawn) { run in
+            ForEach(row.drawn) { run in
                 bandBar(run, days: days, month: month)
                     .frame(width: cellWidth * CGFloat(run.length), height: CKMonthMetrics.rowHeight)
                     .offset(
@@ -218,9 +207,7 @@ extension CKMonth {
 
     /// The day's own events.
     private func eventsForDay(day: Date) -> [CKEvent] {
-        events.filter {
-            CKUtils.doesEventOccurOnDate(event: $0, date: day) && !$0.isMultiDay(in: calendar)
-        }
+        CKMonthRowLayout.ownEvents(on: day, events: events, calendar: calendar)
     }
 }
 

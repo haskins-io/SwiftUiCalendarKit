@@ -32,6 +32,16 @@ nonisolated struct CKLayout: Sendable {
     func singleDayBands(in calendar: Calendar) -> [CKEvent] {
         self.bands.filter { !$0.isMultiDay(in: calendar) }
     }
+
+    /// Per day, the whole-day items that sit as chips in that day's column: one-day all-day
+    /// events and deadlines. Multi-day bands are drawn across the columns instead.
+    func chips(for days: [Date], in calendar: Calendar) -> [[CKEvent]] {
+        let singleDay = self.singleDayBands(in: calendar) + self.markers
+
+        return days.map { day in
+            singleDay.filter { calendar.isDate($0.startDate, inSameDayAs: day) }
+        }
+    }
 }
 
 /// Builds a `CKLayout` off the main actor.

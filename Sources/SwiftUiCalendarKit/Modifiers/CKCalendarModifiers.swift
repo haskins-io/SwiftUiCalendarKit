@@ -20,6 +20,11 @@ struct CKConfig: Equatable {
     var showTime: Bool = false
 
     var showWeekNumber: Bool = false
+
+    /// Whether `hour` (0–23) falls outside the working hours set by `workingHours(start:end:)`.
+    func isOutOfHours(_ hour: Int) -> Bool {
+        hour < self.dayStart || hour >= self.dayEnd
+    }
 }
 
 private struct CKConfigKey: EnvironmentKey {
