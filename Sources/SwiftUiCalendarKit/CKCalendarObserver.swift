@@ -7,17 +7,13 @@
 
 import SwiftUI
 
-public class CKCalendarObserver: ObservableObject {
+@MainActor
+@Observable
+public class CKCalendarObserver {
 
-    @Published public var event: any CKEventSchema = CKEvent(
-        startDate: Date(),
-        endDate: Date(),
-        isAllDay: false,
-        primaryText: ""
-    )
+    /// The event the reader last tapped, or `nil` for nothing selected.
+    public var event: CKEvent?
+    public var events: [CKEvent]?
 
-    @Published public var eventSelected = false
-
-    public init() {
-    }
+    public init() { }
 }

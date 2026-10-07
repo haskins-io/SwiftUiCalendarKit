@@ -18,7 +18,6 @@ struct CKCalendarHeader: View {
 
             HStack {
                 Text(currentDate.formatted(.dateTime.month(.wide))).bold()
-
                 Text(currentDate.formatted(.dateTime.year()))
             }
             .padding(.leading, 20)
@@ -27,48 +26,9 @@ struct CKCalendarHeader: View {
 
             Spacer()
 
-            HStack(spacing: 1) {
-
-                Button {
-                    withAnimation {
-                        guard let newDate = Calendar.current.date(
-                            byAdding: addWeek ? .weekOfYear : .month,
-                            value: -1,
-                            to: currentDate
-                        ) else {
-                            return
-                        }
-                        currentDate = newDate
-                    }
-                } label: {
-                    Image(systemName: "chevron.left")
-                }
-
-                Button {
-                    withAnimation {
-                        currentDate = Date.now
-                    }
-                } label: {
-                    Text("Today")
-                }
-
-                Button {
-                    withAnimation {
-                        guard let newDate = Calendar.current.date(
-                            byAdding: addWeek ? .weekOfYear : .month,
-                            value: 1,
-                            to: currentDate
-                        ) else {
-                            return
-                        }
-                        currentDate = newDate
-                    }
-                } label: {
-                    Image(systemName: "chevron.right")
-                }
-            }
-            .padding(.trailing, 30)
-            .padding(.top, 5)
+            CKDateStepper(date: $currentDate, component: addWeek ? .weekOfYear : .month)
+                .padding(.trailing, 30)
+                .padding(.top, 5)
         }
     }
 }

@@ -8,54 +8,30 @@ import SwiftUI
 
 struct CKDayEventView: View {
 
-    @ObservedObject var observer: CKCalendarObserver
+    @State var observer: CKCalendarObserver
 
-    private let eventData: CKEventViewData
-    private let event: any CKEventSchema
+    private let event: CKEvent
+    private let width: CGFloat
 
-    private var xOffset: CGFloat = 0
-    private var isWeekView = false
-    private var width: CGFloat = 0
-
-    init(_ eventData: CKEventViewData,
-         observer: CKCalendarObserver,
-         weekView: Bool,
-         width: CGFloat
-    ) {
-        self.eventData = eventData
+    /// A chip for the strip above the hour grid — a band or a marker, never a `.timed` event.
+    ///
+    /// Takes a `CKEvent` rather than a `CKEventViewData` because view data exists only for the
+    /// grid lane: `CKEventViewData.init` refuses every kind but `.timed`, so an all-day event or
+    /// a deadline has no geometry to hand this and never did.
+    init(_ event: CKEvent, observer: CKCalendarObserver, width: CGFloat) {
+        self.event = event
         self._observer = .init(wrappedValue: observer)
-
-        self.isWeekView = weekView
-        self.event = eventData.event
         self.width = width
-
-        var dayOfWeek = Date.dayOfWeek(event.startDate)
-        if dayOfWeek == 1 {
-            dayOfWeek = 8
-        }
-
-        if weekView {
-            if dayOfWeek == 1 {
-                xOffset = 50
-            } else {
-                xOffset = 50 + (eventData.cellWidth * CGFloat(dayOfWeek - 2))
-            }
-        }
     }
 
     var body: some View {
         HStack {
-            if !event.sfImage.isEmpty{
-                Image(systemName: event.sfImage)
-                    .padding(.leading, 10)
-            } else if !event.image.isEmpty {
-                Image(event.image)
-                    .resizable()
-                    .frame(width: 25, height: 20)
+            if !event.systemImage.isEmpty {
+                Image(systemName: event.systemImage)
                     .padding(.leading, 10)
             }
 
-            Text(CKUtils.eventText(event: event))
+            Text(event.title)
                 .padding(.leading, 5)
         }
         .foregroundColor(.primary)
@@ -64,42 +40,21 @@ struct CKDayEventView: View {
         .padding(6)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .fill(event.backgroundAsColor())
-                .opacity(0.5)
+                .fill(event.tint)
+                .opacity(0.3)
                 .shadow(radius: 5, x: 2, y: 5)
         )
         .overlay {
             HStack {
                 Rectangle()
-                    .fill(event.backgroundAsColor())
+                    .fill(event.tint)
                     .frame(maxHeight: .infinity, alignment: .leading)
                     .frame(width: 4)
                 Spacer()
             }
         }
-        .offset(x: xOffset, y: 0)
         .onTapGesture {
-            observer.eventSelected = true
             observer.event = event
         }
     }
-}
-
-#Preview {
-    CKDayEventView(
-        CKEventViewData(
-            event: CKEvent(
-                startDate: Date(),
-                endDate: Date(),
-                isAllDay: true,
-                primaryText: "Event 1",
-                backCol: "#D74D64"),
-            overlapsWith: 0,
-            position: 1,
-            width: 150
-        ),
-        observer: CKCalendarObserver(),
-        weekView: true,
-        width: 150
-    )
 }

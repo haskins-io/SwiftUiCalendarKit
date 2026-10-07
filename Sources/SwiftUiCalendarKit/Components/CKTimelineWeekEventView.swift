@@ -9,10 +9,10 @@ import SwiftUI
 
 struct CKTimelineWeekEventView: View {
 
-    @ObservedObject var observer: CKCalendarObserver
+    @State var observer: CKCalendarObserver
 
     private var eventData: CKEventViewData
-    private let event: any CKEventSchema
+    private let event: CKEvent
     private let xOffset: CGFloat
 
     init(_ eventData: CKEventViewData,
@@ -42,23 +42,18 @@ struct CKTimelineWeekEventView: View {
         VStack(alignment: .leading) {
             Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
             HStack {
-                if !event.sfImage.isEmpty{
-                    Image(systemName: event.sfImage)
-                        .padding(.leading, 5)
-                } else if !event.image.isEmpty {
-                    Image(event.image)
-                        .resizable()
-                        .frame(width: 20, height: 15)
+                if !event.systemImage.isEmpty {
+                    Image(systemName: event.systemImage)
                         .padding(.leading, 5)
                 }
 
-                Text(CKUtils.eventText(event: event))
+                Text(event.title)
                     .bold()
                     .padding(.leading, 5)
             }
 
-            if !event.secondaryText.isEmpty {
-                Text(event.secondaryText)
+            if let subtitle = event.subtitle {
+                Text(subtitle)
                     .foregroundColor(.secondary)
                     .padding(.leading, 5)
             }
@@ -71,14 +66,14 @@ struct CKTimelineWeekEventView: View {
         .background(.thinMaterial)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .fill(event.backgroundAsColor())
+                .fill(event.tint)
                 .opacity(0.5)
                 .shadow(radius: 5, x: 2, y: 5)
         )
         .overlay {
             HStack {
                 Rectangle()
-                    .fill(event.backgroundAsColor())
+                    .fill(event.tint)
                     .frame(maxHeight: .infinity, alignment: .leading)
                     .frame(width: 4)
                 Spacer()
@@ -87,7 +82,6 @@ struct CKTimelineWeekEventView: View {
         .padding(.trailing, 5)
         .offset(x: xOffset, y: eventData.yOffset + 30)
         .onTapGesture {
-            observer.eventSelected = true
             observer.event = event
         }
     }
@@ -97,16 +91,12 @@ struct CKTimelineWeekEventView: View {
         HStack(alignment: .center) {
             Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
 
-            if !event.sfImage.isEmpty{
-                Image(systemName: event.sfImage)
+            if !event.systemImage.isEmpty {
+                Image(systemName: event.systemImage)
                     .padding(.leading, 5)
-            } else if !event.image.isEmpty {
-                Image(event.image)
-                    .resizable()
-                    .frame(width: 20, height: 15)
             }
 
-            Text(CKUtils.eventText(event: event))
+            Text(event.title)
                 .bold()
         }
         .foregroundColor(.primary)
@@ -117,14 +107,14 @@ struct CKTimelineWeekEventView: View {
         .background(.thinMaterial)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .fill(event.backgroundAsColor())
+                .fill(event.tint)
                 .opacity(0.5)
                 .shadow(radius: 5, x: 2, y: 5)
         )
         .overlay {
             HStack {
                 Rectangle()
-                    .fill(event.backgroundAsColor())
+                    .fill(event.tint)
                     .frame(maxHeight: .infinity, alignment: .leading)
                     .frame(width: 4)
                 Spacer()
@@ -133,25 +123,7 @@ struct CKTimelineWeekEventView: View {
         .padding(.trailing, 5)
         .offset(x: xOffset, y: eventData.yOffset + 30)
         .onTapGesture {
-            observer.eventSelected = true
             observer.event = event
         }
     }
-}
-
-#Preview {
-    CKTimelineWeekEventView(
-        CKEventViewData(
-            event: CKEvent(
-                startDate: Date().dateFrom(13, 4, 2024, 1, 00),
-                endDate: Date().dateFrom(13, 4, 2024, 2, 00),
-                isAllDay: false,
-                primaryText: "Event 1",
-                backCol: "#D74D64"),
-            overlapsWith: 1,
-            position: 1,
-            width: 150
-        ),
-        observer: CKCalendarObserver()
-    )
 }

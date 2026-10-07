@@ -12,14 +12,14 @@ struct CKCompactEventView<Detail: View>: View {
     @Environment(\.ckConfig)
     private var config
 
-    private let detail: (any CKEventSchema) -> Detail
+    private let detail: (CKEvent) -> Detail
 
     private let eventData: CKEventViewData
     private let xOffset: CGFloat
-    private let event: any CKEventSchema
+    private let event: CKEvent
 
     init(_ eventData: CKEventViewData,
-         @ViewBuilder detail: @escaping (any CKEventSchema) -> Detail
+         @ViewBuilder detail: @escaping (CKEvent) -> Detail
     ) {
         self.detail = detail
         self.eventData = eventData
@@ -50,22 +50,18 @@ struct CKCompactEventView<Detail: View>: View {
                     Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
 
                     HStack {
-                        if !event.sfImage.isEmpty{
-                            Image(systemName: event.sfImage)
-                                .padding(.leading, 5)
-                        } else if !event.image.isEmpty {
-                            Image(event.image)
-                                .resizable()
-                                .frame(width: 20, height: 15)
+                        if !event.systemImage.isEmpty {
+                            Image(systemName: event.systemImage)
                                 .padding(.leading, 5)
                         }
-                        Text(CKUtils.eventText(event: event))
+
+                        Text(event.title)
                             .bold()
                             .padding(.leading, 5)
                     }
 
-                    if !event.secondaryText.isEmpty {
-                        Text(event.secondaryText)
+                    if let subtitle = event.subtitle {
+                        Text(subtitle)
                             .foregroundColor(.secondary)
                             .padding(.leading, 5)
                     }
@@ -77,14 +73,14 @@ struct CKCompactEventView<Detail: View>: View {
                 .frame(height: eventData.height, alignment: .top)
                 .background(
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(event.backgroundAsColor())
+                        .fill(event.tint)
                         .opacity(0.5)
                         .shadow(radius: 5, x: 2, y: 5)
                 )
                 .overlay {
                     HStack {
                         Rectangle()
-                            .fill(event.backgroundAsColor())
+                            .fill(event.tint)
                             .frame(maxHeight: .infinity, alignment: .leading)
                             .frame(width: 4)
                         Spacer()
@@ -108,15 +104,11 @@ struct CKCompactEventView<Detail: View>: View {
                         Text(event.startDate.formatted(.dateTime.hour().minute()))
                             .padding(.leading, 5)
 
-                        if !event.sfImage.isEmpty{
-                            Image(systemName: event.sfImage)
-                        } else if !event.image.isEmpty {
-                            Image(event.image)
-                                .resizable()
-                                .frame(width: 25, height: 20)
+                        if !event.systemImage.isEmpty {
+                            Image(systemName: event.systemImage)
                         }
 
-                        Text(CKUtils.eventText(event: event))
+                        Text(event.title)
                             .bold()
                             .padding(.leading, 5)
                     }
@@ -128,14 +120,14 @@ struct CKCompactEventView<Detail: View>: View {
                 .frame(height: eventData.height, alignment: .top)
                 .background(
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(event.backgroundAsColor())
+                        .fill(event.tint)
                         .opacity(0.5)
                         .shadow(radius: 5, x: 2, y: 5)
                 )
                 .overlay {
                     HStack {
                         Rectangle()
-                            .fill(event.backgroundAsColor())
+                            .fill(event.tint)
                             .frame(maxHeight: .infinity, alignment: .leading)
                             .frame(width: 4)
                         Spacer()
@@ -146,21 +138,4 @@ struct CKCompactEventView<Detail: View>: View {
         }
         .offset(x: xOffset, y: eventData.yOffset + 30)
     }
-}
-
-#Preview {
-    CKCompactEventView(
-        CKEventViewData(
-            event: CKEvent(
-                startDate: Date().dateFrom(13, 4, 2024, 1, 00),
-                endDate: Date().dateFrom(13, 4, 2024, 2, 20),
-                isAllDay: false,
-                primaryText: "Event 1 Event 1 Event 1",
-                backCol: "#D74D64"),
-            overlapsWith: 1,
-            position: 1,
-            width: 150
-        ),
-        detail: { _ in EmptyView() }
-    )
 }

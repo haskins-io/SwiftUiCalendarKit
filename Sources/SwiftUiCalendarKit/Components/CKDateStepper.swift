@@ -1,0 +1,91 @@
+//
+//  File.swift
+//  SwiftUiCalendarKit
+//
+//  Created by Mark Haskins on 21/09/2026.
+//
+
+import SwiftUI
+
+/// The ‹ Today › cluster every calendar style uses to move through time.
+struct CKDateStepper: View {
+
+    @Binding var date: Date
+
+    /// What one press moves by — `.day`, `.weekOfYear` or `.month`.
+    let component: Calendar.Component
+
+    var body: some View {
+        HStack(spacing: 1) {
+
+            Button {
+                self.step(-1)
+            } label: {
+                Image(systemName: "chevron.left.circle")
+            }
+            .accessibilityLabel(Self.previousLabel(for: self.component))
+
+            Button {
+                withAnimation {
+                    self.date = Date.now
+                }
+            } label: {
+                Image(systemName: "clock.circle")
+            }
+
+            Button {
+                self.step(1)
+            } label: {
+                Image(systemName: "chevron.right.circle")
+            }
+            .accessibilityLabel(Self.nextLabel(for: self.component))
+        }
+        .font(.title)
+    }
+
+    private func step(_ value: Int) {
+        withAnimation {
+            self.date = Self.stepped(self.date, by: value, component: self.component)
+        }
+    }
+
+    /// `date` moved by `value` units of `component`, or `date` itself if it cannot be moved.
+    static func stepped(
+        _ date: Date,
+        by value: Int,
+        component: Calendar.Component,
+        calendar: Calendar = .current
+    ) -> Date {
+        calendar.date(byAdding: component, value: value, to: date) ?? date
+    }
+
+    static func previousLabel(for component: Calendar.Component) -> String {
+        switch component {
+        case .day:
+            "Previous day"
+
+        case .weekOfYear:
+            "Previous week"
+
+        default:
+            "Previous month"
+        }
+    }
+
+    static func nextLabel(for component: Calendar.Component) -> String {
+        switch component {
+        case .day:
+            "Next day"
+
+        case .weekOfYear:
+            "Next week"
+
+        default:
+            "Next month"
+        }
+    }
+}
+
+#Preview {
+    CKDateStepper(date: .constant(Date()), component: .day)
+}

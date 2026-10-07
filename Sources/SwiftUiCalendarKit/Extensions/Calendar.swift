@@ -29,25 +29,17 @@ extension Calendar {
     ) -> [Date] {
         var dates = [dateInterval.start]
 
-        var count = 0
-
         enumerateDates(
             startingAfter: dateInterval.start,
             matching: components,
             matchingPolicy: .nextTime
         ) { date, _, stop in
-            guard let date = date else {
-                return
-            }
-
-            guard count < 41 else {
+            guard let date, date < dateInterval.end, dates.count < 42 else {
                 stop = true
                 return
             }
 
             dates.append(date)
-
-            count += 1
         }
 
         return dates
@@ -58,6 +50,24 @@ extension Calendar {
             for: dateInterval,
             matching: dateComponents([.hour, .minute, .second], from: dateInterval.start)
         )
+    }
+
+    /// The days a month grid draws for the month containing `date`.
+    ///
+    /// Whole weeks, from the one holding the 1st to the one holding the last day, and no
+    /// further — so a month that ends on the last day of a week is five rows, not six.
+    ///
+    /// `CKMonth` and the compact grid's `CalendarComponent` each had their own copy of this,
+    /// which is how one fix would otherwise have had to be made twice.
+    func monthGridDays(for date: Date) -> [Date] {
+        guard let month = dateInterval(of: .month, for: date),
+              let firstWeek = dateInterval(of: .weekOfMonth, for: month.start),
+              let lastWeek = dateInterval(of: .weekOfMonth, for: month.end - 1)
+                else {
+            return []
+        }
+
+        return generateDays(for: DateInterval(start: firstWeek.start, end: lastWeek.end))
     }
 
     func differenceInMinutes(start: Date, end: Date) -> Int {
