@@ -16,7 +16,9 @@ All the calendars are written purely in SwiftUI.
  
  The Main Branch will always have the latest functionality. It should be stable and usable. Reference a release if you want to fix the code until, you have had a chance to test against the Main branch.
 # Release v2.0
-There is a new version that is on the v2.0 branch.
+See [Upgrading from v1](#upgrading-from-v1). 
+Make sure you are pointing at the v1.0.1 release if you don't want to update your code.
+
 ## Breaking Change
 Version two is a breaking change :- **I have removed the CKEventSchema protocol**. 
 The reason for this is that forcing users to add a protocol to their models was not the best solution, especially for SwiftData models where you were forced to add properties to the models that might never be used. The new solution is to just add the values directly to a CKEvent.
@@ -24,9 +26,6 @@ There is a new protocol called CKEventProviding that you **do not have to use**.
 
 ## Other updates
 The look and feel of the calendars has been updated with major improvement to the way events are rendered. 
-
-# Release v2.0
-Version 2 is a breaking change: **the `CKEventSchema` protocol has been removed**. See [Upgrading from v1](#upgrading-from-v1). Make sure you are pointing at the v1.0.1 release if you don't want to update your code.
 
 ## Requirements
 - iOS 17+ / macOS 14+
