@@ -14,73 +14,119 @@ All the calendars are written purely in SwiftUI.
 	- Xcode will prompt you to specify version rules for the package. "Up to Next Major Version" ensures compatibility with future updates that don't introduce breaking changes.
 	- Click **Add Package**
  
- The Main Branch will always have the latest functionality. It should be stable and usable. Reference a release if you want to fix the code until, you have had a chance to test against the Main branch. 
+ The Main Branch will always have the latest functionality. It should be stable and usable. Reference a release if you want to pin the code until you have had a chance to test against the Main branch. 
 
 # Release v2.0
-## Breaking Change
-Version two is a breaking change :- **I have removed the CKEventSchema protocol**. 
-The reason for this is that forcing users to add a protocol to their models was not the best solution, especially for SwiftData models where you were forced to add properties to the models that might never be used.
-The new solution is to just add the values directly to a CKEvent.
-There is a new protocol called CKEventProviding that you **do not have to use**. It provides a potential solution for aggregating multiple different model structures so they can be easily rendered on a calendar. There is a very brief example on how to do this in the examples directory named 'ProvidingExample'. Again you are free to provide your own implementation on mapping your models to CKEvents.
+Version 2 is a breaking change: **the `CKEventSchema` protocol has been removed**. See [Upgrading from v1](#upgrading-from-v1).
 
-## Other updates
-The look and feel of the calendars has been update with major improvement to the way events are rendered.
+## Requirements
+- iOS 17+ / macOS 14+
+- Swift 5.10+
 
-## Usage   
-```
+## Usage
+```swift
+import SwiftUI
 import SwiftUiCalendarKit
 
 struct CalendarTest: View {
 
     private static let calendar = Calendar.current
 
-    let events: [any CKEvent] = [
+    let events: [CKEvent] = [
         CKEvent(
-            kind: CKEvent.Kind.allDate(Date()),
+            kind: .allDay(Date()),
             title: "Event 1",
-            tint: Color.blue,
-            isTentative: false
-    ),
+            tint: .blue
+        ),
         CKEvent(
-            kind: CKEvent.Kind.timed(
-                calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date(),
-                calendar.date(bySettingHour: 12, minute: 30, second: 0, of: Date()) ?? Date()
+            kind: .timed(
+                start: calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date(),
+                end: calendar.date(bySettingHour: 12, minute: 30, second: 0, of: Date()) ?? Date()
             ),
             title: "Event 2",
+            subtitle: "Meeting room 1",
             systemImage: "star",
-            tint: Color.gree,
+            tint: .green,
             isTentative: true
         )
     ]
-    
+
     @State private var date = Date()
 
     var body: some View {
-        CKCompactDay(
-            detail: { event in EventDetail(event: event) },
-            events: events,
-            date: $date
-        )
-        .showTime(true)
-        .workingHours(start: 7, end: 19)
-        .currentDayColour(.blue)
+        NavigationStack {
+            CKCompactDay(
+                detail: { event in EventDetail(event: event) },
+                events: events,
+                date: $date
+            )
+            .showTime(true)
+            .workingHours(start: 7, end: 19)
+            .currentDayColour(.blue)
+        }
     }
 }
-
 ```
 
+## Events
+Every calendar takes an array of `CKEvent` values. You create these from your own models however you like, so your models (including SwiftData `@Model` classes) don't need to conform to anything.
+
+```swift
+CKEvent(
+    kind: CKEvent.Kind,       // what the event is, and so how it is drawn
+    title: String,
+    subtitle: String? = nil,
+    systemImage: String = "", // an SF Symbol name, or empty for none
+    tint: Color,
+    isTentative: Bool = false // e.g. unconfirmed. Drawn hatched
+)
+```
+
+The `kind` decides where an event appears:
+
+| Kind | Drawn as |
+|------|----------|
+| `.timed(start:end:)` | A block on the hour grid. Overlapping events share the width. |
+| `.allDay(Date)` | A bar across the top of that day. |
+| `.span(from:through:)` | A bar spanning several days. |
+| `.deadline(Date)` | A marker in the day header: a point in time with no duration. |
+
+### Aggregating events with CKEventProviding (optional)
+If your events come from several different model types, you can use `CKEventProviding` to keep the mapping from each model to `CKEvent`s in one place. A provider can return zero, one or many events for a model in the visible date range:
+
+```swift
+enum InvoiceProviding: CKEventProviding {
+
+    static func events(from model: Invoice, in range: DateInterval) -> [CKEvent] {
+        guard range.contains(model.dueDate) else { return [] }
+
+        return [
+            CKEvent(
+                kind: .deadline(model.dueDate),
+                title: "Invoice \(model.number) due",
+                systemImage: "doc.text",
+                tint: .orange
+            )
+        ]
+    }
+}
+```
+
+You don't have to use it. See `Examples/ProvidingExample` for a fuller example that aggregates two model types.
+
 ## Calendar Modifiers
-There are some modifiers that can be used to configure the calendars. These are:-
-### currentDayColour
-When set changes the background colour of the curent date
-### showTime
-When set shows a red line on a timeline to indicate the time
-### showWeekNumbers
-When set the shows the week number in the header
-### headingAlignment
-Applying this changes the position of the heading on the CKCompactWeek
-### workingHours
-Applying this sets the working hours of a Timeline calendar. This will change the colour of the non working hours to be light grey.
+These modifiers configure the calendars. They can be applied to the calendar or to any view that contains it.
+### currentDayColour(_:)
+Sets the highlight colour of the current date.
+### showTime(_:)
+Shows a red line on a timeline to indicate the current time.
+### showWeekNumbers(_:)
+Shows the week number in the header.
+### headingAlignment(_:)
+Sets the position of the heading on `CKCompactWeek`.
+### workingHours(start:end:)
+Sets the working hours of a timeline calendar. Hours outside them are shaded light grey.
+
 ## Calendars
 | CKTimelineDay | CKTimelineWeek | CKMonth |
 |---------------|----------------|---------|
@@ -92,17 +138,26 @@ Applying this sets the working hours of a Timeline calendar. This will change th
 |<img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactDay.png" width="300"/>| <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactWeek.png" width="300"/>| <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth.png" width="300"/>| <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactAgenda.png" width="300"/> |
 
 ## Examples
-There is an example of how to use all the calendars in /Examples
-## Events
-There is a Protocal called CKEventSchema that defines what a Calendar entry should look like. There is an example implementation called 'CKEvent'. Though you can use your own classes/structs if you want and simply add a reference to the protocol.
+There is an example of how to use all the calendars in `/Examples`.
 ## Navigation
-For the Compact calendars you can pass in a View that provides your *EventDetail*. This is used as part of a NavigationLink and when tapping an Event it will navigate to the passed View. See in the Examples folder.
-For the other calenders there is an CalendarObserver class. When you click/tap on an event it will set the event object that was tapped on the class and then set 'eventSelected' flag to be true. How you handle this is down to your application.
-## FAQ
-### Why are you using two dates to define an event, when you could be using a DateInterval.?
-The simple answer is that I'm using this with SwiftData, and it doesn't support DateInterval as a data type. There might be a way around this, but I'm good with what I have at the moment.
-### Why are you storing Colors as String?
-Same answer as above. The Protocol does force you to implement functions to return Colors. How you implement them is up to you. The Color extension provides a function that converts a Hex string to a color. You might want to use this, or provide your own soluion.
+The compact calendars (`CKCompactDay`, `CKCompactWeek`, `CKCompactMonth` and `CKCompactAgenda`) take a `detail` view builder that gives your event detail view. It is used as the destination of a `NavigationLink`, so place the calendar inside a `NavigationStack`. See the Examples folder.
+
+The larger calendars (`CKTimelineDay`, `CKTimelineWeek`, `CKMonth` and `CKAgenda`) take a `CKCalendarObserver`. When an event is clicked or tapped, the calendar sets `observer.event` to that event. On `CKMonth`, tapping "+ n more" on a day sets `observer.events` to all of that day's events. How your app responds is up to you, for example:
+
+```swift
+@State private var observer = CKCalendarObserver()
+
+CKTimelineWeek(observer: observer, events: events, date: $date)
+    .sheet(item: $observer.event) { event in
+        EventDetail(event: event)
+    }
+```
+
+## Upgrading from v1
+v2 is a breaking change. **The `CKEventSchema` protocol has been removed.** Requiring your models to adopt a protocol was not a good fit, especially for SwiftData models, which had to gain properties they might never use. Instead, map your models to `CKEvent` values (optionally with `CKEventProviding`, see above).
+
+The look and feel of the calendars has also been updated, with major improvements to the way events are rendered, including all-day, multi-day and deadline events.
+
 ## Things that I would like to add in the future
 * Drag and drop events
 * More customisations / Themes

@@ -33,10 +33,6 @@ public struct CKCompactAgenda<Detail: View>: View {
     /// The first day the list covers, when the caller has one.
     private let from: Date?
 
-
-    /// §7 — the gated half of the footer, bucketed by day.
-    private let celestial: [Date: [CKEvent]]
-
     /// Bumped by the toolbar's Today button — see `CKAgenda`.
     @State private var scrollRequest = 0
 
@@ -44,13 +40,11 @@ public struct CKCompactAgenda<Detail: View>: View {
         @ViewBuilder detail: @escaping (CKEvent) -> Detail,
         events: [CKEvent],
         from: Date? = nil,
-        celestial: [Date: [CKEvent]] = [:],
         scrollRequest: Int = 0
     ) {
         self.detail = detail
         self.events = events
         self.from = from
-        self.celestial = celestial
         self.scrollRequest = scrollRequest
     }
 

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 @Observable
 public class CKCalendarObserver {
 

@@ -34,8 +34,6 @@ public struct CKAgenda: View {
     /// The first day the list covers, when the caller has one.
     private let from: Date?
 
-    private let celestial: [Date: [CKEvent]]
-
     /// Bumped by the toolbar's Today button.
     @State private var scrollRequest = 0
 
@@ -43,13 +41,11 @@ public struct CKAgenda: View {
         observer: CKCalendarObserver,
         events: [CKEvent],
         from: Date? = nil,
-        celestial: [Date: [CKEvent]] = [:],
         scrollRequest: Int = 0
     ) {
         self._observer = .init(wrappedValue: observer)
         self.events = events
         self.from = from
-        self.celestial = celestial
         self.scrollRequest = scrollRequest
     }
 

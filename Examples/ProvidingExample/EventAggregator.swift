@@ -13,7 +13,7 @@ import Foundation
 @MainActor
 struct EventAggregator {
 
-    func events(in range: DateInterval, scope: CKEventScope = .overview) -> [CKEvent] {
+    func events(in range: DateInterval) -> [CKEvent] {
 
         var events: [CKEvent] = []
 

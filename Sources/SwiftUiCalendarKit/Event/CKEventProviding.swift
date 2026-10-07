@@ -8,7 +8,7 @@
 import Foundation
 
 /// Maps one model to *zero or more* ``CKEvent``s for a visible date range.
-protocol CKEventProviding {
+public protocol CKEventProviding {
 
     associatedtype Model
 

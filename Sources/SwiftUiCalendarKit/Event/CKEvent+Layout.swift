@@ -82,11 +82,12 @@ nonisolated extension CKEvent.Kind {
 
 nonisolated extension CKEvent {
 
-    /// When the event begins.
-    var startDate: Date { self.kind.start }
+    /// When the event begins. For `.allDay` and `.span` this is midnight of the first day.
+    public var startDate: Date { self.kind.start }
 
-    /// When the event ends. See `Kind.end` for why a deadline's equals its start.
-    var endDate: Date { self.kind.end }
+    /// When the event ends. For `.allDay` and `.span` this is the end of the last day; for
+    /// `.deadline` it equals `startDate`, because a deadline has no duration.
+    public var endDate: Date { self.kind.end }
 
     var isAllDay: Bool {
         if case .allDay = self.kind {
