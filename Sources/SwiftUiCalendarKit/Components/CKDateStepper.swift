@@ -10,6 +10,9 @@ import SwiftUI
 /// The ‹ Today › cluster every calendar style uses to move through time.
 struct CKDateStepper: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Binding var date: Date
 
     /// What one press moves by — `.day`, `.weekOfYear` or `.month`.
@@ -23,7 +26,7 @@ struct CKDateStepper: View {
             } label: {
                 Image(systemName: "chevron.backward.circle")
             }
-            .accessibilityLabel(Text(CKStrings.previous(self.component)))
+            .accessibilityLabel(Text(CKStrings.previous(self.component).locale(self.locale)))
 
             Button {
                 withAnimation {
@@ -38,7 +41,7 @@ struct CKDateStepper: View {
             } label: {
                 Image(systemName: "chevron.forward.circle")
             }
-            .accessibilityLabel(Text(CKStrings.next(self.component)))
+            .accessibilityLabel(Text(CKStrings.next(self.component).locale(self.locale)))
         }
         .font(.title)
     }

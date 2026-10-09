@@ -22,6 +22,9 @@ import SwiftUI
 
 public struct CKCompactDay<Detail: View>: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -113,16 +116,16 @@ public struct CKCompactDay<Detail: View>: View {
 
         VStack(alignment: .leading) {
             HStack {
-                Text(headerDay.formatted(.dateTime.day().month(.wide)))
+                Text(headerDay.formatted(.dateTime.day().month(.wide).locale(self.locale)))
                     .bold()
-                Text(headerDay.formatted(.dateTime.year()))
+                Text(headerDay.formatted(.dateTime.year().locale(self.locale)))
             }
             .padding(.leading, 10)
             .padding(.top, 5)
             .font(.title)
 
             HStack(alignment: .center) {
-                Text(headerDay.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                Text(headerDay.formatted(.dateTime.weekday(.wide).locale(self.locale))).padding(.leading, 10)
 
                 Spacer()
                 CKWeekOfYear(date: currentDate)
@@ -230,4 +233,19 @@ extension CKCompactDay {
         )
         .workingHours(start: 9, end: 17)
     }
+}
+
+/// Laid out and formatted as for an Arabic reader: right to left, with Arabic digits, months and
+/// weekdays. The package's own words stay English until it has an Arabic translation.
+#Preview("Arabic, right to left") {
+    NavigationView {
+        CKCompactDay(
+            detail: { _ in EmptyView() },
+            events: testEvents,
+            date: .constant(Date())
+        )
+        .workingHours(start: 9, end: 17)
+    }
+    .environment(\.locale, Locale(identifier: "ar"))
+    .environment(\.layoutDirection, .rightToLeft)
 }

@@ -9,6 +9,9 @@ import SwiftUI
 
 struct CKCompactEventView<Detail: View>: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -47,7 +50,7 @@ struct CKCompactEventView<Detail: View>: View {
                 detail(event)
             } label: {
                 VStack(alignment: .leading) {
-                    Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
+                    Text(event.startDate.formatted(.dateTime.hour().minute().locale(self.locale))).padding(.leading, 5)
 
                     HStack {
                         if !event.systemImage.isEmpty {
@@ -101,7 +104,7 @@ struct CKCompactEventView<Detail: View>: View {
                 HStack(alignment: .center) {
 
                     HStack {
-                        Text(event.startDate.formatted(.dateTime.hour().minute()))
+                        Text(event.startDate.formatted(.dateTime.hour().minute().locale(self.locale)))
                             .padding(.leading, 5)
 
                         if !event.systemImage.isEmpty {

@@ -9,6 +9,9 @@ import SwiftUI
 
 struct CKEventView: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -40,7 +43,7 @@ struct CKEventView: View {
     @ViewBuilder
     private func greaterThan30mins() -> some View {
         VStack(alignment: .leading) {
-            Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
+            Text(event.startDate.formatted(.dateTime.hour().minute().locale(self.locale))).padding(.leading, 5)
             HStack {
                 if !event.systemImage.isEmpty {
                     Image(systemName: event.systemImage)
@@ -89,7 +92,7 @@ struct CKEventView: View {
     @ViewBuilder
     private func lessThan30mins() -> some View {
         HStack(alignment: .center) {
-            Text(event.startDate.formatted(.dateTime.hour().minute())).padding(.leading, 5)
+            Text(event.startDate.formatted(.dateTime.hour().minute().locale(self.locale))).padding(.leading, 5)
 
             if !event.systemImage.isEmpty {
                 Image(systemName: event.systemImage)

@@ -9,6 +9,9 @@ import SwiftUI
 
 struct CKMonthComponent: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -40,16 +43,14 @@ struct CKMonthComponent: View {
                                 RoundedRectangle(cornerRadius: 5)
                                     .fill(config.currentDayColour)
                                     .frame(width: 27, height: 27)
-                                    .offset(x: 1, y: 0)
                             } else if calendar.isDate(date, inSameDayAs: selectedDate) {
 
                                 RoundedRectangle(cornerRadius: 5)
                                     .fill(Color.blue.opacity(0.10))
                                     .frame(width: 27, height: 27)
-                                    .offset(x: 1, y: 0)
                             }
 
-                            Text(date.formatted(Date.FormatStyle().day()))
+                            Text(date.formatted(Date.FormatStyle().day().locale(self.locale)))
                                 .padding(6)
                                 .frame(width: 33, height: 33)
                                 .foregroundColor(calendar.isDateInToday(date) ? Color.white : .primary)
@@ -59,12 +60,12 @@ struct CKMonthComponent: View {
                     .modifier(CKEventDotModifier(isVisible: CKUtils.hasEvents(on: date, in: events)))
                 },
                 trailing: { date in
-                    Text(date.formatted(Date.FormatStyle().day()))
+                    Text(date.formatted(Date.FormatStyle().day().locale(self.locale)))
                         .foregroundColor(.secondary)
                         .padding(6)
                 },
                 header: { date in
-                    Text(date.formatted(Date.FormatStyle().weekday(.abbreviated))).fontWeight(.bold)
+                    Text(date.formatted(Date.FormatStyle().weekday(.abbreviated).locale(self.locale))).fontWeight(.bold)
                 },
                 title: { date in
                     HStack {
@@ -83,7 +84,7 @@ struct CKMonthComponent: View {
                             }
                         } label: {
                             Label(
-                                title: { Text(CKStrings.previous) },
+                                title: { Text(CKStrings.previous.locale(self.locale)) },
                                 icon: {
                                     Image(systemName: "chevron.backward.circle")
                                         .font(.title2)
@@ -100,7 +101,7 @@ struct CKMonthComponent: View {
                                 selectedDate = Date.now
                             }
                         } label: {
-                            Text(date.formatted(Date.FormatStyle().month(.wide).year(.defaultDigits)))
+                            Text(date.formatted(.dateTime.month(.wide).year(.defaultDigits).locale(self.locale)))
                                 .foregroundColor(.blue)
                                 .font(.title2)
                                 .padding(2)
@@ -122,7 +123,7 @@ struct CKMonthComponent: View {
                             }
                         } label: {
                             Label(
-                                title: { Text(CKStrings.next) },
+                                title: { Text(CKStrings.next.locale(self.locale)) },
                                 icon: {
                                     Image(systemName: "chevron.forward.circle")
                                         .font(.title2)

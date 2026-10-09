@@ -161,12 +161,20 @@ CKTimelineWeek(observer: observer, events: events, date: $date)
     }
 ```
 
+## Languages and right-to-left
+Dates and times are written the way the reader's locale writes them: 12- or 24-hour clocks, the locale's digits, month and weekday names, and date ranges such as "14–16 Oct". The calendars use the SwiftUI environment's locale, which follows the device unless you set one:
+
+```swift
+CKCompactWeek(detail: { event in EventDetail(event: event) }, events: events, date: $date)
+    .environment(\.locale, Locale(identifier: "ar"))
+```
+
+The calendars support right-to-left languages such as Arabic and Hebrew. Layouts mirror, and swiping towards the leading edge moves forward in time. Week starts and month grids follow the device's calendar settings.
+
+The package's own words ("All Day", "Week 42" and so on) are in a string catalog. Only English is included so far.
+
 ## Upgrading from v1
 v2 is a breaking change. **The `CKEventSchema` protocol has been removed.** Requiring your models to adopt a protocol was not a good fit, especially for SwiftData models, which had to gain properties they might never use. Instead, map your models to `CKEvent` values (optionally with `CKEventProviding`, see above).
 
 The look and feel of the calendars has also been updated, with major improvements to the way events are rendered, including all-day, multi-day and deadline events.
 
-## Things that I would like to add in the future
-* Drag and drop events
-* More customisations / Themes
-* A year Calendar

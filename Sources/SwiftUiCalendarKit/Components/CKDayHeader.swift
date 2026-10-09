@@ -8,6 +8,9 @@ import SwiftUI
 
 struct CKDayHeader: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -48,7 +51,7 @@ struct CKDayHeader: View {
                                 .fill(getColor(weekDay: weekDay))
                                 .frame(width: 27, height: 27)
 
-                            Text(weekDay.date.formatted(Date.FormatStyle().day(.twoDigits)))
+                            Text(weekDay.date.formatted(Date.FormatStyle().day(.twoDigits).locale(self.locale)))
                                 .foregroundColor(status ? Color.white : .primary)
                         }
                     }

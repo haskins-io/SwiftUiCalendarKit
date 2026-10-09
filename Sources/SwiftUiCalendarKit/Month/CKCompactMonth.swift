@@ -58,3 +58,17 @@ public struct CKCompactMonth<Detail: View>: View {
         )
     }
 }
+
+/// Laid out and formatted as for an Arabic reader: right to left, with Arabic digits, months and
+/// weekdays. The package's own words stay English until it has an Arabic translation.
+#Preview("Arabic, right to left") {
+    NavigationView {
+        CKCompactMonth(
+            detail: { _ in EmptyView() },
+            events: testEvents,
+            date: .constant(Date())
+        )
+    }
+    .environment(\.locale, Locale(identifier: "ar"))
+    .environment(\.layoutDirection, .rightToLeft)
+}

@@ -8,6 +8,9 @@ import SwiftUI
 
 struct CKCalendarHeader: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Binding var currentDate: Date
 
     var addWeek: Bool
@@ -17,7 +20,7 @@ struct CKCalendarHeader: View {
         HStack {
 
             HStack {
-                Text(currentDate.formatted(.dateTime.month(.wide).year()))
+                Text(currentDate.formatted(.dateTime.month(.wide).year().locale(self.locale)))
             }
             .padding(.leading, 20)
             .padding(.top, 5)

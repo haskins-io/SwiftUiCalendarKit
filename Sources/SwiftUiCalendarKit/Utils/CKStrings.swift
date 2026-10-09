@@ -191,3 +191,16 @@ nonisolated enum CKStrings {
         LocalizedStringResource(keyAndValue, bundle: .atURL(Self.bundle.bundleURL), comment: comment)
     }
 }
+
+extension LocalizedStringResource {
+
+    /// This string, looked up and its numbers formatted for `locale`.
+    ///
+    /// Views pass the SwiftUI environment's locale, as they do to every date format style, so
+    /// `.environment(\.locale, …)` changes the package's words along with its dates.
+    func locale(_ locale: Locale) -> LocalizedStringResource {
+        var resource = self
+        resource.locale = locale
+        return resource
+    }
+}

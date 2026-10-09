@@ -9,6 +9,9 @@ import SwiftUI
 /// One day in the month grid.
 struct CKMonthDayCell: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -77,7 +80,7 @@ struct CKMonthDayCell: View {
                 HStack {
                     Spacer()
 
-                    Text(CKStrings.moreEvents(hiddenCount))
+                    Text(CKStrings.moreEvents(hiddenCount).locale(self.locale))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .padding(.leading, 5)
@@ -107,7 +110,7 @@ extension CKMonthDayCell {
 
             Spacer(minLength: 0)
 
-            Text(date.formatted(.dateTime.day()))
+            Text(date.formatted(.dateTime.day().locale(self.locale)))
                 .font(.caption)
                 .fontWeight(isToday ? .bold : .regular)
                 .foregroundStyle(dateColour)

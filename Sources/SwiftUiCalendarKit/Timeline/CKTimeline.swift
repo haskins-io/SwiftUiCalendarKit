@@ -9,6 +9,9 @@ import SwiftUI
 
 struct CKTimeline: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -45,7 +48,7 @@ struct CKTimeline: View {
                             // guarantee that it will wrap at some accessibility size — "00:00"
                             // came back as "00:0 / 0" on an iPad. `fixedSize` lets the label take
                             // the width it needs; the frame is a floor, not a cage.
-                            Text(CKFormat.hourLabel(hour))
+                            Text(CKFormat.hourLabel(hour, locale: self.locale))
                                 .font(.caption)
                                 .monospacedDigit()
                                 .lineLimit(1)

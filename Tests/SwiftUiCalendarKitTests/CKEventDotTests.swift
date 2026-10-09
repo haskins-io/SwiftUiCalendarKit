@@ -9,7 +9,6 @@
 // dot's visibility changed, which made such a test unreliable.
 
 @testable import SwiftUiCalendarKit
-import CoreGraphics
 import SwiftUI
 import Testing
 
@@ -54,65 +53,10 @@ struct CKEventDotTests {
             .frame(width: Self.number, height: Self.number)
             .modifier(CKEventDotModifier(isVisible: true))
             .frame(width: columnWidth, height: Self.number + 20, alignment: .top)
-            .environment(\.layoutDirection, direction)
 
-        let renderer = ImageRenderer(content: cell)
-        renderer.scale = 1
-
-        guard let image = renderer.cgImage else {
-            return nil
+        // Anti-aliased edges are faint; only count pixels that are clearly the dot.
+        return Bitmap.render(cell, direction: direction)?.bounds {
+            $0.alpha > 128 && $0.green > 120 && $0.green > $0.red && $0.green > $0.blue
         }
-
-        return Self.greenBounds(in: image)
-    }
-
-    private static func greenBounds(in image: CGImage) -> CGRect? {
-        let width = image.width
-        let height = image.height
-        var pixels = [UInt8](repeating: 0, count: width * height * 4)
-
-        let drawn = pixels.withUnsafeMutableBytes { buffer -> Bool in
-            guard let context = CGContext(
-                data: buffer.baseAddress,
-                width: width,
-                height: height,
-                bitsPerComponent: 8,
-                bytesPerRow: width * 4,
-                space: CGColorSpaceCreateDeviceRGB(),
-                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-            ) else {
-                return false
-            }
-
-            context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
-            return true
-        }
-
-        guard drawn else {
-            return nil
-        }
-
-        var bounds: CGRect?
-
-        for row in 0..<height {
-            for column in 0..<width {
-                let offset = (row * width + column) * 4
-                let red = pixels[offset]
-                let green = pixels[offset + 1]
-                let blue = pixels[offset + 2]
-                let alpha = pixels[offset + 3]
-
-                // Anti-aliased edges are faint; only count pixels that are clearly the dot.
-                guard alpha > 128, green > 120, green > red, green > blue else {
-                    continue
-                }
-
-                // The bitmap's rows run top-down, matching SwiftUI's y.
-                let pixel = CGRect(x: column, y: row, width: 1, height: 1)
-                bounds = bounds.map { $0.union(pixel) } ?? pixel
-            }
-        }
-
-        return bounds
     }
 }

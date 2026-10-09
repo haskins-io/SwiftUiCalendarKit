@@ -8,6 +8,9 @@ import SwiftUI
 
 public struct CKCalendarPicker: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Binding private var mode: CKCalendarMode
 
     public init(mode: Binding<CKCalendarMode>) {
@@ -17,10 +20,10 @@ public struct CKCalendarPicker: View {
     public var body: some View {
         Picker(selection: $mode) {
             ForEach(CKCalendarMode.allCases) { calendarMode in
-                Text(calendarMode.label)
+                Text(calendarMode.label.locale(self.locale))
             }
         } label: {
-            Text(CKStrings.displayMode)
+            Text(CKStrings.displayMode.locale(self.locale))
         }
         .pickerStyle(SegmentedPickerStyle())
     }

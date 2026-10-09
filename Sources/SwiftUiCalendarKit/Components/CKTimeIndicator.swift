@@ -8,6 +8,9 @@ import SwiftUI
 
 struct CKTimeIndicator: View {
 
+    @Environment(\.locale)
+    private var locale
+
     var date: Date?
     var time: Date
     var showTime: Bool = true
@@ -15,7 +18,7 @@ struct CKTimeIndicator: View {
     var body: some View {
         HStack(spacing: 0) {
             if showTime {
-                Text(time.formatted(.dateTime.hour().minute()))
+                Text(time.formatted(.dateTime.hour().minute().locale(self.locale)))
                     .font(.caption)
                     .padding(.leading, 7)
                     .foregroundStyle(Color.red)

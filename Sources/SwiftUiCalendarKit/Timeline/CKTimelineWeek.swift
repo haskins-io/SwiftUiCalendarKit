@@ -21,6 +21,9 @@ import SwiftUI
 
 public struct CKTimelineWeek: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -184,7 +187,7 @@ public struct CKTimelineWeek: View {
                         .fill(weekDay.date.isToday ? Color.blue.opacity(0.10) : Color.clear)
                         .frame(width: 27, height: 27)
 
-                    Text(weekDay.date.formatted(.dateTime.day(.twoDigits)))
+                    Text(weekDay.date.formatted(.dateTime.day(.twoDigits).locale(self.locale)))
                 }
             }
             .frame(minWidth: columnWidth, idealWidth: columnWidth, maxWidth: columnWidth)
@@ -199,7 +202,7 @@ public struct CKTimelineWeek: View {
             ForEach(0..<24) { hour in
                 HStack {
                     // See `CKTimeline`: a fixed width plus a Dynamic Type font wraps the label.
-                    Text(CKFormat.hourLabel(hour))
+                    Text(CKFormat.hourLabel(hour, locale: self.locale))
                         .font(.caption)
                         .monospacedDigit()
                         .lineLimit(1)
@@ -248,4 +251,18 @@ public struct CKTimelineWeek: View {
     )
     .showWeekNumbers(true)
     .workingHours(start: 9, end: 17)
+}
+
+/// Laid out and formatted as for an Arabic reader: right to left, with Arabic digits, months and
+/// weekdays. The package's own words stay English until it has an Arabic translation.
+#Preview("Arabic, right to left") {
+    CKTimelineWeek(
+        observer: CKCalendarObserver(),
+        events: testEvents,
+        date: .constant(Date())
+    )
+    .showWeekNumbers(true)
+    .workingHours(start: 9, end: 17)
+    .environment(\.locale, Locale(identifier: "ar"))
+    .environment(\.layoutDirection, .rightToLeft)
 }

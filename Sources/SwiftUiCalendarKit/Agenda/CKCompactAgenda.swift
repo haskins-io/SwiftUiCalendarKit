@@ -19,6 +19,9 @@ import SwiftUI
 
 public struct CKCompactAgenda<Detail: View>: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -97,8 +100,8 @@ public struct CKCompactAgenda<Detail: View>: View {
     private func agendaSectionHeader(date: Date) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {
-                Text(date.formatted(.dateTime.weekday(.wide)))
-                Text(date.formatted(.dateTime.day().month(.abbreviated)))
+                Text(date.formatted(.dateTime.weekday(.wide).locale(self.locale)))
+                Text(date.formatted(.dateTime.day().month(.abbreviated).locale(self.locale)))
 
                 Spacer(minLength: 8)
             }
@@ -163,30 +166,30 @@ public struct CKCompactAgenda<Detail: View>: View {
     private func timeLabel(event: CKEvent) -> some View {
         switch event.kind {
         case .timed(let start, let end):
-            Text(start.formatted(.dateTime.hour().minute()))
+            Text(start.formatted(.dateTime.hour().minute().locale(self.locale)))
                 .font(.caption)
 
-            Text(end.formatted(.dateTime.hour().minute()))
+            Text(end.formatted(.dateTime.hour().minute().locale(self.locale)))
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
         case .allDay:
-            Text(CKStrings.compactAgendaAllDay)
+            Text(CKStrings.compactAgendaAllDay.locale(self.locale))
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
         case .deadline(let at):
-            Text(AttributedString(localized: CKStrings.compactDue(
-                Self.emphasised(at.formatted(.dateTime.hour().minute()))
-            )))
+            let time = Self.emphasised(at.formatted(.dateTime.hour().minute().locale(self.locale)))
+
+            Text(AttributedString(localized: CKStrings.compactDue(time).locale(self.locale)))
             .font(.caption2)
             .foregroundStyle(.secondary)
             .multilineTextAlignment(.trailing)
 
         case .span(_, let through):
-            Text(AttributedString(localized: CKStrings.compactUntil(
-                Self.emphasised(through.formatted(.dateTime.day().month(.abbreviated)))
-            )))
+            let day = Self.emphasised(through.formatted(.dateTime.day().month(.abbreviated).locale(self.locale)))
+
+            Text(AttributedString(localized: CKStrings.compactUntil(day).locale(self.locale)))
             .font(.caption2)
             .foregroundStyle(.secondary)
             .multilineTextAlignment(.trailing)
@@ -219,3 +222,13 @@ extension CKCompactAgenda {
     )
 }
 
+/// Laid out and formatted as for an Arabic reader: right to left, with Arabic digits, months and
+/// weekdays. The package's own words stay English until it has an Arabic translation.
+#Preview("Arabic, right to left") {
+    CKCompactAgenda(
+        detail: { _ in EmptyView() },
+        events: testEvents
+    )
+    .environment(\.locale, Locale(identifier: "ar"))
+    .environment(\.layoutDirection, .rightToLeft)
+}

@@ -19,6 +19,9 @@ import SwiftUI
 
 public struct CKAgenda: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -95,16 +98,16 @@ public struct CKAgenda: View {
         HStack(alignment: .top, spacing: 16) {
             // Left side: Day number and name
             HStack(spacing: 20) {
-                Text(dayEvents.date.formatted(.dateTime.day()))
+                Text(dayEvents.date.formatted(.dateTime.day().locale(self.locale)))
                     .font(.largeTitle)
                     .foregroundStyle(.primary)
 
                 VStack(alignment: .leading) {
-                    Text(dayEvents.date.formatted(.dateTime.weekday(.wide)))
+                    Text(dayEvents.date.formatted(.dateTime.weekday(.wide).locale(self.locale)))
                         .font(.body)
                         .foregroundStyle(.primary)
 
-                    Text(dayEvents.date.formatted(.dateTime.month(.abbreviated).year()))
+                    Text(dayEvents.date.formatted(.dateTime.month(.abbreviated).year().locale(self.locale)))
                         .font(.body)
                         .foregroundStyle(.primary)
                 }
@@ -134,7 +137,9 @@ public struct CKAgenda: View {
         HStack(spacing: 12) {
             // Show when it ends
             VStack(alignment: .leading, spacing: 0) {
-                Text(CKStrings.ends(event.endDate.formatted(.dateTime.day().month(.abbreviated))))
+                let day = event.endDate.formatted(.dateTime.day().month(.abbreviated).locale(self.locale))
+
+                Text(CKStrings.ends(day).locale(self.locale))
                     .font(.body)
                     .foregroundStyle(.secondary)
             }
@@ -170,18 +175,20 @@ public struct CKAgenda: View {
     private func timeLabel(event: CKEvent) -> some View {
         switch event.kind {
         case .timed(let start, let end):
-            Text(CKFormat.timeRange(from: start, to: end))
+            Text(CKFormat.timeRange(from: start, to: end, locale: self.locale))
 
         case .allDay:
-            Text(CKStrings.agendaAllDay)
+            Text(CKStrings.agendaAllDay.locale(self.locale))
 
         case .deadline(let at):
             // No range: a deadline has no duration, and printing "12:00 - 12:00" was the
             // list-shaped version of drawing it zero pixels high (§3.4).
-            Text(CKStrings.due(at.formatted(.dateTime.hour().minute())))
+            Text(CKStrings.due(at.formatted(.dateTime.hour().minute().locale(self.locale))).locale(self.locale))
 
         case .span(_, let through):
-            Text(CKStrings.until(through.formatted(.dateTime.day().month(.abbreviated))))
+            let day = through.formatted(.dateTime.day().month(.abbreviated).locale(self.locale))
+
+            Text(CKStrings.until(day).locale(self.locale))
         }
     }
 
@@ -233,4 +240,15 @@ extension CKAgenda {
         observer: CKCalendarObserver(),
         events: testEvents
     )
+}
+
+/// Laid out and formatted as for an Arabic reader: right to left, with Arabic digits, months and
+/// weekdays. The package's own words stay English until it has an Arabic translation.
+#Preview("Arabic, right to left") {
+    CKAgenda(
+        observer: CKCalendarObserver(),
+        events: testEvents
+    )
+    .environment(\.locale, Locale(identifier: "ar"))
+    .environment(\.layoutDirection, .rightToLeft)
 }

@@ -21,6 +21,9 @@ import SwiftUI
 
 public struct CKCompactWeek<Detail: View>: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -151,7 +154,7 @@ public struct CKCompactWeek<Detail: View>: View {
         VStack(alignment: config.headingAlignment) {
 
             HStack {
-                Text(headerMonth.formatted(.dateTime.month(.wide).year()))
+                Text(headerMonth.formatted(.dateTime.month(.wide).year().locale(self.locale)))
 
                 Spacer()
 
@@ -209,7 +212,7 @@ public struct CKCompactWeek<Detail: View>: View {
                     .fill(cellColour(day: day))
                     .frame(width: 27, height: 27)
 
-                Text(day.date.formatted(.dateTime.day(.twoDigits)))
+                Text(day.date.formatted(.dateTime.day(.twoDigits).locale(self.locale)))
                     .foregroundColor(status ? Color.white : .primary)
             }
         }
@@ -280,4 +283,20 @@ extension CKCompactWeek {
         .showWeekNumbers(true)
         .workingHours(start: 9, end: 17)
     }
+}
+
+/// Laid out and formatted as for an Arabic reader: right to left, with Arabic digits, months and
+/// weekdays. The package's own words stay English until it has an Arabic translation.
+#Preview("Arabic, right to left") {
+    NavigationView {
+        CKCompactWeek(
+            detail: { _ in EmptyView() },
+            events: testEvents,
+            date: .constant(Date())
+        )
+        .showWeekNumbers(true)
+        .workingHours(start: 9, end: 17)
+    }
+    .environment(\.locale, Locale(identifier: "ar"))
+    .environment(\.layoutDirection, .rightToLeft)
 }

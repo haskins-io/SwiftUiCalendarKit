@@ -10,6 +10,9 @@ import SwiftUI
 /// One row in the compact month's list of the selected day.
 struct CKListEventView: View {
 
+    @Environment(\.locale)
+    private var locale
+
     var event: CKEvent
 
     var body: some View {
@@ -46,19 +49,19 @@ struct CKListEventView: View {
     @ViewBuilder private var when: some View {
         switch event.kind {
         case .timed(let start, let end):
-            Text(CKFormat.timeRange(from: start, to: end))
+            Text(CKFormat.timeRange(from: start, to: end, locale: self.locale))
                 .foregroundStyle(.secondary)
 
         case .allDay:
-            Text(CKStrings.listAllDay)
+            Text(CKStrings.listAllDay.locale(self.locale))
                 .foregroundStyle(.secondary)
 
         case .deadline(let at):
-            Text(CKStrings.due(at.formatted(.dateTime.hour().minute())))
+            Text(CKStrings.due(at.formatted(.dateTime.hour().minute().locale(self.locale))).locale(self.locale))
                 .foregroundStyle(.secondary)
 
         case .span(let from, let through):
-            Text(CKFormat.dayRange(from: from, through: through))
+            Text(CKFormat.dayRange(from: from, through: through, locale: self.locale))
                 .foregroundStyle(.secondary)
         }
     }

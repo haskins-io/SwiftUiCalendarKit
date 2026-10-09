@@ -13,11 +13,14 @@ import SwiftUI
 /// back to the short or narrow name instead of truncating. See `CKFormat.weekdaySymbols`.
 struct CKWeekdayLabel: View {
 
+    @Environment(\.locale)
+    private var locale
+
     let date: Date
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
-            ForEach(CKFormat.weekdaySymbols(self.date), id: \.self) { symbol in
+            ForEach(CKFormat.weekdaySymbols(self.date, locale: self.locale), id: \.self) { symbol in
                 Text(symbol)
                     .lineLimit(1)
             }
@@ -30,6 +33,11 @@ struct CKWeekdayLabel: View {
         CKWeekdayLabel(date: Date())
             .frame(width: 80)
             .border(.gray)
+
+        CKWeekdayLabel(date: Date())
+            .frame(width: 80)
+            .border(.gray)
+            .environment(\.locale, Locale(identifier: "he"))
 
         CKWeekdayLabel(date: Date())
             .frame(width: 20)

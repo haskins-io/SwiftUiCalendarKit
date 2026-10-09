@@ -21,6 +21,9 @@ import SwiftUI
 
 public struct CKTimelineDay: View {
 
+    @Environment(\.locale)
+    private var locale
+
     @Environment(\.ckConfig)
     private var config
 
@@ -72,16 +75,16 @@ public struct CKTimelineDay: View {
             VStack(alignment: .leading, spacing: 2) {
 
                 HStack {
-                    Text(date.formatted(.dateTime.day().month(.wide))).bold()
+                    Text(date.formatted(.dateTime.day().month(.wide).locale(self.locale))).bold()
 
-                    Text(date.formatted(.dateTime.year()))
+                    Text(date.formatted(.dateTime.year().locale(self.locale)))
                 }
                 .padding(.leading, 10)
                 .padding(.top, 5)
                 .font(.title)
 
                 HStack {
-                    Text(date.formatted(.dateTime.weekday(.wide))).padding(.leading, 10)
+                    Text(date.formatted(.dateTime.weekday(.wide).locale(self.locale))).padding(.leading, 10)
 
                     Spacer()
 
@@ -194,4 +197,18 @@ public struct CKTimelineDay: View {
     )
     .showWeekNumbers(true)
     .workingHours(start: 9, end: 17)
+}
+
+/// Laid out and formatted as for an Arabic reader: right to left, with Arabic digits, months and
+/// weekdays. The package's own words stay English until it has an Arabic translation.
+#Preview("Arabic, right to left") {
+    CKTimelineDay(
+        observer: CKCalendarObserver(),
+        events: testEvents,
+        date: .constant(Date())
+    )
+    .showWeekNumbers(true)
+    .workingHours(start: 9, end: 17)
+    .environment(\.locale, Locale(identifier: "ar"))
+    .environment(\.layoutDirection, .rightToLeft)
 }

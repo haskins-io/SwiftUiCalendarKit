@@ -86,6 +86,24 @@ struct CKStringsTests {
         #expect(resolved[word].font == nil)
     }
 
+    @Test("Given a locale, a string writes its numbers that locale's way")
+    func localeFormatsArguments() {
+        let arabic = Locale(identifier: "ar_EG")
+
+        #expect(String(localized: CKStrings.weekNumber(42).locale(arabic)).contains("٤٢"))
+        #expect(String(localized: CKStrings.moreEvents(3).locale(arabic)).contains("٣"))
+        #expect(String(localized: CKStrings.weekNumber(42).locale(Locale(identifier: "en_GB"))) == "Week 42")
+    }
+
+    @Test("Setting a locale changes only the locale")
+    func localeKeepsKey() {
+        let resource = CKStrings.weekNumber(42)
+        let arabic = resource.locale(Locale(identifier: "ar_EG"))
+
+        #expect(arabic.key == resource.key)
+        #expect(arabic.locale.identifier == "ar_EG")
+    }
+
     @Test("The catalog is compiled into the package's own bundle, not the app's")
     func catalogIsInPackageBundle() {
         #expect(CKStrings.bundle != Bundle.main)
