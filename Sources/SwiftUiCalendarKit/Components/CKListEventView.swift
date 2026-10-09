@@ -46,7 +46,7 @@ struct CKListEventView: View {
     @ViewBuilder private var when: some View {
         switch event.kind {
         case .timed(let start, let end):
-            Text("\(start.formatted(.dateTime.hour().minute())) – \(end.formatted(.dateTime.hour().minute()))")
+            Text(CKFormat.timeRange(from: start, to: end))
                 .foregroundStyle(.secondary)
 
         case .allDay:
@@ -58,9 +58,8 @@ struct CKListEventView: View {
                 .foregroundStyle(.secondary)
 
         case .span(let from, let through):
-            Text("\(from.formatted(.dateTime.day().month(.abbreviated)))"
-                 + " – \(through.formatted(.dateTime.day().month(.abbreviated)))")
-            .foregroundStyle(.secondary)
+            Text(CKFormat.dayRange(from: from, through: through))
+                .foregroundStyle(.secondary)
         }
     }
 }

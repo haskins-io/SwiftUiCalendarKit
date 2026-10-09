@@ -170,7 +170,7 @@ public struct CKAgenda: View {
     private func timeLabel(event: CKEvent) -> some View {
         switch event.kind {
         case .timed(let start, let end):
-            Text("\(start.formatted(.dateTime.hour().minute())) - \(end.formatted(.dateTime.hour().minute()))")
+            Text(CKFormat.timeRange(from: start, to: end))
 
         case .allDay:
             Text(CKStrings.agendaAllDay)

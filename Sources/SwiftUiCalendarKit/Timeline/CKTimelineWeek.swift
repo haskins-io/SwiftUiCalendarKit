@@ -178,7 +178,7 @@ public struct CKTimelineWeek: View {
         ForEach(week, id: \.id) { weekDay in
 
             VStack(alignment: .center, spacing: 0) {
-                Text(weekDay.string.prefix(3))
+                CKWeekdayLabel(date: weekDay.date)
                 ZStack {
                     RoundedRectangle(cornerRadius: 5)
                         .fill(weekDay.date.isToday ? Color.blue.opacity(0.10) : Color.clear)
@@ -199,7 +199,7 @@ public struct CKTimelineWeek: View {
             ForEach(0..<24) { hour in
                 HStack {
                     // See `CKTimeline`: a fixed width plus a Dynamic Type font wraps the label.
-                    Text(String(format: "%02d:00", hour))
+                    Text(CKFormat.hourLabel(hour))
                         .font(.caption)
                         .monospacedDigit()
                         .lineLimit(1)

@@ -224,7 +224,7 @@ public struct CKCompactWeek<Detail: View>: View {
 
         VStack(spacing: 4) {
 
-            Text(day.string.prefix(3))
+            CKWeekdayLabel(date: day.date)
 
             ZStack {
                 RoundedRectangle(cornerRadius: 5)

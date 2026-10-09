@@ -40,7 +40,7 @@ struct CKDayHeader: View {
 
                 VStack(alignment: .center, spacing: 0) {
 
-                    Text(weekDay.string.prefix(3))
+                    CKWeekdayLabel(date: weekDay.date)
 
                     if showDate {
                         ZStack {

@@ -4,6 +4,7 @@
 
 @testable import SwiftUiCalendarKit
 import Foundation
+import SwiftUI
 import Testing
 
 @Suite("Strings — the package's text comes from its own catalog")
@@ -16,10 +17,10 @@ struct CKStringsTests {
         (CKStrings.compactAgendaAllDay, "All-Day"),
         (CKStrings.listAllDay, "All day"),
         (CKStrings.due("09:00"), "Due 09:00"),
-        (CKStrings.dueLower, "due"),
+        (CKStrings.compactDue("09:00"), "09:00\ndue"),
         (CKStrings.ends("16 Oct"), "Ends 16 Oct"),
         (CKStrings.until("16 Oct"), "Until 16 Oct"),
-        (CKStrings.to, "to"),
+        (CKStrings.compactUntil("16 Oct"), "to\n16 Oct"),
         (CKStrings.moreEvents(3), "+ 3 more"),
         (CKStrings.weekNumber(42), "Week 42"),
         (CKStrings.previous, "Previous"),
@@ -67,6 +68,22 @@ struct CKStringsTests {
         #expect(CKStrings.due("09:00").key == "Due %@")
         #expect(CKStrings.moreEvents(3).key == "+ %lld more")
         #expect(CKStrings.weekNumber(42).key == "Week %lld")
+        #expect(CKStrings.compactDue("09:00").key == "%@\ndue")
+        #expect(CKStrings.compactUntil("16 Oct").key == "to\n%@")
+    }
+
+    @Test("A styled argument keeps its style once localised, and the words around it do not take it")
+    func attributedArgumentKeepsStyle() throws {
+        var day = AttributedString("16 Oct")
+        day.font = .caption
+
+        let resolved = AttributedString(localized: CKStrings.compactUntil(day))
+        let range = try #require(resolved.range(of: "16 Oct"))
+        let word = try #require(resolved.range(of: "to"))
+
+        #expect(String(resolved.characters) == "to\n16 Oct")
+        #expect(resolved[range].font == .caption)
+        #expect(resolved[word].font == nil)
     }
 
     @Test("The catalog is compiled into the package's own bundle, not the app's")

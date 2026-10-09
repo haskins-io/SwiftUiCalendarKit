@@ -45,7 +45,7 @@ struct CKTimeline: View {
                             // guarantee that it will wrap at some accessibility size — "00:00"
                             // came back as "00:0 / 0" on an iPad. `fixedSize` lets the label take
                             // the width it needs; the frame is a floor, not a cage.
-                            Text(String(format: "%02d:00", hour))
+                            Text(CKFormat.hourLabel(hour))
                                 .font(.caption)
                                 .monospacedDigit()
                                 .lineLimit(1)

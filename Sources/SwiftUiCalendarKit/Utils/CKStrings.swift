@@ -44,9 +44,15 @@ nonisolated enum CKStrings {
         )
     }
 
-    /// The word printed under a deadline's time in `CKCompactAgenda`.
-    static var dueLower: LocalizedStringResource {
-        Self.resource("due", comment: "Compact agenda: printed under a deadline's time.")
+    /// A deadline in `CKCompactAgenda`'s narrow column: the time, and "due" on the line below.
+    ///
+    /// One string rather than two stacked labels, so a translation can put the word before the
+    /// time. The time is attributed so the view can style it apart from the word.
+    static func compactDue(_ time: AttributedString) -> LocalizedStringResource {
+        Self.resource(
+            "\(time)\ndue",
+            comment: "Compact agenda: a deadline, on two lines. The argument is the time, e.g. 09:00."
+        )
     }
 
     /// When a multi-day event ends, given the already-formatted day.
@@ -65,9 +71,14 @@ nonisolated enum CKStrings {
         )
     }
 
-    /// The word printed above a multi-day event's last day in `CKCompactAgenda`.
-    static var to: LocalizedStringResource {
-        Self.resource("to", comment: "Compact agenda: printed above the last day of a multi-day event.")
+    /// A multi-day event in `CKCompactAgenda`'s narrow column: "to", and its last day below.
+    ///
+    /// One string for the same reason as `compactDue`.
+    static func compactUntil(_ day: AttributedString) -> LocalizedStringResource {
+        Self.resource(
+            "to\n\(day)",
+            comment: "Compact agenda: a multi-day event, on two lines. The argument is its last day, e.g. 16 Oct."
+        )
     }
 
     // MARK: Month and week

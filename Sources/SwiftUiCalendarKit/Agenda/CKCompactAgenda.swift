@@ -176,21 +176,31 @@ public struct CKCompactAgenda<Detail: View>: View {
                 .foregroundStyle(.secondary)
 
         case .deadline(let at):
-            Text(at.formatted(.dateTime.hour().minute()))
-                .font(.caption)
-
-            Text(CKStrings.dueLower)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+            Text(AttributedString(localized: CKStrings.compactDue(
+                Self.emphasised(at.formatted(.dateTime.hour().minute()))
+            )))
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.trailing)
 
         case .span(_, let through):
-            Text(CKStrings.to)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-
-            Text(through.formatted(.dateTime.day().month(.abbreviated)))
-                .font(.caption)
+            Text(AttributedString(localized: CKStrings.compactUntil(
+                Self.emphasised(through.formatted(.dateTime.day().month(.abbreviated)))
+            )))
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.trailing)
         }
+    }
+
+    /// The time or date in a two-line label, set apart from the word beside it as the two
+    /// separate labels used to be: `.caption` in the primary colour, against `.caption2` in
+    /// the secondary.
+    private static func emphasised(_ text: String) -> AttributedString {
+        var emphasised = AttributedString(text)
+        emphasised.font = .caption
+        emphasised.foregroundColor = .primary
+        return emphasised
     }
 }
 
