@@ -183,7 +183,9 @@ CKMonth(observer: observer, events: events, date: $date)
 
 Days always start at midnight in the device's time zone, so use a calendar in that time zone (a new `Calendar` is, unless you change it).
 
-The package's own words ("All Day", "Week 42" and so on) are in a string catalog. Only English is included so far.
+The package's own words ("All Day", "Week 42" and so on) are in a string catalog. Only English is included so far, and translations are welcome: see [TRANSLATING.md](TRANSLATING.md).
+
+Your app only shows a translation in a language the app itself supports. iOS and macOS run an app in a language only if the app declares it, and the calendars follow the app's language. If your app isn't localised into Arabic, for example, the calendars stay in English for Arabic users, even once the package includes Arabic. To add a language to your app, add it under **Project › Info › Localizations** and include a string catalog that has that language. The calendars also use a translation if you set the locale on them yourself with `.environment(\.locale, …)`.
 
 ## Upgrading from v1
 v2 is a breaking change. **The `CKEventSchema` protocol has been removed.** Requiring your models to adopt a protocol was not a good fit, especially for SwiftData models, which had to gain properties they might never use. Instead, map your models to `CKEvent` values (optionally with `CKEventProviding`, see above).
