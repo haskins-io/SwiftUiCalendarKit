@@ -178,7 +178,7 @@ public struct CKAgenda: View {
             Text(CKFormat.timeRange(from: start, to: end, locale: self.locale))
 
         case .allDay:
-            Text(CKStrings.agendaAllDay.locale(self.locale))
+            Text(CKStrings.allDay.locale(self.locale))
 
         case .deadline(let at):
             // No range: a deadline has no duration, and printing "12:00 - 12:00" was the

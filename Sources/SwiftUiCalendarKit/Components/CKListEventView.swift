@@ -53,7 +53,7 @@ struct CKListEventView: View {
                 .foregroundStyle(.secondary)
 
         case .allDay:
-            Text(CKStrings.listAllDay.locale(self.locale))
+            Text(CKStrings.allDay.locale(self.locale))
                 .foregroundStyle(.secondary)
 
         case .deadline(let at):

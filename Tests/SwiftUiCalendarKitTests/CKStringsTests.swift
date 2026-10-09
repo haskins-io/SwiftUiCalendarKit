@@ -13,9 +13,7 @@ struct CKStringsTests {
     /// Every string the package draws, with the English it read before it was localised.
     /// Arguments are fixed so the interpolated ones can be compared too.
     private static let english: [(LocalizedStringResource, String)] = [
-        (CKStrings.agendaAllDay, "All Day"),
-        (CKStrings.compactAgendaAllDay, "All-Day"),
-        (CKStrings.listAllDay, "All day"),
+        (CKStrings.allDay, "All Day"),
         (CKStrings.due("09:00"), "Due 09:00"),
         (CKStrings.compactDue("09:00"), "09:00\ndue"),
         (CKStrings.ends("16 Oct"), "Ends 16 Oct"),

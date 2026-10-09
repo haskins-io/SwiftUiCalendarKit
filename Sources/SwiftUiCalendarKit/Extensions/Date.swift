@@ -93,8 +93,7 @@ nonisolated extension Date {
 
         (0..<7).forEach { index in
             if let weekDay = calendar.date(byAdding: .day, value: index, to: startOfWeek) {
-                let weekDaySymbol: String = weekDay.formatted(.dateTime.weekday())
-                week.append(.init(date: weekDay, string: weekDaySymbol, isToday: weekDay.isToday))
+                week.append(.init(date: weekDay, isToday: weekDay.isToday))
             }
         }
 

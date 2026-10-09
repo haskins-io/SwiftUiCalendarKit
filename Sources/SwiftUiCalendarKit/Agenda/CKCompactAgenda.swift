@@ -174,7 +174,7 @@ public struct CKCompactAgenda<Detail: View>: View {
                 .foregroundStyle(.secondary)
 
         case .allDay:
-            Text(CKStrings.compactAgendaAllDay.locale(self.locale))
+            Text(CKStrings.allDay.locale(self.locale))
                 .font(.caption)
                 .foregroundStyle(.secondary)
 

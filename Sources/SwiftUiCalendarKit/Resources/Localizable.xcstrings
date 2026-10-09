@@ -27,14 +27,8 @@
         }
       }
     },
-    "All day" : {
-      "comment" : "Event list row: the time column for an all-day event."
-    },
     "All Day" : {
-      "comment" : "Agenda: the time column for an all-day event."
-    },
-    "All-Day" : {
-      "comment" : "Compact agenda: the narrow time column for an all-day event."
+      "comment" : "In place of an all-day event's time, in agendas and lists. Keep it short: one column is narrow."
     },
     "Day" : {
       "comment" : "Calendar mode picker: show one day."

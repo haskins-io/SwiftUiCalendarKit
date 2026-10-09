@@ -21,19 +21,12 @@ nonisolated enum CKStrings {
 
     // MARK: Event times
 
-    /// The time column of an all-day event in `CKAgenda`.
-    static var agendaAllDay: LocalizedStringResource {
-        Self.resource("All Day", comment: "Agenda: the time column for an all-day event.")
-    }
-
-    /// The narrow time column of an all-day event in `CKCompactAgenda`.
-    static var compactAgendaAllDay: LocalizedStringResource {
-        Self.resource("All-Day", comment: "Compact agenda: the narrow time column for an all-day event.")
-    }
-
-    /// The time line of an all-day event in `CKListEventView`.
-    static var listAllDay: LocalizedStringResource {
-        Self.resource("All day", comment: "Event list row: the time column for an all-day event.")
+    /// Where an all-day event's time would be, in the agendas and the compact month's list.
+    static var allDay: LocalizedStringResource {
+        Self.resource(
+            "All Day",
+            comment: "In place of an all-day event's time, in agendas and lists. Keep it short: one column is narrow."
+        )
     }
 
     /// A deadline, given the already-formatted time it is due.
