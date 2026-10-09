@@ -33,7 +33,6 @@ public struct CKCompactWeek<Detail: View>: View {
 
     @State private var weekSlider: [[WeekDay]] = []
     @State private var currentWeekIndex: Int = 1
-    @State private var createWeek: Bool = false
 
     @State private var calendarWidth: CGFloat = .zero
 
@@ -86,14 +85,7 @@ public struct CKCompactWeek<Detail: View>: View {
             layout = await CKLayoutBuilder.day(date: date, events: events, width: calendarWidth - 50)
         }
         .onChange(of: currentWeekIndex, initial: false) {
-            // do we need to create a new Week Row
-            if currentWeekIndex == 0 || currentWeekIndex == (weekSlider.count - 1) {
-                createWeek = true
-            }
-
-            // update header so Month reflects correctly
-            headerMonth = weekSlider[1][0].date
-            date = headerMonth
+            paginateWeek()
         }
     }
 
@@ -201,20 +193,6 @@ public struct CKCompactWeek<Detail: View>: View {
                 weekRowView(day: day)
             }
         }
-        .background {
-            GeometryReader {
-                let minX = $0.frame(in: .global).minX
-
-                Color.clear
-                    .preference(key: OffsetKey.self, value: minX)
-                    .onPreferenceChange(OffsetKey.self) { value in
-                        if value.rounded() == 5 && createWeek {
-                            paginateWeek()
-                            createWeek = false
-                        }
-                    }
-            }
-        }
     }
 
     @ViewBuilder
@@ -255,6 +233,12 @@ public struct CKCompactWeek<Detail: View>: View {
 
 extension CKCompactWeek {
 
+    /// Slides the window as soon as a swipe lands on an end page, then selects that week's
+    /// first day, as `CKCompactDay` does for days.
+    ///
+    /// This used to wait for the row's global `minX` to reach exactly 5 (the strip's padding)
+    /// before sliding. That only held when the strip started at the screen's leading edge, so in
+    /// a sidebar, a split view or any inset the window never slid and paging stopped.
     private func paginateWeek() {
         let slid = CKPager.recentre(
             weekSlider,
@@ -265,6 +249,14 @@ extension CKCompactWeek {
 
         weekSlider = slid.pages
         currentWeekIndex = slid.index
+
+        guard weekSlider.indices.contains(currentWeekIndex),
+              let first = weekSlider[currentWeekIndex].first else {
+            return
+        }
+
+        headerMonth = first.date
+        date = first.date
     }
 
     private func calcWeekSliders(currentDate: Date) {

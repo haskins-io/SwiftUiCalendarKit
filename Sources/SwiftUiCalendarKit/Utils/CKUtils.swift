@@ -16,20 +16,20 @@ nonisolated enum CKUtils {
         return (Double(hour) * CKTimeline.hourHeight) + Double(minute) + 30.0
     }
 
-    static func doesEventOccurOnDate(event: CKEvent, date: Date) -> Bool {
+    /// Whether `event` is on the day containing `date` (any time of day will do).
+    ///
+    /// See `CKEvent.days(in:)`: an event that ends at midnight is not on the next day.
+    static func doesEventOccurOnDate(event: CKEvent, date: Date, calendar: Calendar = .current) -> Bool {
+        event.days(in: calendar).contains(calendar.startOfDay(for: date))
+    }
 
-        let calendar = Calendar.current
-
-        let start = event.startDate.midnight
-        let dayAfter = calendar.date(byAdding: .day, value: 1, to: event.endDate)?.midnight ?? event.endDate.midnight
-        let end = calendar.date(byAdding: .minute, value: -1, to: dayAfter) ?? dayAfter
-
-        let eventRange = start...end
-        if eventRange.contains(date) {
-            return true
-        }
-
-        return false
+    /// Whether any event falls on `date`: the compact month's dot.
+    ///
+    /// The same test as the list under the month (`doesEventOccurOnDate`), so a day has a dot
+    /// exactly when tapping it lists something. A multi-day or all-day event marks every day it
+    /// covers, not just its first, which is all the dot used to check.
+    static func hasEvents(on date: Date, in events: [CKEvent]) -> Bool {
+        events.contains { Self.doesEventOccurOnDate(event: $0, date: date) }
     }
 
     private static func buildOverlapGroups(

@@ -80,4 +80,48 @@ struct CKPagerTests {
         #expect(Fixture.calendar.dateComponents([.day], from: firstDays[0], to: firstDays[1]).day == 7)
         #expect(Fixture.calendar.dateComponents([.day], from: firstDays[1], to: firstDays[2]).day == 7)
     }
+
+    @Test("After a swipe, rebuilding the window around the selected week gives the same window")
+    func weekWindowSurvivesRebuild() {
+        let previous = { (week: [WeekDay]) in week.first?.date.createPreviousWeek() }
+        let next = { (week: [WeekDay]) in week.last?.date.createNextWeek() }
+
+        let window = CKPager.window(around: Fixture.anchor.fetchWeek(), previous: previous, next: next)
+
+        // `CKCompactWeek` slides the window on a swipe, then sets `date` to the selected week's
+        // first day, and a new `date` rebuilds the window. The two must agree, or the strip
+        // jumps a week after every swipe.
+        for landing in [0, 2] {
+            let slid = CKPager.recentre(window, at: landing, previous: previous, next: next)
+            let selected = slid.pages[slid.index][0].date
+            let rebuilt = CKPager.window(around: selected.fetchWeek(), previous: previous, next: next)
+
+            #expect(rebuilt.map { $0.map(\.date) } == slid.pages.map { $0.map(\.date) })
+            #expect(slid.index == 1)
+        }
+    }
+
+    @Test("Swiping forward again and again moves one week each time")
+    func repeatedWeekSwipes() {
+        let previous = { (week: [WeekDay]) in week.first?.date.createPreviousWeek() }
+        let next = { (week: [WeekDay]) in week.last?.date.createNextWeek() }
+
+        var pages = CKPager.window(around: Fixture.anchor.fetchWeek(), previous: previous, next: next)
+        var firstDays: [Date] = []
+
+        for _ in 0..<5 {
+            let slid = CKPager.recentre(pages, at: pages.count - 1, previous: previous, next: next)
+            pages = slid.pages
+            firstDays.append(pages[slid.index][0].date)
+        }
+
+        let gaps = zip(firstDays, firstDays.dropFirst()).map {
+            Fixture.calendar.dateComponents([.day], from: $0, to: $1).day
+        }
+
+        let nextWeek = Fixture.week.first.flatMap { Fixture.calendar.date(byAdding: .day, value: 7, to: $0) }
+
+        #expect(firstDays.first == nextWeek)
+        #expect(gaps == [7, 7, 7, 7])
+    }
 }

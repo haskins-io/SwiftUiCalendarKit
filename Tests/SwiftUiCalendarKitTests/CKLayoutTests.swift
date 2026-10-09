@@ -110,6 +110,40 @@ struct CKEventSelectionTests {
         #expect(!CKUtils.doesEventOccurOnDate(event: trip, date: Fixture.day(-1)))
     }
 
+    @Test("A multi-day event marks every day it covers in the compact month, not just its first")
+    func multiDayDots() {
+        let trip = [Fixture.span(Fixture.day(-1), Fixture.day(2))]
+
+        #expect((-1...2).allSatisfy { CKUtils.hasEvents(on: Fixture.day($0), in: trip) })
+        #expect(!CKUtils.hasEvents(on: Fixture.day(-2), in: trip))
+        #expect(!CKUtils.hasEvents(on: Fixture.day(3), in: trip))
+    }
+
+    @Test("Each kind of event marks its own day")
+    func dotsForEachKind() {
+        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Fixture.timed(Fixture.at(12), Fixture.at(13))]))
+        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Fixture.allDay(Fixture.day())]))
+        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Fixture.deadline(Fixture.at(9))]))
+        #expect(!CKUtils.hasEvents(on: Fixture.day(1), in: [Fixture.allDay(Fixture.day())]))
+        #expect(!CKUtils.hasEvents(on: Fixture.day(), in: []))
+    }
+
+    @Test("A day has a dot exactly when the list under the month has something for it")
+    func dotsMatchTheList() {
+        let events = [
+            Fixture.span(Fixture.day(-1), Fixture.day(2)),
+            Fixture.timed(Fixture.at(10, day: 4), Fixture.at(11, day: 4)),
+            Fixture.deadline(Fixture.at(9, day: 6))
+        ]
+
+        for offset in -3...8 {
+            let day = Fixture.day(offset)
+            let listed = events.filter { CKUtils.doesEventOccurOnDate(event: $0, date: day) }
+
+            #expect(CKUtils.hasEvents(on: day, in: events) == !listed.isEmpty, "day \(offset)")
+        }
+    }
+
     @Test("Bands are ordered by start, the longer first when they start together")
     func bandOrdering() {
         let short = Fixture.span(Fixture.day(), Fixture.day(1), "Short")

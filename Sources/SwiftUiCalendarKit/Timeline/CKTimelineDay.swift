@@ -27,6 +27,9 @@ public struct CKTimelineDay: View {
     @Environment(\.colorScheme)
     private var colorScheme
 
+    @Environment(\.layoutDirection)
+    private var layoutDirection
+
     @State var observer: CKCalendarObserver
 
     @Binding private var date: Date
@@ -98,14 +101,16 @@ public struct CKTimelineDay: View {
             .background(colorScheme == .dark ? Color.black : Color.white)
             // Touch keeps its swipe; the stepper is what makes the view usable without one.
             // A horizontal drag only — a vertical one belongs to the hour grid's scroll view.
+            // Which way is forward depends on the layout direction; see `CKSwipe`.
             .gesture(
                 DragGesture(minimumDistance: 30)
                     .onEnded { value in
-                        guard abs(value.translation.width) > abs(value.translation.height) else {
+                        guard let days = CKSwipe.step(
+                            translation: value.translation,
+                            layoutDirection: layoutDirection
+                        ) else {
                             return
                         }
-
-                        let days = value.translation.width < 0 ? 1 : -1
 
                         withAnimation {
                             date = Calendar.current.date(byAdding: .day, value: days, to: date) ?? date

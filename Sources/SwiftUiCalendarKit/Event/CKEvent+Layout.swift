@@ -97,6 +97,24 @@ nonisolated extension CKEvent {
         return false
     }
 
+    /// The days the event is on, as the midnight of the first through the midnight of the last.
+    ///
+    /// An event that lasts is over *at* its end time, so one that ends on the stroke of midnight
+    /// finishes on the day before rather than touching the next. A deadline (whose end is its
+    /// start) is on its own day. An end before the start is treated as the start.
+    func days(in calendar: Calendar = .current) -> ClosedRange<Date> {
+        let first = calendar.startOfDay(for: self.startDate)
+        let endDay = calendar.startOfDay(for: self.endDate)
+
+        let last = if self.endDate > self.startDate, self.endDate == endDay {
+            calendar.date(byAdding: .day, value: -1, to: endDay) ?? endDay
+        } else {
+            endDay
+        }
+
+        return first...max(first, last)
+    }
+
     /// Whether the event covers more than one calendar day, and so wants a band rather than a
     /// row on a single day.
     func isMultiDay(in calendar: Calendar = .current) -> Bool {
@@ -104,7 +122,9 @@ nonisolated extension CKEvent {
             return true
         }
 
-        return !calendar.isDate(self.startDate, inSameDayAs: self.endDate)
+        let days = self.days(in: calendar)
+
+        return days.lowerBound != days.upperBound
     }
 
     /// Whether any part of the event falls inside `interval`.

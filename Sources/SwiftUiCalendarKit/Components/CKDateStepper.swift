@@ -21,7 +21,7 @@ struct CKDateStepper: View {
             Button {
                 self.step(-1)
             } label: {
-                Image(systemName: "chevron.left.circle")
+                Image(systemName: "chevron.backward.circle")
             }
             .accessibilityLabel(Text(CKStrings.previous(self.component)))
 
@@ -36,7 +36,7 @@ struct CKDateStepper: View {
             Button {
                 self.step(1)
             } label: {
-                Image(systemName: "chevron.right.circle")
+                Image(systemName: "chevron.forward.circle")
             }
             .accessibilityLabel(Text(CKStrings.next(self.component)))
         }
