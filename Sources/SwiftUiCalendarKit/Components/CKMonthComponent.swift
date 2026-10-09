@@ -92,7 +92,7 @@ struct CKMonthComponent: View {
                             }
                         } label: {
                             Label(
-                                title: { Text("Previous") },
+                                title: { Text(CKStrings.previous) },
                                 icon: {
                                     Image(systemName: "chevron.left.circle")
                                         .font(.title2)
@@ -131,7 +131,7 @@ struct CKMonthComponent: View {
                             }
                         } label: {
                             Label(
-                                title: { Text("Next") },
+                                title: { Text(CKStrings.next) },
                                 icon: {
                                     Image(systemName: "chevron.right.circle")
                                         .font(.title2)

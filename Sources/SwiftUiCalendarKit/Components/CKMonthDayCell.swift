@@ -77,7 +77,7 @@ struct CKMonthDayCell: View {
                 HStack {
                     Spacer()
 
-                    Text("+ \(hiddenCount) more")
+                    Text(CKStrings.moreEvents(hiddenCount))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .padding(.leading, 5)

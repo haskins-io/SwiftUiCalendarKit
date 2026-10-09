@@ -15,16 +15,8 @@ public enum CKCalendarMode: String, CaseIterable, Identifiable {
 
 extension CKCalendarMode {
 
-    var label: String {
-        switch self {
-        case .day:
-            return "Day"
-
-        case .week:
-            return "Week"
-
-        case .month:
-            return "Month"
-        }
+    /// The mode's name in `CKCalendarPicker`, from the package's string catalog.
+    var label: LocalizedStringResource {
+        CKStrings.mode(self)
     }
 }

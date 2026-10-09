@@ -50,11 +50,11 @@ struct CKListEventView: View {
                 .foregroundStyle(.secondary)
 
         case .allDay:
-            Text("All day")
+            Text(CKStrings.listAllDay)
                 .foregroundStyle(.secondary)
 
         case .deadline(let at):
-            Text("Due \(at.formatted(.dateTime.hour().minute()))")
+            Text(CKStrings.due(at.formatted(.dateTime.hour().minute())))
                 .foregroundStyle(.secondary)
 
         case .span(let from, let through):

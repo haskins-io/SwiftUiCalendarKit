@@ -17,8 +17,7 @@ struct CKCalendarHeader: View {
         HStack {
 
             HStack {
-                Text(currentDate.formatted(.dateTime.month(.wide))).bold()
-                Text(currentDate.formatted(.dateTime.year()))
+                Text(currentDate.formatted(.dateTime.month(.wide).year()))
             }
             .padding(.leading, 20)
             .padding(.top, 5)

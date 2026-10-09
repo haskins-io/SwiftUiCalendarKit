@@ -134,7 +134,7 @@ public struct CKAgenda: View {
         HStack(spacing: 12) {
             // Show when it ends
             VStack(alignment: .leading, spacing: 0) {
-                Text("Ends \(event.endDate.formatted(.dateTime.day().month(.abbreviated)))")
+                Text(CKStrings.ends(event.endDate.formatted(.dateTime.day().month(.abbreviated))))
                     .font(.body)
                     .foregroundStyle(.secondary)
             }
@@ -173,15 +173,15 @@ public struct CKAgenda: View {
             Text("\(start.formatted(.dateTime.hour().minute())) - \(end.formatted(.dateTime.hour().minute()))")
 
         case .allDay:
-            Text("All Day")
+            Text(CKStrings.agendaAllDay)
 
         case .deadline(let at):
             // No range: a deadline has no duration, and printing "12:00 - 12:00" was the
             // list-shaped version of drawing it zero pixels high (§3.4).
-            Text("Due \(at.formatted(.dateTime.hour().minute()))")
+            Text(CKStrings.due(at.formatted(.dateTime.hour().minute())))
 
         case .span(_, let through):
-            Text("Until \(through.formatted(.dateTime.day().month(.abbreviated)))")
+            Text(CKStrings.until(through.formatted(.dateTime.day().month(.abbreviated))))
         }
     }
 

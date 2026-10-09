@@ -159,9 +159,7 @@ public struct CKCompactWeek<Detail: View>: View {
         VStack(alignment: config.headingAlignment) {
 
             HStack {
-                Text(headerMonth.formatted(.dateTime.month(.wide)))
-                    .bold()
-                Text(headerMonth.formatted(.dateTime.year()))
+                Text(headerMonth.formatted(.dateTime.month(.wide).year()))
 
                 Spacer()
 

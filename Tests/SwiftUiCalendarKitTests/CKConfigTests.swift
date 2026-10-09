@@ -52,12 +52,12 @@ struct CKDateStepperTests {
 
     @Test("Accessibility labels name what one press moves by")
     func labels() {
-        #expect(CKDateStepper.previousLabel(for: .day) == "Previous day")
-        #expect(CKDateStepper.nextLabel(for: .day) == "Next day")
-        #expect(CKDateStepper.previousLabel(for: .weekOfYear) == "Previous week")
-        #expect(CKDateStepper.nextLabel(for: .weekOfYear) == "Next week")
-        #expect(CKDateStepper.previousLabel(for: .month) == "Previous month")
-        #expect(CKDateStepper.nextLabel(for: .month) == "Next month")
+        #expect(String(localized: CKStrings.previous(.day)) == "Previous day")
+        #expect(String(localized: CKStrings.next(.day)) == "Next day")
+        #expect(String(localized: CKStrings.previous(.weekOfYear)) == "Previous week")
+        #expect(String(localized: CKStrings.next(.weekOfYear)) == "Next week")
+        #expect(String(localized: CKStrings.previous(.month)) == "Previous month")
+        #expect(String(localized: CKStrings.next(.month)) == "Next month")
     }
 }
 
@@ -66,7 +66,7 @@ struct CKCalendarModeTests {
 
     @Test("Each mode has a label, in order")
     func labels() {
-        #expect(CKCalendarMode.allCases.map(\.label) == ["Day", "Week", "Month"])
+        #expect(CKCalendarMode.allCases.map { String(localized: $0.label) } == ["Day", "Week", "Month"])
     }
 }
 

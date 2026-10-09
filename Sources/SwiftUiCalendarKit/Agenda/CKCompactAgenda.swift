@@ -171,7 +171,7 @@ public struct CKCompactAgenda<Detail: View>: View {
                 .foregroundStyle(.secondary)
 
         case .allDay:
-            Text("All-Day")
+            Text(CKStrings.compactAgendaAllDay)
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -179,12 +179,12 @@ public struct CKCompactAgenda<Detail: View>: View {
             Text(at.formatted(.dateTime.hour().minute()))
                 .font(.caption)
 
-            Text("due")
+            Text(CKStrings.dueLower)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
 
         case .span(_, let through):
-            Text("to")
+            Text(CKStrings.to)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
 

@@ -15,10 +15,12 @@ public struct CKCalendarPicker: View {
     }
 
     public var body: some View {
-        Picker("Display Mode", selection: $mode) {
+        Picker(selection: $mode) {
             ForEach(CKCalendarMode.allCases) { calendarMode in
                 Text(calendarMode.label)
             }
+        } label: {
+            Text(CKStrings.displayMode)
         }
         .pickerStyle(SegmentedPickerStyle())
     }

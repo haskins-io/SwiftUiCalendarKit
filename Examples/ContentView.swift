@@ -119,6 +119,9 @@ struct ContentView: View {
             events: events,
             date: $date
         )
+        .showTime(true)
+        .workingHours(start: 7, end: 19)
+        .currentDayColour(.blue)
     }
 
     private var weekCompact: some View {
@@ -127,6 +130,7 @@ struct ContentView: View {
             events: events,
             date: $date
         )
+        .currentDayColour(.blue)
     }
 
     private var month: some View {

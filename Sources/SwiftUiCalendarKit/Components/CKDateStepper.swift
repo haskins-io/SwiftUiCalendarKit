@@ -23,7 +23,7 @@ struct CKDateStepper: View {
             } label: {
                 Image(systemName: "chevron.left.circle")
             }
-            .accessibilityLabel(Self.previousLabel(for: self.component))
+            .accessibilityLabel(Text(CKStrings.previous(self.component)))
 
             Button {
                 withAnimation {
@@ -38,7 +38,7 @@ struct CKDateStepper: View {
             } label: {
                 Image(systemName: "chevron.right.circle")
             }
-            .accessibilityLabel(Self.nextLabel(for: self.component))
+            .accessibilityLabel(Text(CKStrings.next(self.component)))
         }
         .font(.title)
     }
@@ -57,32 +57,6 @@ struct CKDateStepper: View {
         calendar: Calendar = .current
     ) -> Date {
         calendar.date(byAdding: component, value: value, to: date) ?? date
-    }
-
-    static func previousLabel(for component: Calendar.Component) -> String {
-        switch component {
-        case .day:
-            "Previous day"
-
-        case .weekOfYear:
-            "Previous week"
-
-        default:
-            "Previous month"
-        }
-    }
-
-    static func nextLabel(for component: Calendar.Component) -> String {
-        switch component {
-        case .day:
-            "Next day"
-
-        case .weekOfYear:
-            "Next week"
-
-        default:
-            "Next month"
-        }
     }
 }
 
