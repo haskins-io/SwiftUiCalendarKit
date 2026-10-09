@@ -22,6 +22,14 @@ public struct CKAgenda: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Environment(\.ckConfig)
     private var config
 
@@ -31,8 +39,6 @@ public struct CKAgenda: View {
     @State var observer: CKCalendarObserver
 
     private let events: [CKEvent]
-
-    private let calendar = Calendar.current
 
     /// The first day the list covers, when the caller has one.
     private let from: Date?
@@ -98,16 +104,16 @@ public struct CKAgenda: View {
         HStack(alignment: .top, spacing: 16) {
             // Left side: Day number and name
             HStack(spacing: 20) {
-                Text(dayEvents.date.formatted(.dateTime.day().locale(self.locale)))
+                Text(dayEvents.date.formatted(self.dateStyle.day()))
                     .font(.largeTitle)
                     .foregroundStyle(.primary)
 
                 VStack(alignment: .leading) {
-                    Text(dayEvents.date.formatted(.dateTime.weekday(.wide).locale(self.locale)))
+                    Text(dayEvents.date.formatted(self.dateStyle.weekday(.wide)))
                         .font(.body)
                         .foregroundStyle(.primary)
 
-                    Text(dayEvents.date.formatted(.dateTime.month(.abbreviated).year().locale(self.locale)))
+                    Text(dayEvents.date.formatted(self.dateStyle.month(.abbreviated).year()))
                         .font(.body)
                         .foregroundStyle(.primary)
                 }
@@ -137,7 +143,7 @@ public struct CKAgenda: View {
         HStack(spacing: 12) {
             // Show when it ends
             VStack(alignment: .leading, spacing: 0) {
-                let day = event.endDate.formatted(.dateTime.day().month(.abbreviated).locale(self.locale))
+                let day = event.endDate.formatted(self.dateStyle.day().month(.abbreviated))
 
                 Text(CKStrings.ends(day).locale(self.locale))
                     .font(.body)
@@ -175,7 +181,7 @@ public struct CKAgenda: View {
     private func timeLabel(event: CKEvent) -> some View {
         switch event.kind {
         case .timed(let start, let end):
-            Text(CKFormat.timeRange(from: start, to: end, locale: self.locale))
+            Text(CKFormat.timeRange(from: start, to: end, locale: self.locale, calendar: self.calendar))
 
         case .allDay:
             Text(CKStrings.allDay.locale(self.locale))
@@ -183,10 +189,10 @@ public struct CKAgenda: View {
         case .deadline(let at):
             // No range: a deadline has no duration, and printing "12:00 - 12:00" was the
             // list-shaped version of drawing it zero pixels high (§3.4).
-            Text(CKStrings.due(at.formatted(.dateTime.hour().minute().locale(self.locale))).locale(self.locale))
+            Text(CKStrings.due(at.formatted(self.dateStyle.hour().minute())).locale(self.locale))
 
         case .span(_, let through):
-            let day = through.formatted(.dateTime.day().month(.abbreviated).locale(self.locale))
+            let day = through.formatted(self.dateStyle.day().month(.abbreviated))
 
             Text(CKStrings.until(day).locale(self.locale))
         }

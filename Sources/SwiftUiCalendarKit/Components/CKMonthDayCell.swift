@@ -12,12 +12,18 @@ struct CKMonthDayCell: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Environment(\.ckConfig)
     private var config
 
     @State var observer: CKCalendarObserver
-
-    private let calendar = Calendar.current
 
     /// The day's own events — never a multi-day band, which travels in `bands`.
     private let events: [CKEvent]
@@ -110,7 +116,7 @@ extension CKMonthDayCell {
 
             Spacer(minLength: 0)
 
-            Text(date.formatted(.dateTime.day().locale(self.locale)))
+            Text(date.formatted(self.dateStyle.day()))
                 .font(.caption)
                 .fontWeight(isToday ? .bold : .regular)
                 .foregroundStyle(dateColour)

@@ -20,6 +20,9 @@ import SwiftUI
 
 public struct CKCompactMonth<Detail: View>: View {
 
+    @Environment(\.calendar)
+    private var calendar
+
     @Environment(\.colorScheme)
     private var colorScheme
 
@@ -40,7 +43,7 @@ public struct CKCompactMonth<Detail: View>: View {
 
     public var body: some View {
         VStack {
-            CKMonthComponent(calendar: Calendar.current, date: $date, events: events)
+            CKMonthComponent(calendar: self.calendar, date: $date, events: events)
 
             CKCompactMonthEvents(events: events, detail: detail, date: $date)
                 .listStyle(.plain)
@@ -71,4 +74,21 @@ public struct CKCompactMonth<Detail: View>: View {
     }
     .environment(\.locale, Locale(identifier: "ar"))
     .environment(\.layoutDirection, .rightToLeft)
+}
+
+/// The Hebrew calendar, with the week starting on Monday: the grid follows the Hebrew month, and
+/// the title and day numbers are written in it.
+#Preview("Hebrew calendar") {
+    NavigationView {
+        CKCompactMonth(
+            detail: { _ in EmptyView() },
+            events: testEvents,
+            date: .constant(Date())
+        )
+    }
+    .environment(\.calendar, {
+        var calendar = Calendar(identifier: .hebrew)
+        calendar.firstWeekday = 2
+        return calendar
+    }())
 }

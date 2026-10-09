@@ -11,6 +11,14 @@ struct CKDayHeader: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Environment(\.ckConfig)
     private var config
 
@@ -20,8 +28,6 @@ struct CKDayHeader: View {
 
     var showTime: Bool
     var showDate: Bool
-
-    private let calendar = Calendar.current
 
     var body: some View {
 
@@ -34,11 +40,11 @@ struct CKDayHeader: View {
 
         return ZStack {
 
-            let currentWeek = currentDate.fetchWeek()
+            let currentWeek = currentDate.fetchWeek(in: self.calendar)
 
             ForEach(Array(currentWeek.enumerated()), id: \.offset) { index, weekDay in
 
-                let status = Calendar.current.isDate(weekDay.date, inSameDayAs: Date())
+                let status = self.calendar.isDate(weekDay.date, inSameDayAs: Date())
                 let xOffset = (width * CGFloat(index)) + widthOfset
 
                 VStack(alignment: .center, spacing: 0) {
@@ -51,7 +57,7 @@ struct CKDayHeader: View {
                                 .fill(getColor(weekDay: weekDay))
                                 .frame(width: 27, height: 27)
 
-                            Text(weekDay.date.formatted(Date.FormatStyle().day(.twoDigits).locale(self.locale)))
+                            Text(weekDay.date.formatted(self.dateStyle.day(.twoDigits)))
                                 .foregroundColor(status ? Color.white : .primary)
                         }
                     }
@@ -64,7 +70,7 @@ struct CKDayHeader: View {
     }
 
     private func getColor(weekDay: WeekDay) -> Color {
-        return Calendar.current.isDate(weekDay.date, inSameDayAs: Date()) ?
+        return self.calendar.isDate(weekDay.date, inSameDayAs: Date()) ?
         config.currentDayColour :
         calendar.isDate(weekDay.date, inSameDayAs: currentDate) ?
         Color.blue.opacity(0.10) :

@@ -13,6 +13,14 @@ struct CKListEventView: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     var event: CKEvent
 
     var body: some View {
@@ -49,7 +57,7 @@ struct CKListEventView: View {
     @ViewBuilder private var when: some View {
         switch event.kind {
         case .timed(let start, let end):
-            Text(CKFormat.timeRange(from: start, to: end, locale: self.locale))
+            Text(CKFormat.timeRange(from: start, to: end, locale: self.locale, calendar: self.calendar))
                 .foregroundStyle(.secondary)
 
         case .allDay:
@@ -57,11 +65,11 @@ struct CKListEventView: View {
                 .foregroundStyle(.secondary)
 
         case .deadline(let at):
-            Text(CKStrings.due(at.formatted(.dateTime.hour().minute().locale(self.locale))).locale(self.locale))
+            Text(CKStrings.due(at.formatted(self.dateStyle.hour().minute())).locale(self.locale))
                 .foregroundStyle(.secondary)
 
         case .span(let from, let through):
-            Text(CKFormat.dayRange(from: from, through: through, locale: self.locale))
+            Text(CKFormat.dayRange(from: from, through: through, locale: self.locale, calendar: self.calendar))
                 .foregroundStyle(.secondary)
         }
     }

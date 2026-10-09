@@ -67,7 +67,7 @@ extension CKUtils {
             var lanes: [[Date: CKEvent]] = []
 
             for band in crossing {
-                let covered = week.filter { Self.doesEventOccurOnDate(event: band, date: $0) }
+                let covered = week.filter { Self.doesEventOccurOnDate(event: band, date: $0, calendar: calendar) }
 
                 guard !covered.isEmpty else {
                     continue

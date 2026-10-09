@@ -24,6 +24,14 @@ public struct CKCompactWeek<Detail: View>: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Environment(\.ckConfig)
     private var config
 
@@ -48,7 +56,6 @@ public struct CKCompactWeek<Detail: View>: View {
 
     private let detail: (CKEvent) -> Detail
     private var events: [CKEvent]
-    private let calendar = Calendar.current
 
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
@@ -84,8 +91,13 @@ public struct CKCompactWeek<Detail: View>: View {
             weekSlider.removeAll()
             calcWeekSliders(currentDate: date)
         }
-        .task(id: CKLayoutRequest(dates: [date], events: events, width: calendarWidth - 50)) {
-            layout = await CKLayoutBuilder.day(date: date, events: events, width: calendarWidth - 50)
+        .task(id: CKLayoutRequest(dates: [date], events: events, width: calendarWidth - 50, calendar: self.calendar)) {
+            layout = await CKLayoutBuilder.day(
+                date: date,
+                events: events,
+                width: calendarWidth - 50,
+                calendar: self.calendar
+            )
         }
         .onChange(of: currentWeekIndex, initial: false) {
             paginateWeek()
@@ -154,7 +166,7 @@ public struct CKCompactWeek<Detail: View>: View {
         VStack(alignment: config.headingAlignment) {
 
             HStack {
-                Text(headerMonth.formatted(.dateTime.month(.wide).year().locale(self.locale)))
+                Text(headerMonth.formatted(self.dateStyle.month(.wide).year()))
 
                 Spacer()
 
@@ -212,7 +224,7 @@ public struct CKCompactWeek<Detail: View>: View {
                     .fill(cellColour(day: day))
                     .frame(width: 27, height: 27)
 
-                Text(day.date.formatted(.dateTime.day(.twoDigits).locale(self.locale)))
+                Text(day.date.formatted(self.dateStyle.day(.twoDigits)))
                     .foregroundColor(status ? Color.white : .primary)
             }
         }
@@ -246,8 +258,8 @@ extension CKCompactWeek {
         let slid = CKPager.recentre(
             weekSlider,
             at: currentWeekIndex,
-            previous: { $0.first?.date.createPreviousWeek() },
-            next: { $0.last?.date.createNextWeek() }
+            previous: { $0.first?.date.createPreviousWeek(in: self.calendar) },
+            next: { $0.last?.date.createNextWeek(in: self.calendar) }
         )
 
         weekSlider = slid.pages
@@ -265,9 +277,9 @@ extension CKCompactWeek {
     private func calcWeekSliders(currentDate: Date) {
         if weekSlider.isEmpty {
             weekSlider = CKPager.window(
-                around: currentDate.fetchWeek(),
-                previous: { $0.first?.date.createPreviousWeek() },
-                next: { $0.last?.date.createNextWeek() }
+                around: currentDate.fetchWeek(in: self.calendar),
+                previous: { $0.first?.date.createPreviousWeek(in: self.calendar) },
+                next: { $0.last?.date.createNextWeek(in: self.calendar) }
             )
         }
     }

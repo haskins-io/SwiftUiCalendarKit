@@ -12,6 +12,14 @@ struct CKTimelineWeekEventView: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @State var observer: CKCalendarObserver
 
     private var eventData: CKEventViewData
@@ -33,7 +41,7 @@ struct CKTimelineWeekEventView: View {
     }
 
     var body: some View {
-        if Calendar.current.differenceInMinutes(start: event.startDate, end: event.endDate) >= 30 {
+        if self.calendar.differenceInMinutes(start: event.startDate, end: event.endDate) >= 30 {
             greaterThan30mins()
         } else {
             lessThan30mins()
@@ -43,7 +51,7 @@ struct CKTimelineWeekEventView: View {
     @ViewBuilder
     private func greaterThan30mins() -> some View {
         VStack(alignment: .leading) {
-            Text(event.startDate.formatted(.dateTime.hour().minute().locale(self.locale))).padding(.leading, 5)
+            Text(event.startDate.formatted(self.dateStyle.hour().minute())).padding(.leading, 5)
             HStack {
                 if !event.systemImage.isEmpty {
                     Image(systemName: event.systemImage)
@@ -92,7 +100,7 @@ struct CKTimelineWeekEventView: View {
     @ViewBuilder
     private func lessThan30mins() -> some View {
         HStack(alignment: .center) {
-            Text(event.startDate.formatted(.dateTime.hour().minute().locale(self.locale))).padding(.leading, 5)
+            Text(event.startDate.formatted(self.dateStyle.hour().minute())).padding(.leading, 5)
 
             if !event.systemImage.isEmpty {
                 Image(systemName: event.systemImage)

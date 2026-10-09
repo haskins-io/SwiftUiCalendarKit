@@ -169,7 +169,19 @@ CKCompactWeek(detail: { event in EventDetail(event: event) }, events: events, da
     .environment(\.locale, Locale(identifier: "ar"))
 ```
 
-The calendars support right-to-left languages such as Arabic and Hebrew. Layouts mirror, and swiping towards the leading edge moves forward in time. Week starts and month grids follow the device's calendar settings.
+The calendars support right-to-left languages such as Arabic and Hebrew. Layouts mirror, and swiping towards the leading edge moves forward in time.
+
+Week starts, month grids, week numbers and month names follow the SwiftUI environment's calendar, which is also the device's unless you set one. That includes non-Gregorian calendars:
+
+```swift
+var calendar = Calendar(identifier: .hebrew)
+calendar.firstWeekday = 2   // Monday
+
+CKMonth(observer: observer, events: events, date: $date)
+    .environment(\.calendar, calendar)
+```
+
+Days always start at midnight in the device's time zone, so use a calendar in that time zone (a new `Calendar` is, unless you change it).
 
 The package's own words ("All Day", "Week 42" and so on) are in a string catalog. Only English is included so far.
 

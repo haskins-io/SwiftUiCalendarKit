@@ -24,6 +24,15 @@ public struct CKTimelineWeek: View {
     @Environment(\.locale)
     private var locale
 
+    /// Not private: `CKTimelineWeek+Bands` uses it too.
+    @Environment(\.calendar)
+    var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Environment(\.ckConfig)
     private var config
 
@@ -45,8 +54,6 @@ public struct CKTimelineWeek: View {
     private var events: [CKEvent]
 
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
-
-    var calendar = Calendar.current
 
     /// Wide enough for "00:00" at `.caption`. The labels no longer wrap at any size — they
     /// `fixedSize` past this if they have to — but the column arithmetic still needs a sane
@@ -76,7 +83,7 @@ public struct CKTimelineWeek: View {
 
     public var body: some View {
 
-        let week = calendarDate.fetchWeek()
+        let week = calendarDate.fetchWeek(in: self.calendar)
 
         // Bucketed once here rather than filtered inside each of the seven columns, which walked
         // the whole week's events per column.
@@ -155,8 +162,18 @@ public struct CKTimelineWeek: View {
                     timelinePosition = CKUtils.currentTimelinePosition()
                 }
             }
-            .task(id: CKLayoutRequest(dates: [calendarDate], events: events, width: columnWidth)) {
-                layout = await CKLayoutBuilder.week(date: calendarDate, events: events, width: columnWidth)
+            .task(id: CKLayoutRequest(
+                dates: [calendarDate],
+                events: events,
+                width: columnWidth,
+                calendar: self.calendar
+            )) {
+                layout = await CKLayoutBuilder.week(
+                    date: calendarDate,
+                    events: events,
+                    width: columnWidth,
+                    calendar: self.calendar
+                )
             }
             .onChange(of: geometry.size, initial: true) { _, newSize in
                 guard newSize.width > 0 else {
@@ -187,7 +204,7 @@ public struct CKTimelineWeek: View {
                         .fill(weekDay.date.isToday ? Color.blue.opacity(0.10) : Color.clear)
                         .frame(width: 27, height: 27)
 
-                    Text(weekDay.date.formatted(.dateTime.day(.twoDigits).locale(self.locale)))
+                    Text(weekDay.date.formatted(self.dateStyle.day(.twoDigits)))
                 }
             }
             .frame(minWidth: columnWidth, idealWidth: columnWidth, maxWidth: columnWidth)

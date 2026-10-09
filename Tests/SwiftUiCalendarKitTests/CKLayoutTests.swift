@@ -22,8 +22,18 @@ struct CKLayoutBuilderTests {
 
     @Test("An unmeasured view gets an empty layout rather than negative widths")
     func nonPositiveWidthYieldsNothing() async {
-        let day = await CKLayoutBuilder.day(date: Fixture.day(), events: self.mixed, width: 0)
-        let week = await CKLayoutBuilder.week(date: Fixture.day(), events: self.mixed, width: -50)
+        let day = await CKLayoutBuilder.day(
+            date: Fixture.day(),
+            events: self.mixed,
+            width: 0,
+            calendar: Fixture.calendar
+        )
+        let week = await CKLayoutBuilder.week(
+            date: Fixture.day(),
+            events: self.mixed,
+            width: -50,
+            calendar: Fixture.calendar
+        )
 
         #expect(day.grid.isEmpty && day.bands.isEmpty && day.markers.isEmpty)
         #expect(week.grid.isEmpty && week.bands.isEmpty && week.markers.isEmpty)
@@ -31,7 +41,12 @@ struct CKLayoutBuilderTests {
 
     @Test("A day's layout holds only that day's timed events, plus its bands and markers")
     func dayLayout() async {
-        let layout = await CKLayoutBuilder.day(date: Fixture.day(), events: self.mixed, width: 300)
+        let layout = await CKLayoutBuilder.day(
+            date: Fixture.day(),
+            events: self.mixed,
+            width: 300,
+            calendar: Fixture.calendar
+        )
 
         #expect(layout.grid.map(\.event.title) == ["Today"])
         #expect(Set(layout.bands.map(\.title)) == ["Holiday", "Trip"])
@@ -40,8 +55,13 @@ struct CKLayoutBuilderTests {
 
     @Test("A week's layout holds every timed event in the week")
     func weekLayout() async {
-        let layout = await CKLayoutBuilder.week(date: Fixture.day(), events: self.mixed, width: 300)
-        let weekRange = Fixture.anchor.fetchWeekRange()
+        let layout = await CKLayoutBuilder.week(
+            date: Fixture.day(),
+            events: self.mixed,
+            width: 300,
+            calendar: Fixture.calendar
+        )
+        let weekRange = Fixture.anchor.fetchWeekRange(in: Fixture.calendar)
         let expected = self.mixed.filter { $0.kind.lane == .grid && weekRange.contains($0.startDate) }
 
         #expect(Set(layout.grid.map(\.event.id)) == Set(expected.map(\.id)))
@@ -51,7 +71,7 @@ struct CKLayoutBuilderTests {
     func daysLayout() async {
         let dates = [Fixture.at(12, day: -1), Fixture.at(12), Fixture.at(12, day: 1)]
 
-        let layouts = await CKLayoutBuilder.days(dates, events: self.mixed, width: 300)
+        let layouts = await CKLayoutBuilder.days(dates, events: self.mixed, width: 300, calendar: Fixture.calendar)
 
         #expect(Set(layouts.keys) == [Fixture.day(-1), Fixture.day(0), Fixture.day(1)])
         #expect(layouts[Fixture.day(1)]?.grid.map(\.event.title) == ["Tomorrow"])
@@ -114,18 +134,22 @@ struct CKEventSelectionTests {
     func multiDayDots() {
         let trip = [Fixture.span(Fixture.day(-1), Fixture.day(2))]
 
-        #expect((-1...2).allSatisfy { CKUtils.hasEvents(on: Fixture.day($0), in: trip) })
-        #expect(!CKUtils.hasEvents(on: Fixture.day(-2), in: trip))
-        #expect(!CKUtils.hasEvents(on: Fixture.day(3), in: trip))
+        #expect((-1...2).allSatisfy { CKUtils.hasEvents(on: Fixture.day($0), in: trip, calendar: Fixture.calendar) })
+        #expect(!CKUtils.hasEvents(on: Fixture.day(-2), in: trip, calendar: Fixture.calendar))
+        #expect(!CKUtils.hasEvents(on: Fixture.day(3), in: trip, calendar: Fixture.calendar))
     }
 
     @Test("Each kind of event marks its own day")
     func dotsForEachKind() {
-        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Fixture.timed(Fixture.at(12), Fixture.at(13))]))
-        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Fixture.allDay(Fixture.day())]))
-        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Fixture.deadline(Fixture.at(9))]))
-        #expect(!CKUtils.hasEvents(on: Fixture.day(1), in: [Fixture.allDay(Fixture.day())]))
-        #expect(!CKUtils.hasEvents(on: Fixture.day(), in: []))
+        #expect(CKUtils.hasEvents(
+            on: Fixture.day(),
+            in: [Fixture.timed(Fixture.at(12), Fixture.at(13))],
+            calendar: Fixture.calendar
+        ))
+        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Fixture.allDay(Fixture.day())], calendar: Fixture.calendar))
+        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Fixture.deadline(Fixture.at(9))], calendar: Fixture.calendar))
+        #expect(!CKUtils.hasEvents(on: Fixture.day(1), in: [Fixture.allDay(Fixture.day())], calendar: Fixture.calendar))
+        #expect(!CKUtils.hasEvents(on: Fixture.day(), in: [], calendar: Fixture.calendar))
     }
 
     @Test("A day has a dot exactly when the list under the month has something for it")
@@ -140,7 +164,11 @@ struct CKEventSelectionTests {
             let day = Fixture.day(offset)
             let listed = events.filter { CKUtils.doesEventOccurOnDate(event: $0, date: day) }
 
-            #expect(CKUtils.hasEvents(on: day, in: events) == !listed.isEmpty, "day \(offset)")
+            #expect(CKUtils.hasEvents(
+                on: day,
+                in: events,
+                calendar: Fixture.calendar
+            ) == !listed.isEmpty, "day \(offset)")
         }
     }
 

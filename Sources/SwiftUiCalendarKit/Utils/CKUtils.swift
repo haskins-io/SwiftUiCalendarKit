@@ -9,6 +9,9 @@ import Foundation
 
 nonisolated enum CKUtils {
 
+    /// Where the current-time line sits on the hour grid. Hours and minutes depend only on the
+    /// time zone, so the device calendar is fine here; views call this from `init`, before the
+    /// environment is available.
     static func currentTimelinePosition(calendar: Calendar = .current) -> Double {
         let now = Date()
         let hour = calendar.component(.hour, from: now)
@@ -28,8 +31,8 @@ nonisolated enum CKUtils {
     /// The same test as the list under the month (`doesEventOccurOnDate`), so a day has a dot
     /// exactly when tapping it lists something. A multi-day or all-day event marks every day it
     /// covers, not just its first, which is all the dot used to check.
-    static func hasEvents(on date: Date, in events: [CKEvent]) -> Bool {
-        events.contains { Self.doesEventOccurOnDate(event: $0, date: date) }
+    static func hasEvents(on date: Date, in events: [CKEvent], calendar: Calendar) -> Bool {
+        events.contains { Self.doesEventOccurOnDate(event: $0, date: date, calendar: calendar) }
     }
 
     private static func buildOverlapGroups(
@@ -109,11 +112,13 @@ nonisolated enum CKUtils {
 
     private static func createViewData(
         _ filteredEvents: [CKEvent],
-        _ eventColumns: inout [CKEventID: Int],
-        _ groupMaxColumns: inout [CKEventID: Int],
-        _ eventViewDataArray: inout [CKEventViewData],
-        _ width: CGFloat
-    ) {
+        _ eventColumns: [CKEventID: Int],
+        _ groupMaxColumns: [CKEventID: Int],
+        _ width: CGFloat,
+        _ calendar: Calendar
+    ) -> [CKEventViewData] {
+        var eventViewDataArray: [CKEventViewData] = []
+
         for event in filteredEvents {
             guard let column = eventColumns[event.id],
                   let maxColumns = groupMaxColumns[event.id] else { continue }
@@ -122,11 +127,14 @@ nonisolated enum CKUtils {
                 event: event,
                 overlapsWith: CGFloat(maxColumns),
                 position: CGFloat(column + 1),
-                width: width
+                width: width,
+                calendar: calendar
             ) else { continue }
 
             eventViewDataArray.append(viewData)
         }
+
+        return eventViewDataArray
     }
 
     /// Lays out the events that belong on the hour grid for the week containing `date`.
@@ -137,10 +145,11 @@ nonisolated enum CKUtils {
     static func generateEventViewData(
         date: Date,
         events: [CKEvent],
-        width: CGFloat
+        width: CGFloat,
+        calendar: Calendar
     ) -> [CKEventViewData] {
 
-        let weekRange = date.fetchWeekRange()
+        let weekRange = date.fetchWeekRange(in: calendar)
 
         // Filter to the grid lane and sort by start time, then by end time
         let filteredEvents = events
@@ -160,11 +169,7 @@ nonisolated enum CKUtils {
         assignColumns(eventGroups, &eventColumns, &groupMaxColumns)
 
         // Step 3: Create view data for each event
-        var eventViewDataArray: [CKEventViewData] = []
-
-        createViewData(filteredEvents, &eventColumns, &groupMaxColumns, &eventViewDataArray, width)
-
-        return eventViewDataArray
+        return createViewData(filteredEvents, eventColumns, groupMaxColumns, width, calendar)
     }
 
     /// The all-day and multi-day events overlapping `interval`, for the band above the grid.

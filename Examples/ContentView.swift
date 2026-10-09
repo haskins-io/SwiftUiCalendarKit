@@ -21,6 +21,10 @@ struct ContentView: View {
 
     @State private var scrollRequest = 0
 
+    /// The calendar handed to the calendars through the environment, to check week starts,
+    /// month grids and month names without changing the simulator's settings.
+    @State private var testCalendar: TestCalendar = .device
+
     private static let middleDateStart = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()) ?? Date()
     private static let middleDateEnd = calendar.date(byAdding: .hour, value: 1, to: middleDateStart) ?? Date()
 
@@ -56,8 +60,7 @@ struct ContentView: View {
     let events: [CKEvent] = [
         // Bands
         preview("Multi Day Event", .span(from: offset(days: -1, from: middleDateStart),
-                                         through: offset(days: 2, from: middleDateEnd))),
-        
+                                         through: offset(days: 3, from: middleDateEnd))),
         preview("All Day 1", .allDay(middleDateStart)),
         preview("All Day 2", .allDay(middleDateStart)),
 
@@ -74,6 +77,7 @@ struct ContentView: View {
         preview("Event 11", .timed(start: offset(days: 4, from: middleDateStart),
                                    end: offset(days: 4, from: middleDateEnd))),
 
+        // Markers — zero-length, and invisible under the old shape
         preview("Invoice INV-014 due", .deadline(at(hour: 9)), systemImage: "paperplane"),
         preview("Lens service due", .deadline(at(hour: 9, on: offset(days: 2, from: middleDateStart))),
                 systemImage: "wrench.and.screwdriver")
@@ -152,7 +156,21 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                monthCompact
+                month
+            }
+            .environment(\.calendar, testCalendar.calendar)
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        Picker("Calendar", selection: $testCalendar) {
+                            ForEach(TestCalendar.allCases) { option in
+                                Text(option.name).tag(option)
+                            }
+                        }
+                    } label: {
+                        Label("Calendar", systemImage: "calendar")
+                    }
+                }
             }
 
             if let event = observer.event {
@@ -162,6 +180,86 @@ struct ContentView: View {
     }
 }
 
+/// Calendars worth testing against: two week starts, and the non-Gregorian calendars most
+/// likely to break a month grid (different month lengths and month starts).
+private enum TestCalendar: String, CaseIterable, Identifiable {
+    case device
+    case gregorianSunday
+    case gregorianMonday
+    case hebrew
+    case islamic
+    case persian
+    case japanese
+    case buddhist
+
+    var id: Self { self }
+
+    var name: String {
+        switch self {
+        case .device:
+            "Device setting"
+
+        case .gregorianSunday:
+            "Gregorian, Sunday first"
+
+        case .gregorianMonday:
+            "Gregorian, Monday first"
+
+        case .hebrew:
+            "Hebrew"
+
+        case .islamic:
+            "Islamic (Umm al-Qura)"
+
+        case .persian:
+            "Persian"
+
+        case .japanese:
+            "Japanese"
+
+        case .buddhist:
+            "Buddhist"
+        }
+    }
+
+    var calendar: Calendar {
+        switch self {
+        case .device:
+                .autoupdatingCurrent
+
+        case .gregorianSunday:
+            Self.make(.gregorian, firstWeekday: 1)
+
+        case .gregorianMonday:
+            Self.make(.gregorian, firstWeekday: 2)
+
+        case .hebrew:
+            Self.make(.hebrew)
+
+        case .islamic:
+            Self.make(.islamicUmmAlQura)
+
+        case .persian:
+            Self.make(.persian)
+
+        case .japanese:
+            Self.make(.japanese)
+
+        case .buddhist:
+            Self.make(.buddhist)
+        }
+    }
+
+    /// In the device's time zone, which the package assumes. Without `firstWeekday`, the week
+    /// starts where the device's region starts it.
+    private static func make(_ identifier: Calendar.Identifier, firstWeekday: Int? = nil) -> Calendar {
+        var calendar = Calendar(identifier: identifier)
+        calendar.timeZone = .autoupdatingCurrent
+        calendar.locale = .autoupdatingCurrent
+        calendar.firstWeekday = firstWeekday ?? Calendar.autoupdatingCurrent.firstWeekday
+        return calendar
+    }
+}
 #Preview {
     NavigationStack {
         ContentView()

@@ -13,6 +13,9 @@ struct CKDateStepper: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
     @Binding var date: Date
 
     /// What one press moves by — `.day`, `.weekOfYear` or `.month`.
@@ -48,7 +51,7 @@ struct CKDateStepper: View {
 
     private func step(_ value: Int) {
         withAnimation {
-            self.date = Self.stepped(self.date, by: value, component: self.component)
+            self.date = Self.stepped(self.date, by: value, component: self.component, calendar: self.calendar)
         }
     }
 

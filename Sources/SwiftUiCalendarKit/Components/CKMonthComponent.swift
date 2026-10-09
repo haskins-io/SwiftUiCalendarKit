@@ -19,7 +19,14 @@ struct CKMonthComponent: View {
 
     private var events: [CKEvent] = []
 
-    private var calendar = Calendar.current
+    /// Passed in rather than read from the environment, so the grid and `CalendarComponent`
+    /// below it are guaranteed the same one. `CKCompactMonth` passes the environment's.
+    private var calendar: Calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
 
     init(calendar: Calendar, date: Binding<Date>, events: [CKEvent]) {
         self._selectedDate = date
@@ -50,22 +57,26 @@ struct CKMonthComponent: View {
                                     .frame(width: 27, height: 27)
                             }
 
-                            Text(date.formatted(Date.FormatStyle().day().locale(self.locale)))
+                            Text(date.formatted(self.dateStyle.day()))
                                 .padding(6)
                                 .frame(width: 33, height: 33)
                                 .foregroundColor(calendar.isDateInToday(date) ? Color.white : .primary)
                                 .cornerRadius(7)
                         }
                     }
-                    .modifier(CKEventDotModifier(isVisible: CKUtils.hasEvents(on: date, in: events)))
+                    .modifier(CKEventDotModifier(isVisible: CKUtils.hasEvents(
+                        on: date,
+                        in: events,
+                        calendar: self.calendar
+                    )))
                 },
                 trailing: { date in
-                    Text(date.formatted(Date.FormatStyle().day().locale(self.locale)))
+                    Text(date.formatted(self.dateStyle.day()))
                         .foregroundColor(.secondary)
                         .padding(6)
                 },
                 header: { date in
-                    Text(date.formatted(Date.FormatStyle().weekday(.abbreviated).locale(self.locale))).fontWeight(.bold)
+                    Text(date.formatted(self.dateStyle.weekday(.abbreviated))).fontWeight(.bold)
                 },
                 title: { date in
                     HStack {
@@ -101,7 +112,7 @@ struct CKMonthComponent: View {
                                 selectedDate = Date.now
                             }
                         } label: {
-                            Text(date.formatted(.dateTime.month(.wide).year(.defaultDigits).locale(self.locale)))
+                            Text(date.formatted(self.dateStyle.month(.wide).year(.defaultDigits)))
                                 .foregroundColor(.blue)
                                 .font(.title2)
                                 .padding(2)
@@ -178,7 +189,7 @@ private struct CalendarComponent<Day: View, Header: View, Title: View, Trailing:
 
     public var body: some View {
 
-        let month = date.startOfMonth
+        let month = date.startOfMonth(in: self.calendar)
         let days = makeDays()
 
         // Height follows the rows the month actually has. It was a flat 300 — six rows' worth —

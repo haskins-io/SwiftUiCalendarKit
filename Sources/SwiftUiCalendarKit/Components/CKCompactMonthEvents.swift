@@ -9,9 +9,10 @@ import SwiftUI
 
 struct CKCompactMonthEvents<Detail: View>: View {
 
-    @Binding private var date: Date
+    @Environment(\.calendar)
+    private var calendar
 
-    private let calendar = Calendar.current
+    @Binding private var date: Date
 
     private let detail: (CKEvent) -> Detail
     private var events: [CKEvent]
@@ -32,7 +33,9 @@ struct CKCompactMonthEvents<Detail: View>: View {
             // Filtered before the `ForEach` rather than inside it: a `List` builds a row for
             // every element it is handed, so hiding most of them behind an `if` still pays for
             // them.
-            ForEach(events.filter { CKUtils.doesEventOccurOnDate(event: $0, date: date) }) { event in
+            ForEach(events.filter { event in
+                CKUtils.doesEventOccurOnDate(event: event, date: date, calendar: self.calendar)
+            }) { event in
                 NavigationLink(destination: detail(event)) {
                     CKListEventView(event: event)
                 }

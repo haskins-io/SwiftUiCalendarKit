@@ -20,6 +20,9 @@ import SwiftUI
 
 public struct CKMonth: View {
 
+    @Environment(\.calendar)
+    private var calendar
+
     @Environment(\.ckConfig)
     private var config
 
@@ -32,8 +35,6 @@ public struct CKMonth: View {
 
     @State private var calendarWidth: CGFloat = .zero
     @State private var calendarHeight: CGFloat = .zero
-
-    private let calendar = Calendar.current
 
     private var events: [CKEvent]
 
@@ -89,7 +90,7 @@ public struct CKMonth: View {
     private func monthGrid(in size: CGSize) -> some View {
 
         let days = makeDays()
-        let month = calendarDate.startOfMonth
+        let month = calendarDate.startOfMonth(in: self.calendar)
 
         // Derived from the days actually being drawn. A month grid is five or six weeks
         // depending on where the 1st falls, and hard-coding six overflowed the short ones.
@@ -229,4 +230,19 @@ extension CKMonth {
     )
     .environment(\.locale, Locale(identifier: "ar"))
     .environment(\.layoutDirection, .rightToLeft)
+}
+
+/// The Hebrew calendar, with the week starting on Monday: the grid follows the Hebrew month, and
+/// the title and day numbers are written in it.
+#Preview("Hebrew calendar") {
+    CKMonth(
+        observer: CKCalendarObserver(),
+        events: testEvents,
+        date: .constant(Date())
+    )
+    .environment(\.calendar, {
+        var calendar = Calendar(identifier: .hebrew)
+        calendar.firstWeekday = 2
+        return calendar
+    }())
 }

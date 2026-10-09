@@ -12,10 +12,11 @@ struct CKWeekOfYear: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
     @Environment(\.ckConfig)
     private var config
-
-    private let calendar = Calendar.current
 
     var date: Date
 

@@ -77,7 +77,12 @@ struct CKMirrorTests {
     @Test("Day: overlapping events take mirrored columns beside the hour labels")
     func dayGrid() throws {
         // As `CKTimelineDay` draws it, with the layout it builds for a 400-point view.
-        let grid = CKUtils.generateEventViewData(date: Fixture.day(), events: Self.events, width: 345)
+        let grid = CKUtils.generateEventViewData(
+            date: Fixture.day(),
+            events: Self.events,
+            width: 345,
+            calendar: Fixture.calendar
+        )
 
         let day = ZStack(alignment: .topLeading) {
             CKTimeline()
@@ -95,7 +100,12 @@ struct CKMirrorTests {
     func weekColumn() throws {
         // One day column of `CKTimelineWeek`, laid out for its width.
         let width: CGFloat = 100
-        let grid = CKUtils.generateEventViewData(date: Fixture.day(), events: Self.events, width: width)
+        let grid = CKUtils.generateEventViewData(
+            date: Fixture.day(),
+            events: Self.events,
+            width: width,
+            calendar: Fixture.calendar
+        )
 
         let column = ZStack(alignment: .topLeading) {
             CKTimeline(showTime: false)
@@ -135,7 +145,12 @@ struct CKMirrorTests {
     @Test("Compact day and week: overlapping events take mirrored columns")
     func compactGrid() throws {
         // As `CKCompactDay` and `CKCompactWeek` draw it, with the layout they build.
-        let grid = CKUtils.generateEventViewData(date: Fixture.day(), events: Self.events, width: 340)
+        let grid = CKUtils.generateEventViewData(
+            date: Fixture.day(),
+            events: Self.events,
+            width: 340,
+            calendar: Fixture.calendar
+        )
 
         let day = ZStack(alignment: .topLeading) {
             CKTimeline()

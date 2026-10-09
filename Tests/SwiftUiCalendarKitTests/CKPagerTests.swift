@@ -68,9 +68,9 @@ struct CKPagerTests {
     @Test("Paging weeks moves one whole week at a time")
     func pagingWeeks() {
         let window = CKPager.window(
-            around: Fixture.anchor.fetchWeek(),
-            previous: { $0.first?.date.createPreviousWeek() },
-            next: { $0.last?.date.createNextWeek() }
+            around: Fixture.anchor.fetchWeek(in: Fixture.calendar),
+            previous: { $0.first?.date.createPreviousWeek(in: Fixture.calendar) },
+            next: { $0.last?.date.createNextWeek(in: Fixture.calendar) }
         )
         let firstDays = window.compactMap { $0.first?.date }
 
@@ -83,10 +83,14 @@ struct CKPagerTests {
 
     @Test("After a swipe, rebuilding the window around the selected week gives the same window")
     func weekWindowSurvivesRebuild() {
-        let previous = { (week: [WeekDay]) in week.first?.date.createPreviousWeek() }
-        let next = { (week: [WeekDay]) in week.last?.date.createNextWeek() }
+        let previous = { (week: [WeekDay]) in week.first?.date.createPreviousWeek(in: Fixture.calendar) }
+        let next = { (week: [WeekDay]) in week.last?.date.createNextWeek(in: Fixture.calendar) }
 
-        let window = CKPager.window(around: Fixture.anchor.fetchWeek(), previous: previous, next: next)
+        let window = CKPager.window(
+            around: Fixture.anchor.fetchWeek(in: Fixture.calendar),
+            previous: previous,
+            next: next
+        )
 
         // `CKCompactWeek` slides the window on a swipe, then sets `date` to the selected week's
         // first day, and a new `date` rebuilds the window. The two must agree, or the strip
@@ -94,7 +98,11 @@ struct CKPagerTests {
         for landing in [0, 2] {
             let slid = CKPager.recentre(window, at: landing, previous: previous, next: next)
             let selected = slid.pages[slid.index][0].date
-            let rebuilt = CKPager.window(around: selected.fetchWeek(), previous: previous, next: next)
+            let rebuilt = CKPager.window(
+                around: selected.fetchWeek(in: Fixture.calendar),
+                previous: previous,
+                next: next
+            )
 
             #expect(rebuilt.map { $0.map(\.date) } == slid.pages.map { $0.map(\.date) })
             #expect(slid.index == 1)
@@ -103,10 +111,14 @@ struct CKPagerTests {
 
     @Test("Swiping forward again and again moves one week each time")
     func repeatedWeekSwipes() {
-        let previous = { (week: [WeekDay]) in week.first?.date.createPreviousWeek() }
-        let next = { (week: [WeekDay]) in week.last?.date.createNextWeek() }
+        let previous = { (week: [WeekDay]) in week.first?.date.createPreviousWeek(in: Fixture.calendar) }
+        let next = { (week: [WeekDay]) in week.last?.date.createNextWeek(in: Fixture.calendar) }
 
-        var pages = CKPager.window(around: Fixture.anchor.fetchWeek(), previous: previous, next: next)
+        var pages = CKPager.window(
+            around: Fixture.anchor.fetchWeek(in: Fixture.calendar),
+            previous: previous,
+            next: next
+        )
         var firstDays: [Date] = []
 
         for _ in 0..<5 {

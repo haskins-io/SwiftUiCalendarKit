@@ -81,7 +81,11 @@ struct CKEventDaysTests {
         let own = CKMonthRowLayout.ownEvents(on: Fixture.day(), events: [Self.lateShow], calendar: Fixture.calendar)
 
         #expect(own.map(\.id) == [Self.lateShow.id])
-        let nextDay = CKMonthRowLayout.ownEvents(on: Fixture.day(1), events: [Self.lateShow], calendar: Fixture.calendar)
+        let nextDay = CKMonthRowLayout.ownEvents(
+            on: Fixture.day(1),
+            events: [Self.lateShow],
+            calendar: Fixture.calendar
+        )
 
         #expect(nextDay.isEmpty)
     }
@@ -96,7 +100,7 @@ struct CKEventDaysTests {
 
     @Test("The compact month dots only its own day")
     func compactMonthDot() {
-        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Self.lateShow]))
-        #expect(!CKUtils.hasEvents(on: Fixture.day(1), in: [Self.lateShow]))
+        #expect(CKUtils.hasEvents(on: Fixture.day(), in: [Self.lateShow], calendar: Fixture.calendar))
+        #expect(!CKUtils.hasEvents(on: Fixture.day(1), in: [Self.lateShow], calendar: Fixture.calendar))
     }
 }

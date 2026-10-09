@@ -24,6 +24,14 @@ public struct CKTimelineDay: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Environment(\.ckConfig)
     private var config
 
@@ -46,7 +54,6 @@ public struct CKTimelineDay: View {
     @State private var layout = CKLayout()
 
     private var events: [CKEvent]
-    private let calendar = Calendar.current
 
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
@@ -75,16 +82,16 @@ public struct CKTimelineDay: View {
             VStack(alignment: .leading, spacing: 2) {
 
                 HStack {
-                    Text(date.formatted(.dateTime.day().month(.wide).locale(self.locale))).bold()
+                    Text(date.formatted(self.dateStyle.day().month(.wide))).bold()
 
-                    Text(date.formatted(.dateTime.year().locale(self.locale)))
+                    Text(date.formatted(self.dateStyle.year()))
                 }
                 .padding(.leading, 10)
                 .padding(.top, 5)
                 .font(.title)
 
                 HStack {
-                    Text(date.formatted(.dateTime.weekday(.wide).locale(self.locale))).padding(.leading, 10)
+                    Text(date.formatted(self.dateStyle.weekday(.wide))).padding(.leading, 10)
 
                     Spacer()
 
@@ -116,12 +123,22 @@ public struct CKTimelineDay: View {
                         }
 
                         withAnimation {
-                            date = Calendar.current.date(byAdding: .day, value: days, to: date) ?? date
+                            date = self.calendar.date(byAdding: .day, value: days, to: date) ?? date
                         }
                     }
             )
-            .task(id: CKLayoutRequest(dates: [date], events: events, width: calendarWidth - 55)) {
-                layout = await CKLayoutBuilder.day(date: date, events: events, width: calendarWidth - 55)
+            .task(id: CKLayoutRequest(
+                dates: [date],
+                events: events,
+                width: calendarWidth - 55,
+                calendar: self.calendar
+            )) {
+                layout = await CKLayoutBuilder.day(
+                    date: date,
+                    events: events,
+                    width: calendarWidth - 55,
+                    calendar: self.calendar
+                )
             }
             .onChange(of: geometry.size, initial: true) { _, newSize in
                 guard newSize.width > 0 else {

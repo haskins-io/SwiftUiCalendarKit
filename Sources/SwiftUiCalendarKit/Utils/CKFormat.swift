@@ -100,3 +100,18 @@ nonisolated enum CKFormat {
         return symbols
     }
 }
+
+extension Date.FormatStyle {
+
+    /// This style, writing dates in `calendar` and in its time zone.
+    ///
+    /// The partner of `locale(_:)`. Views pass the SwiftUI environment's calendar, as they do
+    /// its locale, so a Hebrew or Islamic calendar names its own months, and the grid and the
+    /// labels on it never disagree about which month a day is in.
+    func calendar(_ calendar: Calendar) -> Self {
+        var style = self
+        style.calendar = calendar
+        style.timeZone = calendar.timeZone
+        return style
+    }
+}

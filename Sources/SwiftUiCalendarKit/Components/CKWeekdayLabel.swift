@@ -16,11 +16,18 @@ struct CKWeekdayLabel: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
     let date: Date
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
-            ForEach(CKFormat.weekdaySymbols(self.date, locale: self.locale), id: \.self) { symbol in
+            ForEach(CKFormat.weekdaySymbols(
+                self.date,
+                locale: self.locale,
+                calendar: self.calendar
+            ), id: \.self) { symbol in
                 Text(symbol)
                     .lineLimit(1)
             }

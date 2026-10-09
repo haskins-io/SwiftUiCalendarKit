@@ -44,7 +44,7 @@ nonisolated struct CKMonthRowLayout: Sendable {
     /// the row draws instead.
     static func ownEvents(on day: Date, events: [CKEvent], calendar: Calendar = .current) -> [CKEvent] {
         events.filter {
-            CKUtils.doesEventOccurOnDate(event: $0, date: day) && !$0.isMultiDay(in: calendar)
+            CKUtils.doesEventOccurOnDate(event: $0, date: day, calendar: calendar) && !$0.isMultiDay(in: calendar)
         }
     }
 }

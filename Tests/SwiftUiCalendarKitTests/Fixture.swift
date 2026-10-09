@@ -49,6 +49,6 @@ enum Fixture {
 
     /// The seven days of the week containing the anchor, starting on the calendar's first weekday.
     static var week: [Date] {
-        anchor.fetchWeek().map(\.date)
+        anchor.fetchWeek(in: Fixture.calendar).map(\.date)
     }
 }

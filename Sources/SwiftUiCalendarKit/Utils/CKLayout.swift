@@ -53,17 +53,17 @@ nonisolated enum CKLayoutBuilder {
     /// yet, and laying out against it produces negative event widths, so it yields nothing
     /// rather than a pass that has to be thrown away.
     @concurrent
-    static func week(date: Date, events: [CKEvent], width: CGFloat) async -> CKLayout {
+    static func week(date: Date, events: [CKEvent], width: CGFloat, calendar: Calendar) async -> CKLayout {
 
         guard width > 0 else {
             return CKLayout()
         }
 
-        let weekRange = date.fetchWeekRange()
+        let weekRange = date.fetchWeekRange(in: calendar)
         let interval = DateInterval(start: weekRange.lowerBound, end: weekRange.upperBound)
 
         return CKLayout(
-            grid: CKUtils.generateEventViewData(date: date, events: events, width: width),
+            grid: CKUtils.generateEventViewData(date: date, events: events, width: width, calendar: calendar),
             bands: CKUtils.bandEvents(in: interval, events: events),
             markers: CKUtils.markerEvents(in: interval, events: events)
         )
@@ -71,7 +71,7 @@ nonisolated enum CKLayoutBuilder {
 
     /// The layout for a single day.
     @concurrent
-    static func day(date: Date, events: [CKEvent], width: CGFloat) async -> CKLayout {
+    static func day(date: Date, events: [CKEvent], width: CGFloat, calendar: Calendar) async -> CKLayout {
 
         guard width > 0 else {
             return CKLayout()
@@ -80,8 +80,8 @@ nonisolated enum CKLayoutBuilder {
         let interval = date.dayInterval
 
         return CKLayout(
-            grid: CKUtils.generateEventViewData(date: date, events: events, width: width)
-                .filter { Calendar.current.isDate($0.start, inSameDayAs: date) },
+            grid: CKUtils.generateEventViewData(date: date, events: events, width: width, calendar: calendar)
+                .filter { calendar.isDate($0.start, inSameDayAs: date) },
             bands: CKUtils.bandEvents(in: interval, events: events),
             markers: CKUtils.markerEvents(in: interval, events: events)
         )
@@ -89,12 +89,12 @@ nonisolated enum CKLayoutBuilder {
 
     /// One layout per day, for a pager that keeps its neighbours ready.
     @concurrent
-    static func days(_ dates: [Date], events: [CKEvent], width: CGFloat) async -> [Date: CKLayout] {
+    static func days(_ dates: [Date], events: [CKEvent], width: CGFloat, calendar: Calendar) async -> [Date: CKLayout] {
 
         var layouts: [Date: CKLayout] = [:]
 
         for date in dates {
-            layouts[date.midnight] = await Self.day(date: date, events: events, width: width)
+            layouts[date.midnight] = await Self.day(date: date, events: events, width: width, calendar: calendar)
         }
 
         return layouts
@@ -106,4 +106,5 @@ nonisolated struct CKLayoutRequest: Equatable, Sendable {
     let dates: [Date]
     let events: [CKEvent]
     let width: CGFloat
+    let calendar: Calendar
 }

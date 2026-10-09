@@ -11,6 +11,14 @@ struct CKCalendarHeader: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Binding var currentDate: Date
 
     var addWeek: Bool
@@ -20,7 +28,7 @@ struct CKCalendarHeader: View {
         HStack {
 
             HStack {
-                Text(currentDate.formatted(.dateTime.month(.wide).year().locale(self.locale)))
+                Text(currentDate.formatted(self.dateStyle.month(.wide).year()))
             }
             .padding(.leading, 20)
             .padding(.top, 5)

@@ -159,7 +159,12 @@ struct CKEventLaneTests {
             self.event(.allDay(self.day()))
         ]
 
-        let laidOut = CKUtils.generateEventViewData(date: self.day(), events: events, width: 100)
+        let laidOut = CKUtils.generateEventViewData(
+            date: self.day(),
+            events: events,
+            width: 100,
+            calendar: Fixture.calendar
+        )
 
         #expect(laidOut.count == 1)
     }
@@ -173,7 +178,12 @@ struct CKEventLaneTests {
             self.event(.timed(start: self.at(10, 30), end: self.at(11, 30)))
         ]
 
-        let laidOut = CKUtils.generateEventViewData(date: self.day(), events: events, width: 100)
+        let laidOut = CKUtils.generateEventViewData(
+            date: self.day(),
+            events: events,
+            width: 100,
+            calendar: Fixture.calendar
+        )
 
         #expect(laidOut.count == 2)
         #expect(laidOut.allSatisfy { $0.overlapsWith == 2 })
@@ -187,7 +197,12 @@ struct CKEventLaneTests {
             self.event(.timed(start: self.at(11), end: self.at(12)))
         ]
 
-        let laidOut = CKUtils.generateEventViewData(date: self.day(), events: events, width: 100)
+        let laidOut = CKUtils.generateEventViewData(
+            date: self.day(),
+            events: events,
+            width: 100,
+            calendar: Fixture.calendar
+        )
 
         #expect(laidOut.allSatisfy { $0.overlapsWith == 1 })
     }

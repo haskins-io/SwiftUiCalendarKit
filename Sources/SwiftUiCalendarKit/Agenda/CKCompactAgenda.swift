@@ -22,6 +22,14 @@ public struct CKCompactAgenda<Detail: View>: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Environment(\.ckConfig)
     private var config
 
@@ -30,8 +38,6 @@ public struct CKCompactAgenda<Detail: View>: View {
 
     private let detail: (CKEvent) -> Detail
     private let events: [CKEvent]
-
-    private let calendar = Calendar.current
 
     /// The first day the list covers, when the caller has one.
     private let from: Date?
@@ -100,8 +106,8 @@ public struct CKCompactAgenda<Detail: View>: View {
     private func agendaSectionHeader(date: Date) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {
-                Text(date.formatted(.dateTime.weekday(.wide).locale(self.locale)))
-                Text(date.formatted(.dateTime.day().month(.abbreviated).locale(self.locale)))
+                Text(date.formatted(self.dateStyle.weekday(.wide)))
+                Text(date.formatted(self.dateStyle.day().month(.abbreviated)))
 
                 Spacer(minLength: 8)
             }
@@ -166,10 +172,10 @@ public struct CKCompactAgenda<Detail: View>: View {
     private func timeLabel(event: CKEvent) -> some View {
         switch event.kind {
         case .timed(let start, let end):
-            Text(start.formatted(.dateTime.hour().minute().locale(self.locale)))
+            Text(start.formatted(self.dateStyle.hour().minute()))
                 .font(.caption)
 
-            Text(end.formatted(.dateTime.hour().minute().locale(self.locale)))
+            Text(end.formatted(self.dateStyle.hour().minute()))
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -179,7 +185,7 @@ public struct CKCompactAgenda<Detail: View>: View {
                 .foregroundStyle(.secondary)
 
         case .deadline(let at):
-            let time = Self.emphasised(at.formatted(.dateTime.hour().minute().locale(self.locale)))
+            let time = Self.emphasised(at.formatted(self.dateStyle.hour().minute()))
 
             Text(AttributedString(localized: CKStrings.compactDue(time).locale(self.locale)))
             .font(.caption2)
@@ -187,7 +193,7 @@ public struct CKCompactAgenda<Detail: View>: View {
             .multilineTextAlignment(.trailing)
 
         case .span(_, let through):
-            let day = Self.emphasised(through.formatted(.dateTime.day().month(.abbreviated).locale(self.locale)))
+            let day = Self.emphasised(through.formatted(self.dateStyle.day().month(.abbreviated)))
 
             Text(AttributedString(localized: CKStrings.compactUntil(day).locale(self.locale)))
             .font(.caption2)

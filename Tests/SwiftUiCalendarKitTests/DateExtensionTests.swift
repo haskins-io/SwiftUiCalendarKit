@@ -39,7 +39,7 @@ struct DateExtensionTests {
 
     @Test("The start of the month is the 1st at midnight")
     func startOfMonth() {
-        let start = Fixture.at(9).startOfMonth
+        let start = Fixture.at(9).startOfMonth(in: Fixture.calendar)
 
         #expect(Fixture.calendar.component(.day, from: start) == 1)
         #expect(Fixture.calendar.isDate(start, equalTo: Fixture.anchor, toGranularity: .month))
@@ -48,7 +48,7 @@ struct DateExtensionTests {
 
     @Test("A week is seven consecutive days from the first weekday, containing the date")
     func fetchWeek() {
-        let week = Fixture.anchor.fetchWeek()
+        let week = Fixture.anchor.fetchWeek(in: Fixture.calendar)
 
         #expect(week.count == 7)
         #expect(week.contains { Fixture.calendar.isDate($0.date, inSameDayAs: Fixture.anchor) })
@@ -61,30 +61,30 @@ struct DateExtensionTests {
 
     @Test("Only today's entry in a week is flagged as today")
     func fetchWeekMarksToday() {
-        let week = Date().fetchWeek()
+        let week = Date().fetchWeek(in: Fixture.calendar)
 
         #expect(week.filter(\.isToday).count == 1)
-        let anchorWeekHasToday = Fixture.anchor.fetchWeek().contains(where: \.isToday)
+        let anchorWeekHasToday = Fixture.anchor.fetchWeek(in: Fixture.calendar).contains(where: \.isToday)
 
-        #expect(anchorWeekHasToday == Fixture.anchor.fetchWeekRange().contains(Date()))
+        #expect(anchorWeekHasToday == Fixture.anchor.fetchWeekRange(in: Fixture.calendar).contains(Date()))
     }
 
     @Test("Next and previous weeks follow on directly from the current one")
     func adjacentWeeks() {
-        let week = Fixture.anchor.fetchWeek()
+        let week = Fixture.anchor.fetchWeek(in: Fixture.calendar)
 
         guard let first = week.first?.date, let last = week.last?.date else {
             Issue.record("Week was empty")
             return
         }
 
-        #expect(last.createNextWeek().first?.date == last.nextDate().midnight)
-        #expect(first.createPreviousWeek().last?.date == first.previousDate().midnight)
+        #expect(last.createNextWeek(in: Fixture.calendar).first?.date == last.nextDate().midnight)
+        #expect(first.createPreviousWeek(in: Fixture.calendar).last?.date == first.previousDate().midnight)
     }
 
     @Test("The week range runs from the first weekday for seven days")
     func fetchWeekRange() {
-        let range = Fixture.anchor.fetchWeekRange()
+        let range = Fixture.anchor.fetchWeekRange(in: Fixture.calendar)
 
         #expect(range.lowerBound == Fixture.week.first)
         #expect(range.contains(Fixture.at(12)))

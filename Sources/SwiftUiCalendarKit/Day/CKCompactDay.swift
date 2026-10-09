@@ -25,6 +25,14 @@ public struct CKCompactDay<Detail: View>: View {
     @Environment(\.locale)
     private var locale
 
+    @Environment(\.calendar)
+    private var calendar
+
+    /// Dates as the reader's locale and calendar write them.
+    private var dateStyle: Date.FormatStyle {
+        .dateTime.locale(self.locale).calendar(self.calendar)
+    }
+
     @Environment(\.ckConfig)
     private var config
 
@@ -50,7 +58,6 @@ public struct CKCompactDay<Detail: View>: View {
 
     private let detail: (CKEvent) -> Detail
     private var events: [CKEvent]
-    private let calendar = Calendar.current
 
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher>
 
@@ -98,8 +105,18 @@ public struct CKCompactDay<Detail: View>: View {
             .onChange(of: currentDayIndex, initial: false) {
                 updateSliders()
             }
-            .task(id: CKLayoutRequest(dates: daySlider, events: events, width: calendarWidth - 50)) {
-                layouts = await CKLayoutBuilder.days(daySlider, events: events, width: calendarWidth - 50)
+            .task(id: CKLayoutRequest(
+                dates: daySlider,
+                events: events,
+                width: calendarWidth - 50,
+                calendar: self.calendar
+            )) {
+                layouts = await CKLayoutBuilder.days(
+                    daySlider,
+                    events: events,
+                    width: calendarWidth - 50,
+                    calendar: self.calendar
+                )
             }
             .onChange(of: geometry.size, initial: true) { _, newSize in
                 guard newSize.width > 0 else {
@@ -116,16 +133,16 @@ public struct CKCompactDay<Detail: View>: View {
 
         VStack(alignment: .leading) {
             HStack {
-                Text(headerDay.formatted(.dateTime.day().month(.wide).locale(self.locale)))
+                Text(headerDay.formatted(self.dateStyle.day().month(.wide)))
                     .bold()
-                Text(headerDay.formatted(.dateTime.year().locale(self.locale)))
+                Text(headerDay.formatted(self.dateStyle.year()))
             }
             .padding(.leading, 10)
             .padding(.top, 5)
             .font(.title)
 
             HStack(alignment: .center) {
-                Text(headerDay.formatted(.dateTime.weekday(.wide).locale(self.locale))).padding(.leading, 10)
+                Text(headerDay.formatted(self.dateStyle.weekday(.wide))).padding(.leading, 10)
 
                 Spacer()
                 CKWeekOfYear(date: currentDate)

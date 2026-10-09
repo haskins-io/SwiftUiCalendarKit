@@ -42,7 +42,12 @@ struct CKLocaleTests {
     /// `CKAgenda` and `CKCompactAgenda` (a `List`) and `CKCompactEventView` (a `NavigationLink`).
     /// They format their dates the same way as the views here.
     private static let views: [(String, AnyView)] = {
-        let grid = CKUtils.generateEventViewData(date: Fixture.day(), events: [Self.timed], width: 300)
+        let grid = CKUtils.generateEventViewData(
+            date: Fixture.day(),
+            events: [Self.timed],
+            width: 300,
+            calendar: Fixture.calendar
+        )
 
         return [
             ("hour labels", AnyView(CKTimeline().frame(width: 300))),
