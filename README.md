@@ -136,17 +136,18 @@ Sets the position of the heading on `CKCompactWeek`.
 Sets the working hours of a timeline calendar. Hours outside them are shaded light grey.
 
 ## Calendars
+
 | Calendar Type  | Example  |
 |----------------|----------------|
-| Day            | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineDay.png" width="300"/> |
-| Week           | <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineWeek.png" width="300"/> |
-| Month          | <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKMonth.png" width="300"/> |
-| Agenda         | <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKAgenda.png" width="300" |
-| Agenda RTL     | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/RTL.png" height="300"/> |
-| Compact Day    | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactDay.png" height="300"/> |
-| Compact Week   | <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactWeek.png" height="300"/> |
-| Compact Month  | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth.png" height="300"/> |
-| Compact Agenda | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactAgenda.png" height="300"/> |
+| Day            | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineDay.png" width="600" alt="Day Calendar"/> |
+| Week           | <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKTimelineWeek.png" width="600" alt="Week Calendar"/> |
+| Month          | <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKMonth.png" width="600" alt="Month Calendar"/> |
+| Agenda         | <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKAgenda.png" width="600" alt="Agenda Calendar"/> |
+| Agenda RTL     | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/RTL.png" height="600" alt="Day RTL Agenda Calendar"/> |
+| Compact Day    | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactDay.png" height="300" alt="Compact Day Calendar"/> |
+| Compact Week   | <img src="https://github.com/Haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactWeek.png" height="300" alt="Compact Week Calendar"/> |
+| Compact Month  | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactMonth.png" height="300" alt="Compact Month Calendar"/> |
+| Compact Agenda | <img src="https://github.com/haskins-io/SwiftUiCalendarKit/blob/main/Screenshots/CKCompactAgenda.png" height="300" alt="Compact Agenda Calendar"/> |
 
 ## Examples
 There is an example of how to use all the calendars in `/Examples`.
